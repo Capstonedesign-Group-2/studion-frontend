@@ -1,0 +1,54 @@
+.mainContainer {
+  @apply flex flex-col mb-32 md:mb-40 items-center justify-center min-h-screen;
+}
+
+.joinSection {
+  @apply relative;
+}
+.joinSection article {
+  @apply mx-auto max-w-screen-xl;
+}
+.joinSection article h1 {
+  @apply text-5xl tracking-tight leading-tight font-semibold text-gray-800 sm:text-5xl md:text-6xl relative text-center pt-40;
+}
+.joinSection article .joinDiv {
+  @apply relative z-10;
+}
+.joinSection article .joinDiv p {
+  @apply text-gray-800 text-xl text-center lg:mt-6 mt-10 mb-5 lg:mb-10;
+}
+.joinSection article .joinDiv .joinBtn {
+  @apply flex justify-center w-full;
+}
+.joinSection article .joinDiv .joinBtn a {
+  @apply inline-flex items-center justify-center px-5 py-3 border-transparent text-base hover:bg-studion-600 hover:text-white leading-6 rounded-md text-gray-800 bg-transparent focus:outline-none focus:ring border-2 border-studion-600 transition duration-150 ease-in-out md:text-lg md:px-6;
+}
+
+.infoSection {
+  @apply text-center text-white bg-studion-600 w-screen flex-1;
+}
+.infoSection article {
+  @apply text-3xl font-medium mb-2;
+}
+.infoSection article h2 {
+  @apply text-3xl font-medium mb-2;
+}
+.infoSection article h5 {
+  @apply text-xl;
+}
+
+.customShapeDividerBottom1640840584 {
+  width: 100vw;
+  overflow: hidden;
+  line-height: 0;
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+.customShapeDividerBottom1640840584 svg {
+  position: relative;
+  display: block;
+  width: calc(300% + 1.3px);
+  height: 400px;
+  fill: #2f4858;
+}
+/*# sourceMappingURL=main.module.css.map */

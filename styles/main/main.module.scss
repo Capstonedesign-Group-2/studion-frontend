@@ -1,0 +1,63 @@
+// 메인 섹션
+.mainContainer {
+  @apply flex flex-col mb-32 md:mb-40 items-center justify-center min-h-screen;
+}
+
+.joinSection {
+  @apply relative;
+
+  article {
+    @apply mx-auto max-w-screen-xl;
+
+    h1 {
+      @apply text-5xl tracking-tight leading-tight font-semibold text-gray-800 sm:text-5xl md:text-6xl relative text-center pt-40;
+    }
+
+    .joinDiv {
+      @apply relative z-10;
+
+      p {
+        @apply text-gray-800 text-xl text-center lg:mt-6 mt-10 mb-5 lg:mb-10;
+      }
+
+      .joinBtn {
+        @apply flex justify-center w-full;
+        a {
+          @apply inline-flex items-center justify-center px-5 py-3 border-transparent text-base hover:bg-studion-600 hover:text-white leading-6 rounded-md text-gray-800 bg-transparent focus:outline-none focus:ring border-2 border-studion-600 transition duration-150 ease-in-out md:text-lg md:px-6;
+        }
+      }
+    }
+  }
+}
+
+.infoSection {
+  @apply text-center text-white bg-studion-600 w-screen flex-1;
+
+  article {
+    @apply text-3xl font-medium mb-2;
+
+    h2 {
+      @apply text-3xl font-medium mb-2;
+    }
+
+    h5 {
+      @apply text-xl;
+    }
+  }
+}
+
+.customShapeDividerBottom1640840584 {
+  width: 100vw;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+
+  svg {
+    position: relative;
+    display: block;
+    width: calc(300% + 1.3px);
+    height: 400px;
+    fill: #2f4858;
+  }
+  // background-image: url("data:image/svg+xml,%3Csvg data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none' %3E%3Cpath d='M1200 120L0 16.48 0 0 1200 0 1200 120z' class='shape-fill' fill='%232F4858' fill-opacity='1'%3E%3C/path%3E%3C/svg%3E");
+}
