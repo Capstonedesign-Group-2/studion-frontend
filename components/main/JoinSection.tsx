@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import styles from '../../styles/main/main.module.scss'
 
 const JoinSection = () => {
@@ -15,7 +16,7 @@ const JoinSection = () => {
           </p>
           {/* 시작 버튼 */}
           <div className={styles.joinBtn}>
-            <a href='/'>スタート</a>
+            <Link href="/join"><a>スタート　→</a></Link>
           </div>
         </div>
       </article>

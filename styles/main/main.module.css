@@ -15,7 +15,7 @@
   @apply relative z-10;
 }
 .joinSection article .joinDiv p {
-  @apply text-gray-800 text-xl text-center lg:mt-6 mt-10 mb-5 lg:mb-10;
+  @apply text-gray-800 text-xl text-center lg:mt-8 mt-12 mb-7 lg:mb-12;
 }
 .joinSection article .joinDiv .joinBtn {
   @apply flex justify-center w-full;

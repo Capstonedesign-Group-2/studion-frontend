@@ -1,0 +1,43 @@
+.joinContainer {
+  @apply bg-gray-50 flex flex-col py-12 sm:px-6 lg:px-8 pt-16 min-h-screen;
+}
+.joinContainer h2 {
+  @apply mt-6 text-center text-3xl leading-9 font-bold text-gray-900;
+}
+.joinContainer article {
+  @apply mt-8 sm:mx-auto sm:w-full sm:max-w-md;
+}
+.joinContainer article .errorContainer {
+  @apply rounded-md bg-red-50 p-4 mb-5;
+}
+.joinContainer article .errorContainer .errorMsg {
+  @apply ml-3 flex-1 md:flex md:justify-between;
+}
+.joinContainer article .errorContainer .errorMsg p {
+  @apply text-sm leading-5 text-red-700;
+}
+.joinContainer article .formDiv {
+  @apply bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10;
+}
+.joinContainer article .formDiv label {
+  @apply block text-sm font-semibold leading-5 text-gray-700 mb-1;
+}
+.joinContainer article .formDiv input {
+  @apply appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring focus:ring-studion-400 focus:border-studion-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5;
+}
+.joinContainer article .formDiv button {
+  @apply w-full flex justify-center mt-6 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-studion-300 transition duration-150 ease-in-out hover:bg-studion-200 focus:outline-none focus:border-studion-500 focus:ring  focus:ring-studion-400 active:bg-studion-400;
+}
+.joinContainer .divider {
+  @apply my-10 flex w-full items-center;
+}
+.joinContainer .divider div {
+  @apply flex-1 border-t-2 border-gray-200;
+}
+.joinContainer .divider span {
+  @apply text-sm uppercase mx-5 font-medium text-gray-600;
+}
+.joinContainer .socialContainer {
+  @apply flex flex-col w-full;
+}
+/*# sourceMappingURL=join.module.css.map */

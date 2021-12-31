@@ -4,9 +4,11 @@ import { logIn } from '../actions/user';
 
 interface UsersState {
   isLoggingIn: boolean
-  data: {
+  data?: {
     id: number
     name: string
+    email: string
+    image?: string | null
   } | null | unknown
 }
 
@@ -25,6 +27,8 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+
+    // 로그인
     .addCase(logIn.pending, (state, action) => { // user/logIn/pending
       state.isLoggingIn = true;
     })

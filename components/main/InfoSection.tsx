@@ -19,8 +19,8 @@ const InfoSection = () => {
       <Swiper 
         className={styles.slider}
         slidesPerView={1}
-        speed={1000}
-        autoplay={{ delay: 6000 }}
+        speed={500}
+        autoplay={{ delay: 5500 }}
         effect="fade"
         fadeEffect={{ crossFade: true }}
       >
@@ -49,7 +49,7 @@ const InfoSection = () => {
               </ul>
               <div className='flex justify-end'>
                 <div className={styles.details}>
-                  <a href="/">자세히 보기</a>
+                  <a href="/">자세히 보기 →</a>
                 </div>
               </div>
             </div>
@@ -74,7 +74,7 @@ const InfoSection = () => {
               </ul>
               <div className='flex justify-end'>
                 <div className={styles.details}>
-                  <a href="/">자세히 보기</a>
+                  <a href="/">자세히 보기 →</a>
                 </div>
               </div>
             </div>

@@ -11,10 +11,15 @@
     "@reduxjs/toolkit": "^1.7.1",
     "axios": "^0.24.0",
     "next": "12.0.7",
+    "next-redux-wrapper": "^7.0.5",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-redux": "^7.2.6",
     "styled-components": "^5.3.3",
-    "swiper": "^7.4.1"
+    "sweetalert2": "^11.3.2",
+    "sweetalert2-react-content": "^4.2.0",
+    "swiper": "^7.4.1",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/node": "17.0.5",

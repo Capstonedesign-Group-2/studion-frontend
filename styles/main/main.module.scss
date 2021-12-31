@@ -17,11 +17,12 @@
       @apply relative z-10;
 
       p {
-        @apply text-gray-800 text-xl text-center lg:mt-6 mt-10 mb-5 lg:mb-10;
+        @apply text-gray-800 text-xl text-center lg:mt-8 mt-12 mb-7 lg:mb-12;
       }
 
       .joinBtn {
         @apply flex justify-center w-full;
+
         a {
           @apply inline-flex items-center justify-center px-5 py-3 border-transparent text-base hover:bg-studion-600 hover:text-white leading-6 rounded-md text-gray-800 bg-transparent focus:outline-none focus:ring border-2 border-studion-600 transition duration-150 ease-in-out md:text-lg md:px-6;
           margin-bottom: 14vw;

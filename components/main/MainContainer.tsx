@@ -6,7 +6,7 @@ import InfoSection from './InfoSection'
 const MainContainer = () => {
   return (
     <div className={styles.mainContainer}>
-      <div style={{ width: '100vw', position: 'relative'}}>
+      <div className='relative w-screen'>
         <JoinSection/>
 
         {/* divider */}
