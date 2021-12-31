@@ -3,7 +3,7 @@ import Router from 'next/router'
 import axios from 'axios'
 import * as yup from 'yup'
 
-import styles from '../../styles/join/join.module.scss'
+import styles from '../../styles/auth/auth.module.scss'
 import ErrorMessage from './ErrorMssage'
 import { delay } from '../../actions/user'
 import { joinValidation } from '../../validtions'
@@ -25,9 +25,6 @@ const JoinContainer = () => {
       ...form,
       [name]: value
     })
-    if(password !== confirmPassword) {
-      console.log('not')
-    }
   }
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -71,7 +68,7 @@ const JoinContainer = () => {
   }
 
   return (
-    <div className={styles.joinContainer}>
+    <div className={styles.container}>
       <h2>Join Studion</h2>
       <article>
         <div className={styles.formDiv}>

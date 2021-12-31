@@ -29,8 +29,7 @@ const Header = () => {
 
           <div className={styles.btnContainer}>
             <div className={styles.unAuthBtn}>
-              <button className={styles.loginBtn}>Login</button>
-              
+              <Link href="/login"><a><button className={styles.loginBtn}>Login</button></a></Link>
               <Link href="/join"><a><button className={styles.joinBtn}>Join</button></a></Link>
             </div>
           </div>

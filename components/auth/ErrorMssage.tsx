@@ -1,4 +1,4 @@
-import styles from '../../styles/join/join.module.scss'
+import styles from '../../styles/auth/auth.module.scss'
 
 interface Props {
   errorMsg: string
