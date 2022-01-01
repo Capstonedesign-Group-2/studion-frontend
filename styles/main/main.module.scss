@@ -4,7 +4,7 @@
 }
 
 .joinSection {
-  @apply relative;
+  @apply relative px-4 sm:px-6 lg:px-8;
 
   article {
     @apply mx-auto max-w-screen-xl;
@@ -33,7 +33,7 @@
 }
 
 .infoSection {
-  @apply bottom-60 text-center text-white bg-studion-600 w-screen flex-1;
+  @apply bottom-60 text-center text-white bg-studion-600 w-screen flex-1 px-4 sm:px-6 lg:px-8;
 
   article {
     @apply text-3xl font-medium mb-2;

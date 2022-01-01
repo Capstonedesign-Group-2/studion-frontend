@@ -1,15 +1,20 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Router from 'next/router'
-import axios from 'axios'
 import * as yup from 'yup'
 
 import styles from '../../styles/auth/auth.module.scss'
 import ErrorMessage from './ErrorMssage'
-import { delay } from '../../actions/user'
-import { joinValidation } from '../../validtions'
+import { signUp } from '../../redux/actions/user'
+import { joinValidation } from '../../validations'
 import { Modal, Toast } from '../common/modals'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../../redux/slices'
 
 const JoinContainer = () => {
+  const dispatch = useDispatch()
+  const isSigningUp = useSelector((state: RootState) => state.user.isSigningUP)
+  const signupError = useSelector((state: RootState) => state.user.signupError)
+  const userData = useSelector((state: RootState) => state.user.data)
   const [errorMsg, setErrorMsg] = useState('')
   const [form, setForm] = useState({
     name: '',
@@ -33,8 +38,7 @@ const JoinContainer = () => {
 
     // 유효성 검사
     try {
-      await joinValidation.validate({name, email, password, confirmPassword})
-      // return console.log(validation)
+      await joinValidation.validate(form)
     } catch(err) {
       console.error('Join validation error', err)
       if (err instanceof yup.ValidationError) {
@@ -42,30 +46,35 @@ const JoinContainer = () => {
       }
       return
     }
-    await Modal.fire({
-      title: 'Sign up . . .',
-      showConfirmButton: false,
-      allowOutsideClick: () => !Modal.isLoading(),
-      didOpen: async () => {
-        Modal.showLoading()
-        try { // 회원가입 요청
-          const res = await delay(1000, {name, email})
-          // const result = await axios(`${process.env.BACK_URL}/signup`)
-          console.log(res)
-          Modal.close()
-          Toast.fire({
-            icon: 'success',
-            title: 'Signed up successfully'
-          })
-          Router.push('/')
-        } catch(err) { // 회원가입 실패
-          if(axios.isAxiosError(err)) {
-            console.error('Sign up axios error', err.response?.data)
-          }
-        }
-      },
-    })
+    dispatch(signUp(form))
   }
+
+  // 회원가입 로딩
+  useEffect(() => {
+    if(isSigningUp) {
+      Modal.fire({
+        title: 'Sign up . . .',
+        showConfirmButton: false,
+        allowOutsideClick: () => !Modal.isLoading(),
+        didOpen: async () => Modal.showLoading(),
+      })
+    } else {
+      Modal.close()
+    }
+  }, [isSigningUp])
+
+  // 회원가입 성공 / 실패
+  useEffect(() => {
+    if(userData) {
+      Toast.fire({
+        icon: 'success',
+        title: 'Signed up successfully'
+      })
+      Router.push('/')
+    } else if (signupError) {
+      setErrorMsg(signupError)
+    }
+  }, [userData, signupError])
 
   return (
     <div className={styles.container}>

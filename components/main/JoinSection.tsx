@@ -1,7 +1,11 @@
 import Link from 'next/link'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/slices'
 import styles from '../../styles/main/main.module.scss'
 
 const JoinSection = () => {
+  const userData = useSelector((state: RootState) => state.user.data)
+
   return (
     <section className={styles.joinSection}>
       <article>
@@ -16,7 +20,10 @@ const JoinSection = () => {
           </p>
           {/* 시작 버튼 */}
           <div className={styles.joinBtn}>
-            <Link href="/join"><a>スタート　→</a></Link>
+            {userData
+              ? <Link href="/"><a>ルームリスト　→</a></Link>
+              : <Link href="/join"><a>スタート　→</a></Link>
+            }
           </div>
         </div>
       </article>

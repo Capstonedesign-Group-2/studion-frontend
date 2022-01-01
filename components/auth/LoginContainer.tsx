@@ -1,15 +1,20 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import Router from 'next/router'
-import axios from 'axios'
 import * as yup from 'yup'
 
 import styles from '../../styles/auth/auth.module.scss'
 import ErrorMessage from './ErrorMssage'
-import { delay } from '../../actions/user'
-import { loginValidation } from '../../validtions'
+import { logIn } from '../../redux/actions/user'
+import { loginValidation } from '../../validations'
 import { Modal, Toast } from '../common/modals'
+import { RootState } from '../../redux/slices'
 
 const LoginContainer = () => {
+  const dispatch = useDispatch()
+  const isLoggingIn = useSelector((state: RootState) => state.user.isLoggingIn)
+  const userData = useSelector((state: RootState) => state.user.data)
+  const loginError = useSelector((state: RootState) => state.user.loginError)
   const [errorMsg, setErrorMsg] = useState('')
   const [form, setForm] = useState({
     email: '',
@@ -32,7 +37,6 @@ const LoginContainer = () => {
     // 유효성 검사
     try {
       await loginValidation.validate({ email, password })
-      // return console.log(validation)
     } catch(err) {
       console.error('Join validation error', err)
       if (err instanceof yup.ValidationError) {
@@ -40,30 +44,35 @@ const LoginContainer = () => {
       }
       return
     }
-    await Modal.fire({
-      title: 'Log in . . .',
-      showConfirmButton: false,
-      allowOutsideClick: () => !Modal.isLoading(),
-      didOpen: async () => {
-        Modal.showLoading()
-        try { // 로그인 요청
-          const res = await delay(1000, { email, password })
-          // const result = await axios(`${process.env.BACK_URL}/signup`)
-          console.log(res)
-          Modal.close()
-          Toast.fire({
-            icon: 'success',
-            title: 'Logged in successfully'
-          })
-          Router.push('/')
-        } catch(err) { // 로그인 실패
-          if(axios.isAxiosError(err)) {
-            console.error('Log in axios error', err.response?.data)
-          }
-        }
-      },
-    })
+    dispatch(logIn({ email, password }))
   }
+
+  // 로그인 로딩
+  useEffect(() => {
+    if(isLoggingIn) {
+      Modal.fire({
+        title: 'Log in . . .',
+        showConfirmButton: false,
+        allowOutsideClick: () => !Modal.isLoading(),
+        didOpen: () => Modal.showLoading(),
+      })
+    } else {
+      Modal.close()
+    }
+  }, [isLoggingIn])
+
+  // 로그인 성공 / 실패
+  useEffect(() => {
+    if(userData) {
+        Toast.fire({
+          icon: 'success',
+          title: 'Logged in successfully'
+        })
+        Router.push('/')
+    } else if (loginError) {
+      setErrorMsg(loginError)
+    }
+  }, [userData, loginError])
 
   return (
     <div className={styles.container}>

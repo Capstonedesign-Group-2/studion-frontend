@@ -36,6 +36,27 @@
 .header .nav .btnContainer .unAuthBtn .joinBtn {
   @apply px-8 py-2 bg-studion-300 text-white rounded-md hover:bg-studion-200 hover:text-white;
 }
+.header .nav .btnContainer .authBtn {
+  @apply ml-3 relative flex items-center;
+}
+.header .nav .btnContainer .authBtn button {
+  @apply flex text-gray-50 text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out;
+}
+.header .nav .btnContainer .authBtn button .userImage {
+  @apply h-8 w-8 rounded-full;
+}
+.header .nav .btnContainer .authBtn button .userIntial {
+  @apply flex justify-center items-center h-8 w-8 bg-studion-300 rounded-full text-center;
+}
+.header .nav .btnContainer .authBtn .userOption {
+  @apply border-2 border-gray-100 origin-top-right absolute right-0 top-12 mt-1 w-48 rounded-md shadow-lg;
+}
+.header .nav .btnContainer .authBtn .userOption .optionList {
+  @apply py-1 rounded-md bg-white ring-1 ring-black ring-opacity-5;
+}
+.header .nav .btnContainer .authBtn .userOption .optionList a {
+  @apply block px-4 py-2 text-sm leading-5 text-gray-700 hover:cursor-pointer hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out;
+}
 .header .nav .logo {
   @apply flex inset-y-0 items-center;
 }

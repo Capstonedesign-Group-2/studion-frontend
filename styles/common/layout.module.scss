@@ -50,6 +50,34 @@
           @apply px-8 py-2 bg-studion-300 text-white rounded-md hover:bg-studion-200 hover:text-white;
         }
       }
+
+      .authBtn {
+        @apply ml-3 relative flex items-center;
+
+        button {
+          @apply flex text-gray-50 text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out;
+
+          .userImage {
+            @apply h-8 w-8 rounded-full;
+          }
+
+          .userIntial {
+            @apply flex justify-center items-center h-8 w-8 bg-studion-300 rounded-full text-center;
+          }
+        }
+
+        .userOption {
+          @apply border-2 border-gray-100 origin-top-right absolute right-0 top-12 mt-1 w-48 rounded-md shadow-lg;
+
+          .optionList {
+            @apply py-1 rounded-md bg-white ring-1 ring-black ring-opacity-5;
+
+            a {
+              @apply block px-4 py-2 text-sm leading-5 text-gray-700 hover:cursor-pointer hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out;
+            }
+          }
+        }
+      }
     }
 
     .logo {
