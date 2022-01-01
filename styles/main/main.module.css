@@ -1,5 +1,5 @@
 .mainContainer {
-  @apply flex flex-col mb-32 md:mb-40 items-center justify-center min-h-screen;
+  @apply flex flex-col mb-32 md:mb-40 items-center justify-center min-h-screen bg-gray-50;
 }
 
 .joinSection {
@@ -21,7 +21,7 @@
   @apply flex justify-center w-full;
 }
 .joinSection article .joinDiv .joinBtn a {
-  @apply inline-flex items-center justify-center px-5 py-3 border-transparent text-base hover:bg-studion-600 hover:text-white leading-6 rounded-md text-gray-800 bg-transparent focus:outline-none focus:ring border-2 border-studion-600 transition duration-150 ease-in-out md:text-lg md:px-6;
+  @apply inline-flex items-center justify-center px-5 py-3 border-transparent text-base hover:bg-studion-600 hover:text-white leading-6 rounded-md text-gray-800 bg-transparent border-2 border-studion-600 transition duration-150 ease-in-out md:text-lg md:px-6;
   margin-bottom: 14vw;
 }
 

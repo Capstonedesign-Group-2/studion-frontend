@@ -46,7 +46,7 @@
   @apply h-8 w-8 rounded-full;
 }
 .header .nav .btnContainer .authBtn button .userIntial {
-  @apply flex justify-center items-center h-8 w-8 bg-studion-300 rounded-full text-center;
+  @apply flex justify-center items-center h-8 w-8 bg-studion-400 rounded-full text-center;
 }
 .header .nav .btnContainer .authBtn .userOption {
   @apply border-2 border-gray-100 origin-top-right absolute right-0 top-12 mt-1 w-48 rounded-md shadow-lg;
@@ -62,7 +62,7 @@
 }
 
 .footerContainer {
-  @apply bg-white mt-20;
+  @apply mt-20;
 }
 
 .footer {

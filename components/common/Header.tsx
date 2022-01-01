@@ -25,9 +25,9 @@ const Header = () => {
             </Link>
           </div>
           
-          {router.pathname === '/' &&
+          {!(router.pathname === '/login' || router.pathname === '/join') &&
             <div className={styles.link}>
-              <a href="">バンドルーム</a>
+              <Link href="/play"><a>バンドルーム</a></Link>
               <a href="">録音リレー</a>
               <a href="">コミュニティ</a>
             </div>

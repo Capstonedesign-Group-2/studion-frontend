@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux"
 
 import styles from '../../styles/common/layout.module.scss'
 import userSlice from '../../redux/slices/user'
-import Router from "next/router"
 
 interface Props {
   menu: boolean

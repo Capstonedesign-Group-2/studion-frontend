@@ -21,7 +21,7 @@ const JoinSection = () => {
           {/* 시작 버튼 */}
           <div className={styles.joinBtn}>
             {userData
-              ? <Link href="/"><a>ルームリスト　→</a></Link>
+              ? <Link href="/play"><a>ルームリスト　→</a></Link>
               : <Link href="/join"><a>スタート　→</a></Link>
             }
           </div>

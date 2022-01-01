@@ -62,7 +62,7 @@
           }
 
           .userIntial {
-            @apply flex justify-center items-center h-8 w-8 bg-studion-300 rounded-full text-center;
+            @apply flex justify-center items-center h-8 w-8 bg-studion-400 rounded-full text-center;
           }
         }
 
@@ -90,7 +90,7 @@
 // Footer
 // ---------------------------------------------------
 .footerContainer {
-  @apply bg-white mt-20;
+  @apply mt-20;
 }
 
 .footer {

@@ -2,8 +2,9 @@
 
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 * {
-  font-family: "M PLUS 1p", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, "M PLUS 1p",
+    sans-serif;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
