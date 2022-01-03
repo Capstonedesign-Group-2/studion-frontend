@@ -3,7 +3,7 @@ import Router from 'next/router'
 import * as yup from 'yup'
 
 import styles from '../../styles/auth/auth.module.scss'
-import ErrorMessage from './ErrorMssage'
+import ErrorMessage from '../common/ErrorMssage'
 import { signUp } from '../../redux/actions/user'
 import { joinValidation } from '../../validations'
 import { Modal, Toast } from '../common/modals'

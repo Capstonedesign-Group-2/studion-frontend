@@ -4,7 +4,7 @@ import Router from 'next/router'
 import * as yup from 'yup'
 
 import styles from '../../styles/auth/auth.module.scss'
-import ErrorMessage from './ErrorMssage'
+import ErrorMessage from '../common/ErrorMssage'
 import { logIn } from '../../redux/actions/user'
 import { loginValidation } from '../../validations'
 import { Modal, Toast } from '../common/modals'
@@ -36,7 +36,7 @@ const LoginContainer = () => {
 
     // 유효성 검사
     try {
-      await loginValidation.validate({ email, password })
+      await loginValidation.validate(form)
     } catch(err) {
       console.error('Join validation error', err)
       if (err instanceof yup.ValidationError) {
@@ -44,7 +44,7 @@ const LoginContainer = () => {
       }
       return
     }
-    dispatch(logIn({ email, password }))
+    dispatch(logIn(form))
   }
 
   // 로그인 로딩

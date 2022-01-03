@@ -1,0 +1,18 @@
+.createForm {
+  @apply flex flex-col gap-4;
+}
+.createForm input,
+.createForm textarea {
+  @apply px-3 py-2 text-base border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:border-studion-400 transition duration-150 ease-in-out;
+}
+
+.showRoom {
+  @apply flex flex-col gap-4;
+}
+.showRoom p {
+  @apply px-3 py-2 text-base border border-studion-400 rounded-md;
+}
+.showRoom button {
+  @apply mb-2 px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 active:bg-studion-500 transition ease-in-out duration-150;
+}
+/*# sourceMappingURL=play.module.css.map */

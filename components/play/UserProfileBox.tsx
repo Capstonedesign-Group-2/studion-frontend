@@ -1,14 +1,16 @@
 import Image from "next/image"
 import { useSelector } from "react-redux"
+
 import { RootState } from "../../redux/slices"
+import CreateBtn from "./CreateBtn"
 
 const UserProfileBox = () => {
   const userData = useSelector((state: RootState) => state.user.data)
-
+  
   if(!userData) return null
   
   return (
-    <div className="flex flex-col items-center xl:flex-row justify-between xl:items-start">
+    <div className="flex flex-col items-center xl:flex-row justify-between xl:items-end">
       <div className="w-full md:w-1/2">
         <div className="bg-white shadow-md rounded-md p-5 max-w-screen-sm w-full">
           <div className="flex flex-col items-center md:items-start md:flex-row">
@@ -26,7 +28,7 @@ const UserProfileBox = () => {
                   Name
                 </span>
                 <h3 className="font-medium text-3xl leading-8">
-                  Dong
+                  {userData.name}
                 </h3>
               </div>
               <div className="items-center grid grid-cols-2 mt-1">
@@ -49,12 +51,13 @@ const UserProfileBox = () => {
             <a className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
               Edit profile
             </a>
-            <a className="ml-3 inline-flex w-full justify-center items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 focus:outline-none focus:border-studion-700 focus:ring focus:ring-studion-400 active:bg-studion-700 transition ease-in-out duration-150">
+            <a className="ml-3 inline-flex w-full justify-center items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 active:bg-studion-500 transition ease-in-out duration-150">
               See profile
             </a>
           </div>
         </div>
       </div>
+      <CreateBtn/>
     </div>
   )
 }

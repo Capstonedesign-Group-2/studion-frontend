@@ -1,6 +1,34 @@
+import React from "react"
+
+import { Modal } from "../common/modals"
+import styles from '../../styles/play/play.module.scss'
+
 const RoomBox = () => {
+  const onShowRoom = () => {
+    Modal.fire({
+      title: <p>new room</p>,
+      html: (
+        <div className={styles.showRoom}>
+          <p>参加者：３名</p>
+          <p>dong / ppang / jun</p>
+          <p className="text-left break-all">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae non vitae in inventore ratione magnam beatae asperiores fugit? Sint, debitis. Esse molestiae omnis laboriosam distinctio nam animi facilis sapiente ratione.</p>
+          <button>入場</button>
+        </div>
+      ),
+      showConfirmButton: false,
+    })
+  }
+
+  const onEnterRoom = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // 비밀번호가 있으면 체크
+
+
+  }
+
   return (
-    <div className="flex flex-col relative rounded-lg items-center group hover:cursor-pointer">
+    <div className="flex flex-col relative rounded-lg items-center group hover:cursor-pointer"
+      onClick={onShowRoom}
+    >
       <span className="absolute top-3 left-3 inline-flex items-center px-3 py-0.5 z-10 rounded-full text-sm font-medium leading-5 bg-white text-studion-600 shadow">
         Locked
       </span>

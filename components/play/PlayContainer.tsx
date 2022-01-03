@@ -1,5 +1,5 @@
 import UserProfileBox from "./UserProfileBox"
-import RoomContainer from './RoomContainer'
+import RoomList from './RoomList'
 
 const PlayContainer = () => {
   return (
@@ -11,7 +11,7 @@ const PlayContainer = () => {
               ルームリスト
             </h2>
             <UserProfileBox/>
-            <RoomContainer/>
+            <RoomList/>
           </div>
         </div>
       </div>
