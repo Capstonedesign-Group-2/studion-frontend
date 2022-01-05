@@ -1,10 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import http from '../../http'
+import cookie from 'react-cookies'
 
 export interface UserData {
   id: number
   name: string
   email: string
-  image?: string | null
+  image: string | null
+  created_at: string
+  updated_at: string
 }
 
 interface LoginData {
@@ -22,25 +26,52 @@ export const delay = (time: number, value: any) => new Promise((resolve, reject)
   }, time)
 })
 
-export const logIn = createAsyncThunk<UserData, LoginData>(
+export const logIn = createAsyncThunk<string, LoginData>(
   'user/logIn',
   async (data, thunkAPI) => {
     console.log('Action data', data)
-    const result = await delay(1000, data)
-    throw new Error('로그인에 실패하였습니다!')
-    return result as UserData
+    const response = await http.post('/users/login', data)
+    const accessToken = response.data.access_token
+    cookie.save('accessToken', accessToken, {
+      path: '/',
+    })
+    return accessToken as string
   }
 )
 
-export const signUp = createAsyncThunk<UserData, SignUpData>(
+export const logOut = createAsyncThunk(
+  'user/logOut',
+  async (data, thunkAPI) => {
+    await http.get('/users/logout')
+    cookie.remove('accessToken')
+  }
+)
+
+export const signUp = createAsyncThunk<string, SignUpData>(
   'user/signUp',
   async (data, thunkAPI) => {
     console.log('Action data', data)
-    const result = await delay(1000, {
-      id: 1,
-      name: 'dong',
-      email: 'lizill@naver.com',
+    const response = await http.post('/users/register', data)
+    const accessToken = response.data.access_token
+    cookie.save('accessToken', accessToken, {
+      path: '/',
     })
-    return result as UserData
+    return accessToken as string
+  }
+)
+
+export const getUser = createAsyncThunk<UserData>(
+  'user/getInfo',
+  async (data, thunkAPI) => {
+    const res = await http.get('/users/user')
+    return res.data
+  }
+)
+
+export const refresh = createAsyncThunk<string>(
+  'user/getInfo',
+  async (data, thunkAPI) => {
+    const res = await http.get('/users/refresh')
+    return res.data.access_token
   }
 )

@@ -20,9 +20,9 @@ const JoinContainer = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    password_confirmation: ''
   })
-  const { name, email, password, confirmPassword } = form
+  const { name, email, password, password_confirmation } = form
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -98,8 +98,8 @@ const JoinContainer = () => {
             <input id='password' name='password' type="password" value={password} onChange={onChange}/>
 
             {/* 비밀번호 확인 */}
-            <label htmlFor="confirmPassword" className='mt-4'>Confirm Password</label>
-            <input id='confirmPassword' name='confirmPassword' type="password" value={confirmPassword} onChange={onChange}/>
+            <label htmlFor="password_confirmation" className='mt-4'>Confirm Password</label>
+            <input id='password_confirmation' name='password_confirmation' type="password" value={password_confirmation} onChange={onChange}/>
 
             <button type='submit'>Create Account</button>
           </form>

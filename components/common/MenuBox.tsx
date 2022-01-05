@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from "react"
 import { useDispatch } from "react-redux"
 
 import styles from '../../styles/common/layout.module.scss'
-import userSlice from '../../redux/slices/user'
+import { logOut } from "../../redux/actions/user"
 
 interface Props {
   menu: boolean
@@ -14,7 +14,7 @@ const MenuBox = ({ menu, setMenu }: Props) => {
   const menuRef = useRef<HTMLDivElement>(null)
 
   const onLogout = useCallback(() => {
-    dispatch(userSlice.actions.logOut())
+    dispatch(logOut())
   }, [])
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const MenuBox = ({ menu, setMenu }: Props) => {
         <a onClick={onLogout}>Log Out</a>
       </div>
     </div>
-  )  
+  )
 }
 
 export default MenuBox

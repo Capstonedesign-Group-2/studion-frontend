@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useSelector } from 'react-redux'
+
 import { RootState } from '../../redux/slices'
 import styles from '../../styles/main/main.module.scss'
 

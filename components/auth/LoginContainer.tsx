@@ -13,7 +13,7 @@ import { RootState } from '../../redux/slices'
 const LoginContainer = () => {
   const dispatch = useDispatch()
   const isLoggingIn = useSelector((state: RootState) => state.user.isLoggingIn)
-  const userData = useSelector((state: RootState) => state.user.data)
+  const isLogin = useSelector((state: RootState) => state.user.isLogin)
   const loginError = useSelector((state: RootState) => state.user.loginError)
   const [errorMsg, setErrorMsg] = useState('')
   const [form, setForm] = useState({
@@ -54,6 +54,7 @@ const LoginContainer = () => {
         title: 'Log in . . .',
         showConfirmButton: false,
         allowOutsideClick: () => !Modal.isLoading(),
+        backdrop: true,
         didOpen: () => Modal.showLoading(),
       })
     } else {
@@ -63,7 +64,7 @@ const LoginContainer = () => {
 
   // 로그인 성공 / 실패
   useEffect(() => {
-    if(userData) {
+    if(isLogin) {
         Toast.fire({
           icon: 'success',
           title: 'Logged in successfully'
@@ -72,7 +73,7 @@ const LoginContainer = () => {
     } else if (loginError) {
       setErrorMsg(loginError)
     }
-  }, [userData, loginError])
+  }, [isLogin, loginError])
 
   return (
     <div className={styles.container}>
