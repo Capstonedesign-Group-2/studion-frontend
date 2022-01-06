@@ -1,7 +1,9 @@
 const PlayerSection = () => {
   return (
     <div>
-      player
+      <h3 className="text-xl font-medium mb-5">
+        # Player List
+      </h3>
     </div>
   )
 }

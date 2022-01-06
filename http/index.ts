@@ -21,4 +21,17 @@ http.interceptors.request.use(
   }
 )
 
+http.interceptors.response.use(
+  (config: AxiosRequestConfig) => {
+    return config
+  },
+  error => {
+    console.log(error.response.status)
+    if(error.response.status === 401) {
+      
+    }
+    Promise.reject(error)
+  }
+)
+
 export default http
