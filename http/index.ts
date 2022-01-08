@@ -26,9 +26,9 @@ http.interceptors.response.use(
     return config
   },
   error => {
-    console.log(error.response.status)
     if(error.response.status === 401) {
-      
+      cookie.remove('accessToken')
+      throw new Error('401')
     }
     Promise.reject(error)
   }

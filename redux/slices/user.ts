@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import cookie from 'react-cookies';
 
 import { getUser, logIn, logOut, signUp } from '../actions/user'
 import { UserData } from '../actions/user';

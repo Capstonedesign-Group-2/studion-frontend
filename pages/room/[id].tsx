@@ -12,10 +12,10 @@ const Room = () => {
   return (
     <div className="bg-gray-50 min-w-screen min-h-screen">
       <RoomHeader/>
-      <div className="xl:mr-96">
+      <div className="pt-12 xl:mr-96">
         <RoomContainer/>
       </div>
-      <div className="fixed hidden top-12 right-0 xl:flex flex-col shadow-md w-96">
+      <div className="fixed hidden bg-gray-200 top-12 right-0 xl:flex flex-col shadow-md w-96">
         <MyInfoSection/>
         <div className="md:px-4 w-full pt-7 min-h-screen">
           <ChatSection/>

@@ -1,6 +1,4 @@
-import ChatSection from "./menu/ChatSection"
 import KeyInstSection from "./inst/KeyInstSeciton"
-import MyInfoSection from "./menu/MyInfoSection"
 import PlayerSection from "./player/PlayerSection"
 
 const RoomContainer = () => {
