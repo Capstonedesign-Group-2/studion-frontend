@@ -6,7 +6,7 @@ const CreateBtn = () => {
     Modal.fire({
       title: <p>Create New Room</p>,
       html: (
-        <CreateForm Modal={Modal}/>
+        <CreateForm Modal={Modal} />
       ),
       showConfirmButton: false,
     })

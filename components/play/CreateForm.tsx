@@ -1,11 +1,17 @@
+import Router from "next/router"
 import { useState } from "react"
+import { useSelector } from "react-redux"
 import * as yup from 'yup'
+import http from "../../http"
+import { RootState } from "../../redux/slices"
+import wrapper from "../../redux/store"
 
 import styles from '../../styles/play/play.module.scss'
 import { createRoomValidation } from "../../validations"
 import ErrorMessage from "../common/ErrorMssage"
 
 const CreateForm = ({ Modal }: { Modal: any }) => {
+  const userData = useSelector((state: RootState) => state.user.data)
   const [errorMsg, setErrorMsg] = useState('')
   const [form, setForm] = useState({
     title: '',
@@ -28,7 +34,22 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
 
     // 유효성 검사
     try {
+      Modal.showLoading()
       await createRoomValidation.validate(form)
+
+      const payload = {
+        title: form.title,
+        creater: userData?.id,
+        content: form.roomInfo,
+        max: 4,
+        locked: form.password ? 1 : 0,
+      }
+
+      const res = await http.post('/rooms/create', payload)
+      console.log(res.data)
+      const roomId = res.data.room.id
+      Router.push(`/room/${roomId}`)
+
       Modal.close()
     } catch(err) {
       console.error('Join validation error', err)
@@ -60,4 +81,4 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
   )
 }
 
-export default CreateForm
+export default wrapper.withRedux(CreateForm)
