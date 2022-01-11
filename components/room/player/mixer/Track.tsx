@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { VolumeSlider } from './VolumeSlider'
 
 const Track = () => {
-  const [valume, setValume] = useState<number>(70)
+  const [valume, setValume] = useState<number>(100)
 
   const handleValumeChange = (event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
@@ -56,6 +56,7 @@ const Track = () => {
           valueLabelDisplay="auto"
           aria-label="valume slider"
           value={valume}
+          max={120}
           orientation="vertical"
           onChange={handleValumeChange}
         />

@@ -1,4 +1,7 @@
+import { useState } from "react"
+
 import InstBtn from "./InstBtn"
+import Drum from "./drum"
 
 const Instlist = [
   { id: 1, type: 'vocal' },
@@ -9,6 +12,8 @@ const Instlist = [
 ]
 
 const KeyInstSection = () => {
+  const [inst, setInst] = useState<string>()
+
   return (
     <div>
       <h3 className="text-xl font-medium mb-5">
@@ -16,9 +21,10 @@ const KeyInstSection = () => {
       </h3>
       <div className="grid grid-cols-5 gap-4 mt-4">
         {Instlist.map(v => (
-          <InstBtn key={v.id} type={v.type}/>
+          <InstBtn key={v.id} type={v.type} setInst={setInst}/>
         ))}
       </div>
+      {inst === 'drum' && <Drum/>}
     </div>
   )
 }

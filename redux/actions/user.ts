@@ -1,15 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import http from '../../http'
 import cookie from 'react-cookies'
 
-export interface UserData {
-  id: number
-  name: string
-  email: string
-  image: string | null
-  created_at: string
-  updated_at: string
-}
+import http from '../../http'
+import { User } from '../slices/user'
 
 interface LoginData {
   email: string
@@ -60,7 +53,7 @@ export const signUp = createAsyncThunk<string, SignUpData>(
   }
 )
 
-export const getUser = createAsyncThunk<UserData>(
+export const getUser = createAsyncThunk<User>(
   'user/getInfo',
   async (data, thunkAPI) => {
     const res = await http.get('/users/user')

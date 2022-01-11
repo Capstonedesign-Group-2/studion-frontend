@@ -1,12 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit'
-import cookie from 'react-cookies';
 
 import { getUser, logIn, logOut, signUp } from '../actions/user'
-import { UserData } from '../actions/user';
+
+export interface User {
+  id: number
+  name: string
+  email: string
+  image: string | null
+  created_at: string
+  updated_at: string
+}
 
 interface UsersState {
   isLogin: string | null
-  data: UserData | null
+  data: User | null
 
   isLoggingIn: boolean
   loginError?: string | null

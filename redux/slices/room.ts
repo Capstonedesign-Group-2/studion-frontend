@@ -1,5 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit'
+
 import { getRoomList } from '../actions/room';
+import { User } from './user';
+
+interface UserInRoom {
+  id: number
+  user_id: string
+  room_id: string
+  chat_room_id: string | null
+  flag: string
+  user: User
+}
 
 export interface Room {
   id: number
@@ -8,6 +19,7 @@ export interface Room {
   content: string
   max: number
   locked: string
+  users: UserInRoom[]
 }
 
 interface RoomsState {

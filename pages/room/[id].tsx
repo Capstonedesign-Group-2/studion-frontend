@@ -1,5 +1,7 @@
 import axios from "axios"
 import cookies from "next-cookies"
+import Router from "next/router"
+import { useEffect } from "react"
 
 import ChatSection from "../../components/room/menu/ChatSection"
 import MyInfoSection from "../../components/room/menu/MyInfoSection"
@@ -9,6 +11,19 @@ import { getUser } from "../../redux/actions/user"
 import wrapper from "../../redux/store"
 
 const Room = () => {
+  const handleRouteChange = () => {
+    console.log('leave room')
+  }
+
+	useEffect(() => {
+		// 뒤로가기 등 페이지 이동시 연결해제
+		Router.events.on('routeChangeStart', handleRouteChange);
+
+		return () => {
+			Router.events.off('routeChangeStart', handleRouteChange);
+		}
+	}, []);
+
   return (
     <div className="bg-gray-50 min-w-screen min-h-screen">
       <RoomHeader/>
