@@ -1,13 +1,23 @@
+import { useCallback } from "react"
+
 interface Props {
   type: string
-  setInst: React.Dispatch<React.SetStateAction<string | undefined>>
+  inst: string
+  setInst: React.Dispatch<React.SetStateAction<string>>
 }
 
-const InstBtn = ({ type, setInst }: Props) => {
+const InstBtn = ({ type, inst, setInst }: Props) => {
+  const selectInst = useCallback(() => {
+    if(inst === type) {
+      setInst('')
+    } else {
+      setInst(type)
+    }
+  }, [inst, type])
 
   return (
     <div className="flex flex-col relative rounded-lg items-center group hover:cursor-pointer"
-      onClick={() => setInst(type)}
+      onClick={selectInst}
     >
       <div className="bg-studion-600 overflow-hidden aspect-video relative rounded-lg w-full shadow-lg">
         <span className="flex justify-center items-center">

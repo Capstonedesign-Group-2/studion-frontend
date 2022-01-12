@@ -2,8 +2,8 @@ import Pad from "./Pad"
 
 const Drum = () => {
   return (
-    <div>
-      <div>
+    <div className="flex justify-center mt-12 mb-24">
+      <div className="grid grid-cols-3 gap-6">
         {DATA && DATA.map(pad => (
           <Pad key={pad.id} pad={pad} volume={80}/>  
         ))}
@@ -60,4 +60,4 @@ const DATA = [
     id: 'Shaker',
     url: 'https://s3.amazonaws.com/freecodecamp/drums/Give_us_a_light.mp3'
   },
-];
+]

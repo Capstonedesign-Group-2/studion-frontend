@@ -12,7 +12,7 @@ const Instlist = [
 ]
 
 const KeyInstSection = () => {
-  const [inst, setInst] = useState<string>()
+  const [inst, setInst] = useState<string>('')
 
   return (
     <div>
@@ -21,7 +21,7 @@ const KeyInstSection = () => {
       </h3>
       <div className="grid grid-cols-5 gap-4 mt-4">
         {Instlist.map(v => (
-          <InstBtn key={v.id} type={v.type} setInst={setInst}/>
+          <InstBtn key={v.id} type={v.type} inst={inst} setInst={setInst}/>
         ))}
       </div>
       {inst === 'drum' && <Drum/>}

@@ -1,16 +1,35 @@
 import Box from '@mui/material/Box'
-import { useState } from "react"
+import { useCallback, useState } from "react"
 
 import { VolumeSlider } from "./VolumeSlider"
 
 const MasterTrack = () => {
   const [valume, setValume] = useState<number>(100)
+  const [mute, setMute] = useState<boolean>(false)
 
-  const handleValumeChange = (event: Event, newValue: number | number[]) => {
+  const onMute = useCallback(() => {
+    setMute(!mute)
+  }, [mute])
+
+  const setMuteStyle = useCallback(() => {
+    let setColor = '#f87171'
+
+    if (mute) {
+      setColor = '#a1a1aa'
+    }
+
+    return {
+      color: setColor,
+      textShadow: mute ? '' : `${setColor} 1px 0 8px`,
+      borderColor: setColor
+    }
+  }, [mute])
+
+  const handleValumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
       setValume(newValue);
     }
-  };
+  }, [])
 
   return (
     <div className="bg-gray-600 h-full flex flex-col-reverse items-center gap-4 py-4 px-2">
@@ -43,8 +62,10 @@ const MasterTrack = () => {
       </div>
 
       {/* Mute 버튼 */}
-      <button>
-        <div className="text-sm mt-2 px-4 py-2 border-2 border-red-400 text-red-400 shadow">
+      <button onClick={onMute}>
+        <div className="text-sm mt-2 px-4 py-2 border-2 border-red-400 text-red-400 shadow"
+          style={setMuteStyle()}
+        >
           On
         </div>
       </button>

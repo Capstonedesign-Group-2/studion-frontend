@@ -1,16 +1,40 @@
 import Box from '@mui/material/Box'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 
 import { VolumeSlider } from './VolumeSlider'
 
 const Track = () => {
   const [valume, setValume] = useState<number>(100)
+  const [solo, setSolo] = useState<boolean>(false)
+  const [mute, setMute] = useState<boolean>(false)
 
-  const handleValumeChange = (event: Event, newValue: number | number[]) => {
+  const onSolo = useCallback(() => {
+    setSolo(!solo)
+  }, [solo])
+
+  const onMute = useCallback(() => {
+    setMute(!mute)
+  }, [mute])
+
+  const setMuteStyle = useCallback(() => {
+    let setColor = '#34D399'
+
+    if (mute) {
+      setColor = '#a1a1aa'
+    }
+
+    return {
+      color: setColor,
+      textShadow: mute ? '' : `${setColor} 1px 0 8px`,
+      borderColor: setColor
+    }
+  }, [mute])
+
+  const handleValumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
       setValume(newValue);
     }
-  };
+  }, [])
 
   return (
     <div className="bg-gray-600 flex flex-col gap-4 py-4 px-2 items-center">
@@ -25,25 +49,31 @@ const Track = () => {
       </div>
 
       {/* Solo 버튼 */}
-      <div>
-        <p className="text-white text-sm text-center">
+      <div className='flex flex-col' onClick={onSolo}>
+        <label htmlFor='soloeBtn' className="text-white text-sm text-center hover:cursor-pointer"
+          style={{ color: solo ? 'white' : '#a1a1aa' }}
+        >
           SOLO
-        </p>
+        </label>
         <button
         >
-          <div className="bg-gray-300 h-5 w-12 border-b-4 border-studion-100 shadow"></div>
+          <div className="bg-gray-300 h-5 w-12 border-b-4 border-studion-100 shadow"
+            style={{ borderColor: solo ? '' : '#a1a1aa' }} id='soloeBtn'
+          ></div>
         </button>
       </div>
 
       {/* Mute 버튼 */}
-      <button>
-        <div className="text-sm mt-2 px-4 py-2 border-2 border-studion-100 text-studion-100 shadow">
+      <button onClick={onMute}>
+        <div className="text-sm mt-2 px-4 py-2 border-2 shadow"
+          style={setMuteStyle()}
+        >
           ON
         </div>
       </button>
 
       {/* 악기 포지션 */}
-      <div className="px-3 mt-4 text-sm rounded bg-gray-200">
+      <div className="px-3 mt-4 text-sm rounded bg-gray-300">
         guitar
       </div>
 
