@@ -1,12 +1,14 @@
+import Image from "next/image"
 import { useCallback } from "react"
 
 interface Props {
   type: string
   inst: string
+  imgPath: string
   setInst: React.Dispatch<React.SetStateAction<string>>
 }
 
-const InstBtn = ({ type, inst, setInst }: Props) => {
+const InstBtn = ({ type, inst, imgPath, setInst }: Props) => {
   const selectInst = useCallback(() => {
     if(inst === type) {
       setInst('')
@@ -20,8 +22,9 @@ const InstBtn = ({ type, inst, setInst }: Props) => {
       onClick={selectInst}
     >
       <div className="bg-studion-600 overflow-hidden aspect-video relative rounded-lg w-full shadow-lg">
-        <span className="flex justify-center items-center">
-          <div className="text-white text-3xl md:text-2xl group-hover:scale-125 duration-150 -translate-y-4 ">
+        <span className="flex justify-center items-center h-full">
+          <div className="w-9/12 aspect-video group-hover:scale-110 duration-150 -translate-y-4">
+            <Image src={imgPath} alt="inst image" layout="fill"></Image>
           </div>
         </span>
       </div>

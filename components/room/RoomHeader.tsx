@@ -1,4 +1,9 @@
-const RoomHeader = () => {
+interface Props {
+  menu: boolean
+  setMenu: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const RoomHeader = ({setMenu, menu}: Props) => {
   return (
     <header className="bg-studion-600 z-10 fixed w-full h-14 py-2 shadow-md px-4 xl:pl-16 flex justify-between items-center">
       <a href="/play">
@@ -9,7 +14,7 @@ const RoomHeader = () => {
       <div className="text-gray-100 text-2xl">
         New Room
       </div>
-      <button className="bg-gray-100 rounded-full px-4">
+      <button onClick={() => setMenu(!menu)} className="bg-gray-100 rounded-full px-4">
         Menu
       </button>
     </header>

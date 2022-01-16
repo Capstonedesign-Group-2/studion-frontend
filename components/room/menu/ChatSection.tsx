@@ -14,7 +14,7 @@ const ChatSection = () => {
   const [chatList, setChatList] = useState<ChatItem[]>(DATA)
 
   return (
-    <div className="flex flex-col bg-gray-100 shadow-xl align-middle rounded-md overflow-hidden sm:rounded-lg border-b border-gray-200">
+    <div className="flex flex-col bg-gray-100 shadow-md align-middle rounded-md overflow-hidden sm:rounded-lg border-b border-gray-200">
       <div className="flex-1 flex flex-col  p-2 overflow-y-scroll gap-2">
         {chatList.map(chatItem => (
           <ChatItem key={chatItem.id} chatItem={chatItem}/>

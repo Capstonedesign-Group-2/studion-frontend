@@ -3,7 +3,7 @@ import Pad from "./Pad"
 const Drum = () => {
   return (
     <div className="flex justify-center mt-12 mb-24">
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-3 p-1 gap-2 bg-studion-300 rounded-md">
         {DATA && DATA.map(pad => (
           <Pad key={pad.id} pad={pad} volume={80}/>  
         ))}

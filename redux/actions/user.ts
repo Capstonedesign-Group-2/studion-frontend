@@ -57,6 +57,7 @@ export const getUser = createAsyncThunk<User>(
   'user/getInfo',
   async (data, thunkAPI) => {
     const res = await http.get('/users/user')
+    console.log(res)
     return res.data
   }
 )

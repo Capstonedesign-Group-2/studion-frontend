@@ -10,6 +10,12 @@ interface Props {
   volume: number
 }
 
+const playingStyle = {
+  backgroundColor: '',
+  borderBottom: '6px solid #34D399',
+  transform: 'scale(0.95)'
+}
+
 const Pad = ({ pad, volume }: Props) => {
   const [playing, setPlaying] = useState<boolean>(false)
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -42,8 +48,8 @@ const Pad = ({ pad, volume }: Props) => {
   }, [])
 
   return (
-    <div className="flex justify-center items-center text-white bg-studion-600 w-24 h-24 rounded-full duration-75"
-      style={{ backgroundColor: playing ? '#007E8E' : '', transform: playing ? 'scale(0.9)' : '' }}
+    <div className="flex justify-center items-center text-white bg-studion-600 w-24 h-24 rounded-md duration-75"
+      style={playing ? playingStyle : {}}
     >
       <div
         id={pad.id}

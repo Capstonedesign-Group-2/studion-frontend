@@ -1,29 +1,22 @@
-import { Slider, SliderMarkLabel } from "@mui/material"
-import Box from '@mui/material/Box'
-import Router from "next/router"
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import * as yup from 'yup'
+import { Box } from "@mui/system"
+import { Slider } from "@mui/material"
 
-import http from "../../http"
-import { RootState } from "../../redux/slices"
-import wrapper from "../../redux/store"
-import styles from '../../styles/play/play.module.scss'
-import { createRoomValidation } from "../../validations"
-import ErrorMessage from "../common/ErrorMssage"
+import http from "../../../http"
+import { RootState } from "../../../redux/slices"
+import wrapper from "../../../redux/store"
+import { createRoomValidation } from "../../../validations"
+import ErrorMessage from "../../common/ErrorMssage"
+import { Modal } from "../../common/modals"
+import styles from "../../../styles/play/play.module.scss"
 
-interface Form {
-  title: string
-  password?: null | string
-  roomInfo?: null | string
-  max: number | number[]
-}
-
-const CreateForm = ({ Modal }: { Modal: any }) => {
+const RoomEditForm = () => {
   const userData = useSelector((state: RootState) => state.user.data)
-  const [errorMsg, setErrorMsg] = useState<string>('')
-  const [lock, setLock] = useState<boolean>(false)
-  const [form, setForm] = useState<Form>({
+  const [errorMsg, setErrorMsg] = useState('')
+  const [lock, setLock] = useState(false)
+  const [form, setForm] = useState({
     title: '',
     password: '',
     roomInfo: '',
@@ -65,8 +58,6 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
 
       const res = await http.post('/rooms/create', payload)
       console.log(res.data)
-      const roomId = res.data.room.id
-      Router.push(`/room/${roomId}`)
 
       Modal.close()
     } catch(err) {
@@ -88,7 +79,7 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
       >
         <input type="text" name="title" placeholder="Room Name" value={title} onChange={onChange}/>
         <div className="flex gap-2">
-          <input className="flex-1" disabled={!lock} type="password" name="password" placeholder="Password" value={password as string} onChange={onChange}/>
+          <input className="flex-1" disabled={!lock} type="password" name="password" placeholder="Password" value={password} onChange={onChange}/>
           <button style={{color: `${lock ? '#206276' : ''}`}} type="button" onClick={() => setLock(!lock)}>Lock</button>
         </div>
         <Box className="px-6">
@@ -110,15 +101,15 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
             }}
           />
         </Box>
-        <textarea name="roomInfo" placeholder="Room Info" value={roomInfo as string} onChange={onChange} rows={5}></textarea>
+        <textarea name="roomInfo" placeholder="Room Info" value={roomInfo} onChange={onChange} rows={5}></textarea>
         <div>
           <button className="mt-2 px-4 py-2 border border-transparent leading-5 rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 active:bg-studion-500 transition ease-in-out duration-150"
             type="submit"
-          >Create</button>
+          >Save</button>
         </div>
       </form>
     </div>
   )
 }
 
-export default wrapper.withRedux(CreateForm)
+export default wrapper.withRedux(RoomEditForm)

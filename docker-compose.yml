@@ -6,9 +6,9 @@ services:
       dockerfile: Dockerfile.dev
       context: ./
     ports:
-      - "3000:3000"
+      - "3060:3000"
     volumes:
       - /usr/src/app/node_modules
       - /usr/src/app/.next
-      - ./frontend:/usr/src/app
+      - ./:/usr/src/app
     stdin_open: true

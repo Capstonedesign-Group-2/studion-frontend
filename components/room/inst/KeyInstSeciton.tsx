@@ -4,11 +4,11 @@ import InstBtn from "./InstBtn"
 import Drum from "./drum"
 
 const Instlist = [
-  { id: 1, type: 'vocal' },
-  { id: 2, type: 'drum' },
-  { id: 3, type: 'piano' },
-  { id: 4, type: 'guitar' },
-  { id: 5, type: 'bass' },
+  { id: 1, type: 'vocal', imgPath: '/images/vocal.svg' },
+  { id: 2, type: 'drum', imgPath: '/images/drum.svg' },
+  { id: 3, type: 'piano', imgPath: '/images/piano.svg' },
+  { id: 4, type: 'guitar', imgPath: '/images/guitar.svg' },
+  { id: 5, type: 'bass', imgPath: '/images/bass.svg' },
 ]
 
 const KeyInstSection = () => {
@@ -21,7 +21,7 @@ const KeyInstSection = () => {
       </h3>
       <div className="grid grid-cols-5 gap-4 mt-4">
         {Instlist.map(v => (
-          <InstBtn key={v.id} type={v.type} inst={inst} setInst={setInst}/>
+          <InstBtn key={v.id} type={v.type} imgPath={v.imgPath} inst={inst} setInst={setInst}/>
         ))}
       </div>
       {inst === 'drum' && <Drum/>}

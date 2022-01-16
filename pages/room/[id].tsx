@@ -1,22 +1,26 @@
 import axios from "axios"
 import cookies from "next-cookies"
 import Router from "next/router"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 import ChatSection from "../../components/room/menu/ChatSection"
 import MyInfoSection from "../../components/room/menu/MyInfoSection"
+import RoomInfoSection from "../../components/room/menu/RoomInfoSection"
 import RoomContainer from "../../components/room/RoomConatiner"
 import RoomHeader from "../../components/room/RoomHeader"
 import { getUser } from "../../redux/actions/user"
 import wrapper from "../../redux/store"
 
 const Room = () => {
+  const [menu, setMenu] = useState<boolean>(true)
   const handleRouteChange = () => {
     console.log('leave room')
   }
 
+  
+
+  // 뒤로가기 등 페이지 이동시 연결해제
 	useEffect(() => {
-		// 뒤로가기 등 페이지 이동시 연결해제
 		Router.events.on('routeChangeStart', handleRouteChange);
 
 		return () => {
@@ -26,16 +30,26 @@ const Room = () => {
 
   return (
     <div className="bg-gray-50 min-w-screen min-h-screen">
-      <RoomHeader/>
-      <div className="pt-12 xl:mr-96">
+      {/* 헤더 */}
+      <RoomHeader setMenu={setMenu} menu={menu}/>
+
+      {/* 메인 */}
+      <div className="pt-12 xl:mr-96"
+        style={{ marginRight: menu? '' : '0px' }}
+      >
         <RoomContainer/>
       </div>
-      <div className="fixed hidden bg-gray-200 top-12 right-0 xl:flex flex-col shadow-md w-96">
-        <MyInfoSection/>
-        <div className="md:px-4 w-full pt-7 min-h-screen">
-          <ChatSection/>
+
+      {/* 메뉴 */}
+      {menu && (
+        <div className="fixed bg-gray-200 top-12 right-0 flex flex-col items-center shadow-md md:w-96">
+          <MyInfoSection/>
+          <div className="flex flex-col gap-7 md:px-4 w-full pt-7 min-h-screen">
+            <RoomInfoSection/>
+            <ChatSection/>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
