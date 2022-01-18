@@ -22,22 +22,23 @@ const Pad = ({ pad, volume }: Props) => {
 
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
     if (e.key.toUpperCase() === pad.letter) {
-      onPlay();
+      // console.log(volume)
+      // datachannel로 { type: drum, volume } 등 보내기
+      onPlay(volume);
     }
-  }, [pad.letter])
+  }, [volume, pad.letter])
 
-  const onPlay = useCallback(() => {
+  const onPlay = useCallback((volume: number) => {
     if(audioRef.current) {
-      const sound = audioRef.current
-      sound.currentTime = 0
-      sound.volume = volume / 100
-      sound.play()
+      audioRef.current.currentTime = 0
+      audioRef.current.volume = volume / 100
+      audioRef.current.play()
       setPlaying(true)
       setTimeout(() => {
         setPlaying(false)
       }, 100)
     }
-  }, [volume])
+  }, [])
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyPress)
@@ -45,7 +46,7 @@ const Pad = ({ pad, volume }: Props) => {
     return () => {
       document.removeEventListener('keydown', handleKeyPress)
     }
-  }, [])
+  }, [volume])
 
   return (
     <div className="flex justify-center items-center text-white bg-studion-600 w-24 h-24 rounded-md duration-75"
@@ -53,10 +54,10 @@ const Pad = ({ pad, volume }: Props) => {
     >
       <div
         id={pad.id}
-        onClick={onPlay}
+        onClick={() => onPlay(volume)}
       >
         <audio 
-          id={pad.letter} 
+          id={pad.letter}
           src={pad.url}
           ref={audioRef}
         >
