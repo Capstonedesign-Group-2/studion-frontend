@@ -1,89 +1,113 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import Box from '@mui/material/Box'
 
 import { VolumeSlider } from '../../player/mixer/VolumeSlider'
-import Pad from "./Pad"
+import { DATA, playingStyle, loadBuffer } from './drum'
 
-const Drum = () => {
-  const [valume, setValume] = useState<number>(30)
+interface Track {
+  letter: string
+  buffer: AudioBuffer
+}
 
-  const handleValumeChange = useCallback((event: Event, newValue: number | number[]) => {
-    if (typeof newValue === 'number') {
-      console.log(valume)
-      setValume(newValue);
+const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
+  const [playing, setPlaying] = useState<boolean>(false)
+  const [tracks, setTracks] = useState<Track[]>([])
+  const audioCtxRef = useRef<AudioContext>()
+  const gainNode = useRef<GainNode>()
+
+  const handleVolumeChange = useCallback((event: Event, newValue: number | number[]) => {
+    if (typeof newValue === 'number' && gainNode.current) {
+      gainNode.current.gain.value = newValue / 1200
     }
-  }, [valume])
+  }, [])
+
+  const onPlay = useCallback((key: string) => {
+    console.log(tracks);
+    if (audioCtxRef.current && gainNode.current) {
+      const audioBufferSourceNode = audioCtxRef.current.createBufferSource()
+      audioBufferSourceNode.buffer = tracks.find(v => v.letter === key)!.buffer
+      audioBufferSourceNode.connect(gainNode.current).connect(audioCtxRef.current.destination)
+      audioBufferSourceNode.start()
+    }
+    setPlaying(true)
+    setTimeout(() => {
+      setPlaying(false)
+    }, 100)
+  }, [tracks])
+
+  const handleKeyPress = useCallback((e: KeyboardEvent) => {
+    const key = e.key.toUpperCase()
+    if (tracks.find(v => v.letter === key)) {
+      // console.log(volume)
+      // datachannel로 { type: drum, volume } 등 보내기
+      onPlay(key)
+    }
+  }, [tracks, onPlay])
+
+  useEffect(() => {
+    audioCtxRef.current = new AudioContext()
+    if (audioCtxRef.current) {
+      DATA.map(v => {
+        loadBuffer(v.url, audioCtxRef.current as AudioContext, function (buffer: AudioBuffer) {
+          setTracks((prev) => (prev as Track[]).concat({
+            'letter': v.letter,
+            'buffer': buffer
+          }))
+        })
+      })
+      gainNode.current = audioCtxRef.current.createGain()
+      gainNode.current.gain.value = 100 / 1200
+    }
+  }, [])
+
+  useEffect(() => {
+    // 사용자가 드럼을 선택했을때만 키 입력 리슨
+    if (selectedInst === 'drum') {
+      document.addEventListener('keydown', handleKeyPress)
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [selectedInst, handleKeyPress])
 
   return (
     <div className="flex justify-center mt-12 mb-24">
-      <div className="grid grid-cols-3 px-4 py-2 gap-2 bg-studion-300 rounded-l-md">
-        {DATA && DATA.map(pad => (
-          <Pad key={pad.id} pad={pad} volume={valume}/>  
-        ))}
-      </div>
-      <div>
-        <Box className='h-72'>
-          <VolumeSlider
-            valueLabelDisplay="auto"
-            aria-label="valume slider"
-            value={valume}
-            max={100}
-            orientation="vertical"
-            onChange={handleValumeChange}
-          />
-        </Box>
+      <div className="flex items-center gap-4 p-4 bg-studion-600 rounded-md">
+        <div className="grid grid-cols-3 gap-2 rounded-l-md">
+          {DATA && DATA.map((pad) => (
+            <div className="flex justify-center items-center text-white bg-studion-300 w-24 h-24 rounded-md duration-75"
+              style={playing ? playingStyle : {}}
+              key={pad.id}
+            >
+              <div
+                id={pad.id}
+                onClick={() => onPlay(pad.letter)}
+              >
+                <audio key={pad.id} id={pad.id} src={pad.url}></audio>
+                {pad.letter}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col h-full pt-3 justify-between items-center">
+          <Box className="h-64">
+            <VolumeSlider
+              valueLabelDisplay="auto"
+              aria-label="volume slider"
+              defaultValue={100}
+              max={120}
+              orientation="vertical"
+              onChange={handleVolumeChange}
+            />
+          </Box>
+          <div className="px-3 text-sm rounded bg-gray-200">
+            drum
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
-export default Drum
-
-const DATA = [
-  { letter: 'Q',
-    keycode: 81,
-    id: 'Open-HH',
-    url: '/sounds/drum/cr.wav'
-  },
-  { letter: 'W',
-    keycode: 87,
-    id: 'Closed-HH',
-    url: '/sounds/drum/hi.wav'
-  },
-  { letter: 'E',
-    keycode: 69,
-    id: 'Kick-and-Hat',
-    url: '/sounds/drum/snoff.wav'
-  },
-  { letter: 'A',
-    keycode: 65,
-    id: 'Punchy-Kick',
-    url: '/sounds/drum/tom3.wav'
-  },
-  { letter: 'S',
-    keycode: 83,
-    id: 'Kick',
-    url: '/sounds/drum/tom2.wav'
-  },
-  { letter: 'D',
-    keycode: 68,
-    id: 'Snare',
-    url: '/sounds/drum/tom1.wav'
-  },
-  { letter: 'Z',
-    keycode: 90,
-    id: 'Side-Stick',
-    url: '/sounds/drum/snst.wav'
-  },
-  { letter: 'X',
-    keycode: 88,
-    id: 'Clap',
-    url: '/sounds/drum/ki.wav'
-  },
-  { letter: 'C',
-    keycode: 67,
-    id: 'Shaker',
-    // url: 'https://s3.amazonaws.com/freecodecamp/drums/Give_us_a_light.mp3'
-    url: '/sounds/drum/sn.wav'
-  },
-]
+export default DrumComponent

@@ -2,16 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import cookie from 'react-cookies'
 
 import http from '../../http'
-import { User } from '../slices/user'
-
-interface LoginData {
-  email: string
-  password: string
-}
-
-interface SignUpData extends LoginData {
-  name: string
-}
 
 export const delay = (time: number, value: any) => new Promise((resolve, reject) => {
   setTimeout(() => {

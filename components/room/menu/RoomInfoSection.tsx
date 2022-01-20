@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 
 import { Modal } from "../../common/modals"
 import RoomEditForm from "./RoomEditFrom"
@@ -6,12 +6,12 @@ import RoomEditForm from "./RoomEditFrom"
 const RoomInfoSection = () => {
   const [showInfo, setShowInfo] = useState<boolean>(false)
 
-  const onEditBtn = () => {
+  const onEditBtn = useCallback(() => {
     Modal.fire({
       html: <RoomEditForm/>,
       showConfirmButton: false
     })
-  }
+  }, [])
 
   return (
     <div className="overflow-hidden bg-white shadow-md rounded-md sm:rounded-lg border-b border-gray-200">

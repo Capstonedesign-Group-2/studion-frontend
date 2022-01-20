@@ -2,32 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 
 import { getUser, logIn, logOut, signUp } from '../actions/user'
 
-export interface User {
-  id: number
-  name: string
-  email: string
-  image: string | null
-  created_at: string
-  updated_at: string
-}
-
-interface UsersState {
-  isLogin: string | null
-  data: User | null
-
-  isLoggingIn: boolean
-  loginError?: string | null
-
-  isSigningUP: boolean
-  signupError?: string | null
-
-  getUserError?: string | null
-
-  logOutError?: string | null
-
-  refreshError?: string | null
-}
-
 const initialState = {
   isLogin: null,
   data: null,

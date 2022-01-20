@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { useSelector } from "react-redux"
 import * as yup from 'yup'
 import { Box } from "@mui/system"
@@ -24,22 +24,22 @@ const RoomEditForm = () => {
   })
   const { title, password, roomInfo } = form
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setForm({
       ...form,
       [name]: value
     })
-  }
+  }, [form])
 
-  const handleChange = (event: Event, newValue: number | number[]) => {
+  const handleChange = useCallback((event: Event, newValue: number | number[]) => {
     setForm({
       ...form,
       ['max']: newValue as number
     })
-  };
+  },[form])
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setErrorMsg('')
 
@@ -67,7 +67,7 @@ const RoomEditForm = () => {
       }
       return
     }
-  }
+  }, [form, lock, userData.id])
 
   return (
     <div>

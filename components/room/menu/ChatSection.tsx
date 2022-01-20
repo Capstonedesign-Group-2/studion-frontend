@@ -1,5 +1,4 @@
-import { useState } from "react"
-import { User } from "../../../redux/slices/user"
+import { useEffect, useRef, useState } from "react"
 
 import ChatForm from "./ChatForm"
 import ChatItem from "./ChatItem"
@@ -12,15 +11,24 @@ export interface ChatItem {
 
 const ChatSection = () => {
   const [chatList, setChatList] = useState<ChatItem[]>(DATA)
+  const chatListRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (chatListRef.current) {
+      chatListRef.current.scrollTo({ top: chatListRef.current.scrollHeight })
+    }
+  }, [chatListRef.current?.scrollHeight])
 
   return (
-    <div className="flex flex-col bg-gray-100 shadow-md align-middle rounded-md overflow-hidden sm:rounded-lg border-b border-gray-200">
-      <div className="flex-1 flex flex-col  p-2 overflow-y-scroll gap-2">
+    <div className="flex flex-col bg-gray-100 shadow-md align-middle rounded-md overflow-hidden sm:rounded-lg md:mx-4 border-b border-gray-200">
+      <div className="flex-1 flex flex-col p-2 overflow-y-scroll gap-2"
+        ref={chatListRef}
+      >
         {chatList.map(chatItem => (
-          <ChatItem key={chatItem.id} chatItem={chatItem}/>
+          <ChatItem key={chatItem.id} chatItem={chatItem} />
         ))}
       </div>
-      <ChatForm setChatList={setChatList}/>
+      <ChatForm setChatList={setChatList} />
     </div>
   )
 }

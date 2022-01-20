@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../redux/slices"
 
@@ -12,11 +12,11 @@ const ChatForm = ({ setChatList }: Props) => {
   const userData = useSelector((state: RootState) => state.user.data)
   const [newChat, setNewChat] = useState<string>('')
 
-  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setNewChat(e.target.value)
-  }
+  }, [])
 
-  const onSendChat = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSendChat = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!newChat.trim()) return
 
@@ -26,9 +26,8 @@ const ChatForm = ({ setChatList }: Props) => {
       user: userData
     } as ChatItem
     setChatList((prev) => [...prev, newChatItem])
-
     setNewChat('')
-  }
+  }, [newChat, userData])
 
   return (
     <form className="relative bg-white"

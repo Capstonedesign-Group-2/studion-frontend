@@ -8,7 +8,7 @@ const ChatItem = ({ chatItem }: { chatItem: ChatItem }) => {
   const userData = useSelector((state: RootState) => state.user.data)
 
   // 내가 보냈을 때
-  if (chatItem.user.id === userData.id) {
+  if (chatItem.user.id === userData?.id) {
     return (
       <div className="bg-studion-500 ml-8 text-white p-2 break-all self-end rounded-t-md rounded-bl-md shadow">
         {chatItem.content}

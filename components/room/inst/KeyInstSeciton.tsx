@@ -1,7 +1,8 @@
 import { useState } from "react"
 
 import InstBtn from "./InstBtn"
-import Drum from "./drum"
+import DrumComponent from "./drum"
+import PianoComponent from "./piano"
 
 const Instlist = [
   { id: 1, type: 'vocal', imgPath: '/images/vocal.svg' },
@@ -12,7 +13,7 @@ const Instlist = [
 ]
 
 const KeyInstSection = () => {
-  const [inst, setInst] = useState<string>('')
+  const [selectedInst, setSelectedInst] = useState<string>('')
 
   return (
     <div>
@@ -21,10 +22,15 @@ const KeyInstSection = () => {
       </h3>
       <div className="grid grid-cols-5 gap-4 mt-4">
         {Instlist.map(v => (
-          <InstBtn key={v.id} type={v.type} imgPath={v.imgPath} inst={inst} setInst={setInst}/>
+          <InstBtn key={v.id} type={v.type} imgPath={v.imgPath} selectedInst={selectedInst} setSelectedInst={setSelectedInst} />
         ))}
       </div>
-      {inst === 'drum' && <Drum/>}
+      <div style={{ display: selectedInst === 'drum' ? 'block' : 'none' }}>
+        <DrumComponent selectedInst={selectedInst} />
+      </div>
+      <div style={{ display: selectedInst === 'piano' ? 'block' : 'none' }}>
+        <PianoComponent />
+      </div>
     </div>
   )
 }
