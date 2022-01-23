@@ -43,12 +43,18 @@ export const signUp = createAsyncThunk<string, SignUpData>(
   }
 )
 
-export const getUser = createAsyncThunk<User>(
+export const getUser = createAsyncThunk<User, { accessToken?: string }>(
   'user/getInfo',
   async (data, thunkAPI) => {
+    if (data.accessToken) { // SSR
+      http.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`
+    }
     const res = await http.get('/users/user')
-    console.log(res)
-    return res.data
+    if (res) {
+      return res.data
+    } else {
+      throw new Error('401')
+    }
   }
 )
 

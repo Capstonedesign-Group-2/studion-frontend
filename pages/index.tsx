@@ -1,14 +1,20 @@
-import axios from 'axios'
 import type { NextPage } from 'next'
-import cookies from 'next-cookies'
 import Head from 'next/head'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
 import AppLayout from '../components/common/AppLayout'
 import MainSection from '../components/main/MainContainer'
+import { stayLoggedIn } from '../http/auth'
 import { getUser } from '../redux/actions/user'
 import wrapper from '../redux/store'
 
 const Home: NextPage = () => {
+  // const dispatch = useDispatch()
+  // useEffect(() => {
+  //   dispatch(getUser())
+  // })
+
   return (
     <div>
       <Head>
@@ -19,21 +25,14 @@ const Home: NextPage = () => {
 
       <AppLayout>
         {/* main section */}
-        <MainSection/>
+        <MainSection />
       </AppLayout>
     </div>
   )
 }
 
-export const getServerSideProps = wrapper.getServerSideProps((store) => async (ctx) => {
-  const allCookies = cookies(ctx)
-  const accessTokenByCookie = allCookies['accessToken']
-  
-  if(accessTokenByCookie !== undefined) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${accessTokenByCookie}`
-    await store.dispatch(getUser())
-  }
-
+export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
+  await stayLoggedIn(context, store);
   return { props: {} }
 })
 

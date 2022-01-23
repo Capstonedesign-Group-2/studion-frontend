@@ -11,7 +11,7 @@ interface PlayingNote {
   playingNote: Soundfont.Player | undefined
 }
 
-const PianoComponent = () => {
+const PianoComponent = ({ selectedInst }: { selectedInst: string }) => {
   const firstNote = MidiNumbers.fromNote('c3')
   const lastNote = MidiNumbers.fromNote('f4')
   const keyboardShortcuts = KeyboardShortcuts.create({
@@ -31,14 +31,18 @@ const PianoComponent = () => {
   }, [])
 
   const onPlayNote = useCallback((midiNumber: string) => {
-    const playingNote = pianoRef.current?.start(midiNumber, 0, { gain: volume / 120, release: 1 })
-    setPlayingNotes(prev => prev?.concat({ midiNumber, playingNote }))
-  }, [volume])
+    if (selectedInst === 'piano') {
+      const playingNote = pianoRef.current?.start(midiNumber, 0, { gain: volume / 120, release: 1 })
+      setPlayingNotes(prev => prev?.concat({ midiNumber, playingNote }))
+    }
+  }, [volume, selectedInst])
 
   const onStopNote = useCallback((midiNumber: string) => {
-    playingNotes?.find(v => v.midiNumber === midiNumber)?.playingNote?.stop()
-    setPlayingNotes(prev => prev?.filter(v => v.midiNumber !== midiNumber))
-  }, [playingNotes])
+    if (selectedInst === 'piano') {
+      playingNotes?.find(v => v.midiNumber === midiNumber)?.playingNote?.stop()
+      setPlayingNotes(prev => prev?.filter(v => v.midiNumber !== midiNumber))
+    }
+  }, [playingNotes, selectedInst])
 
   useEffect(() => {
     audioCtxRef.current = new AudioContext()

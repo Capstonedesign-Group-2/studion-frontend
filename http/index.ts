@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios"
 import cookie from 'react-cookies'
+import { Modal, Toast } from "../components/common/modals";
 
 const http = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACK_URL,
@@ -26,9 +27,13 @@ http.interceptors.response.use(
     return config
   },
   error => {
-    if(error.response.status === 401) {
+    if (error.response.status === 401) {
       cookie.remove('accessToken')
-      throw new Error('401')
+      Modal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
     }
     Promise.reject(error)
   }

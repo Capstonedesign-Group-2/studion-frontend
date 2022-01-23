@@ -13,7 +13,7 @@ import { RootState } from '../../redux/slices'
 const LoginContainer = () => {
   const dispatch = useDispatch()
   const isLoggingIn = useSelector((state: RootState) => state.user.isLoggingIn)
-  const isLogin = useSelector((state: RootState) => state.user.isLogin)
+  const accessToken = useSelector((state: RootState) => state.user.accessToken)
   const loginError = useSelector((state: RootState) => state.user.loginError)
   const [errorMsg, setErrorMsg] = useState('')
   const [form, setForm] = useState({
@@ -37,7 +37,7 @@ const LoginContainer = () => {
     // 유효성 검사
     try {
       await loginValidation.validate(form)
-    } catch(err) {
+    } catch (err) {
       console.error('Join validation error', err)
       if (err instanceof yup.ValidationError) {
         setErrorMsg(err.errors[0])
@@ -49,7 +49,7 @@ const LoginContainer = () => {
 
   // 로그인 로딩
   useEffect(() => {
-    if(isLoggingIn) {
+    if (isLoggingIn) {
       Modal.fire({
         title: 'Log in . . .',
         showConfirmButton: false,
@@ -64,16 +64,16 @@ const LoginContainer = () => {
 
   // 로그인 성공 / 실패
   useEffect(() => {
-    if(isLogin) {
-        Toast.fire({
-          icon: 'success',
-          title: 'Logged in successfully'
-        })
-        Router.push('/')
+    if (accessToken) {
+      Toast.fire({
+        icon: 'success',
+        title: 'Logged in successfully'
+      })
+      Router.push('/')
     } else if (loginError) {
       setErrorMsg(loginError)
     }
-  }, [isLogin, loginError])
+  }, [accessToken, loginError])
 
   return (
     <div className={styles.container}>
@@ -81,16 +81,16 @@ const LoginContainer = () => {
       <article>
         <div className={styles.formDiv}>
           {errorMsg && // 에러 메세지
-            <ErrorMessage errorMsg={ errorMsg }/>
+            <ErrorMessage errorMsg={errorMsg} />
           }
           <form onSubmit={submitHandler}>
             {/* 이메일 */}
             <label htmlFor="email" className='mt-4'>Email address</label>
-            <input id='email' name='email' type="email" value={email} onChange={onChange}/>
+            <input id='email' name='email' type="email" value={email} onChange={onChange} />
 
             {/* 비밀번호 */}
             <label htmlFor="password" className='mt-4'>Password</label>
-            <input id='password' name='password' type="password" value={password} onChange={onChange}/>
+            <input id='password' name='password' type="password" value={password} onChange={onChange} />
 
             <button type='submit'>Continue</button>
           </form>

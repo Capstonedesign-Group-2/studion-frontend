@@ -10,7 +10,7 @@ interface Track {
 }
 
 const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
-  const [playing, setPlaying] = useState<boolean>(false)
+  const [playing, setPlaying] = useState<string>('')
   const [tracks, setTracks] = useState<Track[]>([])
   const audioCtxRef = useRef<AudioContext>()
   const gainNode = useRef<GainNode>()
@@ -22,16 +22,15 @@ const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
   }, [])
 
   const onPlay = useCallback((key: string) => {
-    console.log(tracks);
     if (audioCtxRef.current && gainNode.current) {
       const audioBufferSourceNode = audioCtxRef.current.createBufferSource()
       audioBufferSourceNode.buffer = tracks.find(v => v.letter === key)!.buffer
       audioBufferSourceNode.connect(gainNode.current).connect(audioCtxRef.current.destination)
       audioBufferSourceNode.start()
     }
-    setPlaying(true)
+    setPlaying(key)
     setTimeout(() => {
-      setPlaying(false)
+      setPlaying('')
     }, 100)
   }, [tracks])
 
@@ -77,13 +76,11 @@ const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
         <div className="grid grid-cols-3 gap-2 rounded-l-md">
           {DATA && DATA.map((pad) => (
             <div className="flex justify-center items-center text-white bg-studion-300 w-24 h-24 rounded-md duration-75"
-              style={playing ? playingStyle : {}}
+              style={playing === pad.letter ? playingStyle : {}}
+              onClick={() => onPlay(pad.letter)}
               key={pad.id}
             >
-              <div
-                id={pad.id}
-                onClick={() => onPlay(pad.letter)}
-              >
+              <div id={pad.id}>
                 <audio key={pad.id} id={pad.id} src={pad.url}></audio>
                 {pad.letter}
               </div>

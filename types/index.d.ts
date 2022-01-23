@@ -11,7 +11,7 @@ declare interface User {
 }
 
 declare interface UsersState {
-  isLogin: string | null
+  accessToken: string | null
   data: User | null
 
   isLoggingIn: boolean
@@ -70,7 +70,7 @@ declare interface RoomsState {
  * pages/room/[id]
  */
 declare interface WebRTCUser {
-	id: string;
-	email: string;
-	stream: MediaStream;
+  id: string;
+  email: string;
+  stream: MediaStream;
 }

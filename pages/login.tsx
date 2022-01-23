@@ -16,16 +16,14 @@ const Login = () => {
 export const getServerSideProps = wrapper.getServerSideProps((store) => async (ctx) => {
   const allCookies = cookies(ctx)
   const accessTokenByCookie = allCookies['accessToken']
-
   if (accessTokenByCookie !== undefined) {
-    return { // 로그인 상태일 경우 '/' 로 리다이렉트
+    return {
       redirect: {
         destination: '/',
         permanent: false,
       },
     }
   }
-
   return { props: {} }
 })
 

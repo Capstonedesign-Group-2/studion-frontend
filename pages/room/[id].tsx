@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import axios from "axios"
-import cookies from "next-cookies"
-import io from 'socket.io-client'
 
 import ChatSection from "../../components/room/menu/ChatSection"
 import MyInfoSection from "../../components/room/menu/MyInfoSection"
 import RoomInfoSection from "../../components/room/menu/RoomInfoSection"
 import RoomContainer from "../../components/room/RoomConatiner"
 import RoomHeader from "../../components/room/RoomHeader"
-import { getUser } from "../../redux/actions/user"
 import wrapper from "../../redux/store"
+import { useDispatch } from "react-redux"
+import { stayLoggedIn } from "../../http/auth"
 
 const pc_config = {
 	iceServers: [
@@ -231,15 +229,8 @@ const Room = () => {
 	)
 }
 
-export const getServerSideProps = wrapper.getServerSideProps((store) => async (ctx) => {
-	const allCookies = cookies(ctx)
-	const accessTokenByCookie = allCookies['accessToken']
-
-	if (accessTokenByCookie !== undefined) {
-		axios.defaults.headers.common['Authorization'] = `Bearer ${accessTokenByCookie}`
-		await store.dispatch(getUser())
-	}
-
+export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
+	await stayLoggedIn(context, store);
 	return { props: {} }
 })
 

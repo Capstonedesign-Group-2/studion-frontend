@@ -29,7 +29,7 @@ const KeyInstSection = () => {
         <DrumComponent selectedInst={selectedInst} />
       </div>
       <div style={{ display: selectedInst === 'piano' ? 'block' : 'none' }}>
-        <PianoComponent />
+        <PianoComponent selectedInst={selectedInst} />
       </div>
     </div>
   )
