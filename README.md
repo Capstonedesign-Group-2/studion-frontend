@@ -48,7 +48,7 @@
 
 ## 온라인 합주실
 
-[online band room](./readme/band.png)
+![online band room](./readme/band.png)
 
 1. 로그인하여 합주실을 찾거나 새롭게 생성
 2. 합주실 생성시 제목, 비밀번호(선택), 태그(선택) 작성
@@ -61,7 +61,7 @@
 
 ## 녹음 릴레이
 
-[recording relay](./readme/recording.png)
+![recording relay](./readme/recording.png)
 
 1. 로그인 이후 게시판을 들어가 게시물을 보거나 게시물을 작성
 2. 게시물 생성시 제목과 내용을 작성
@@ -75,9 +75,9 @@
 
 ## 밴드 커뮤니티
 
-[band community](./readme/community01.png)
+![band community](./readme/community01.png)
 
-[band community](./readme/community02.png)
+![band community](./readme/community02.png)
 
 1. 로그인 후 커뮤니티 탭 클릭
 2. 커뮤니티 create 버튼을 눌러 게시글 생성
