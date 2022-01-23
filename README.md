@@ -48,7 +48,7 @@
 
 ## 온라인 합주실
 
-[online band room](https://lh6.googleusercontent.com/KI-2i0tV90c0XJJ4NEE0G37OanqEq-8WutWx3oBiH3KYnXYmHenRPUoWebpSOnTMc4wJAjdF1NgKPkSKi3GtR2ATwbFvLaANwc6feWfNnfD4PKMqSMfHdI0AMfaXkWEgjyVB7Xuj)
+[online band room](./readme/band.png)
 
 1. 로그인하여 합주실을 찾거나 새롭게 생성
 2. 합주실 생성시 제목, 비밀번호(선택), 태그(선택) 작성
@@ -61,7 +61,7 @@
 
 ## 녹음 릴레이
 
-[recording relay](https://lh5.googleusercontent.com/cDB5Z3uqaaG9rX2I4rNl-QYMJESVb_WJiR6khOek03EcKzqLizAfZpJOwgZemdFdWQnI7iE5Cyn-OxI9F1dw-9LXVp6vur6NRSEEsYYRUlzPwD4ZpK3g8PvaP4h5wQF-cVreC39s)
+[recording relay](./readme/recording.png)
 
 1. 로그인 이후 게시판을 들어가 게시물을 보거나 게시물을 작성
 2. 게시물 생성시 제목과 내용을 작성
@@ -75,9 +75,9 @@
 
 ## 밴드 커뮤니티
 
-[band community](https://lh6.googleusercontent.com/AtflLKot_meE8QFrwO1-XR4duXIC0JdrzuHteLPz8oA0ikipuZW7pM-wgW-yIadD7Lui0bUus49zxvhpLyImDNXjTufnM_eu2D_bhLX3i6fLAiKyx7RrZWmVs2jW03qR09tgNuyO)
+[band community](./readme/community01.png)
 
-[band community](https://lh5.googleusercontent.com/GyiiYqxH0Pz-BfcJ22xKh3Sz-udjFH5onyBpWUIPugYGYvcQLTTOsfaNjlmVKsl0BcHjh6GynoBqJXt0I2_hiAqEkieCwQI6v8b821WO8MuexUgImwxxZkL38EkBph84h1NB0vyb)
+[band community](./readme/community02.png)
 
 1. 로그인 후 커뮤니티 탭 클릭
 2. 커뮤니티 create 버튼을 눌러 게시글 생성
