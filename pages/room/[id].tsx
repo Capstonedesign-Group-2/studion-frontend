@@ -96,112 +96,116 @@ const Room = () => {
 		}
 	}, []);
 
-	// useEffect(() => {
-	// 	socketRef.current = io.connect(process.env.NEXT_PUBLIC_SOCKET_URL as string);
-	// 	getLocalStream();
+	useEffect(() => {
+		socketRef.current = io.connect(process.env.NEXT_PUBLIC_SOCKET_URL || 'stun:stun.l.google.com:19302');
+		getLocalStream();
 
-	// 	socketRef.current.on('all_users', (allUsers: Array<{ id: string; email: string }>) => {
-	// 		allUsers.forEach(async (user) => {
-	// 			if (!localStreamRef.current) return;
-	// 			const pc = createPeerConnection(user.id, user.email);
-	// 			if (!(pc && socketRef.current)) return;
-	// 			pcsRef.current = { ...pcsRef.current, [user.id]: pc };
-	// 			try {
-	// 				const localSdp = await pc.createOffer({
-	// 					offerToReceiveAudio: true,
-	// 					offerToReceiveVideo: false,
-	// 				});
-	// 				console.log('create offer success');
-	// 				await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-	// 				socketRef.current.emit('offer', {
-	// 					sdp: localSdp,
-	// 					offerSendID: socketRef.current.id,
-	// 					offerSendEmail: 'offerSendSample@sample.com',
-	// 					offerReceiveID: user.id,
-	// 				});
-	// 			} catch (e) {
-	// 				console.error(e);
-	// 			}
-	// 		});
-	// 	});
+		socketRef.current.on('all_users', (allUsers: Array<{ id: string; email: string }>) => {
+			allUsers.forEach(async (user) => {
+				if (!localStreamRef.current) return;
+				const pc = createPeerConnection(user.id, user.email);
+				if (!(pc && socketRef.current)) return;
+				pcsRef.current = { ...pcsRef.current, [user.id]: pc };
+				try {
+					const localSdp = await pc.createOffer({
+						offerToReceiveAudio: true,
+						offerToReceiveVideo: false,
+					});
+					console.log('create offer success');
+					await pc.setLocalDescription(new RTCSessionDescription(localSdp));
+					socketRef.current.emit('offer', {
+						sdp: localSdp,
+						offerSendID: socketRef.current.id,
+						offerSendEmail: 'offerSendSample@sample.com',
+						offerReceiveID: user.id,
+					});
+				} catch (e) {
+					console.error(e);
+				}
+			});
+		});
 
-	// 	socketRef.current.on(
-	// 		'getOffer',
-	// 		async (data: {
-	// 			sdp: RTCSessionDescription;
-	// 			offerSendID: string;
-	// 			offerSendEmail: string;
-	// 		}) => {
-	// 			const { sdp, offerSendID, offerSendEmail } = data;
-	// 			console.log('get offer');
-	// 			if (!localStreamRef.current) return;
-	// 			const pc = createPeerConnection(offerSendID, offerSendEmail);
-	// 			if (!(pc && socketRef.current)) return;
-	// 			pcsRef.current = { ...pcsRef.current, [offerSendID]: pc };
-	// 			try {
-	// 				await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-	// 				console.log('answer set remote description success');
-	// 				const localSdp = await pc.createAnswer({
-	// 					offerToReceiveVideo: false,
-	// 					offerToReceiveAudio: true,
-	// 				});
-	// 				await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-	// 				socketRef.current.emit('answer', {
-	// 					sdp: localSdp,
-	// 					answerSendID: socketRef.current.id,
-	// 					answerReceiveID: offerSendID,
-	// 				});
-	// 			} catch (e) {
-	// 				console.error(e);
-	// 			}
-	// 		},
-	// 	);
+		socketRef.current.on(
+			'getOffer',
+			async (data: {
+				sdp: RTCSessionDescription;
+				offerSendID: string;
+				offerSendEmail: string;
+			}) => {
+				const { sdp, offerSendID, offerSendEmail } = data;
+				console.log('get offer');
+				if (!localStreamRef.current) return;
+				const pc = createPeerConnection(offerSendID, offerSendEmail);
+				if (!(pc && socketRef.current)) return;
+				pcsRef.current = { ...pcsRef.current, [offerSendID]: pc };
+				try {
+					await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+					console.log('answer set remote description success');
+					const localSdp = await pc.createAnswer({
+						offerToReceiveVideo: false,
+						offerToReceiveAudio: true,
+					});
+					await pc.setLocalDescription(new RTCSessionDescription(localSdp));
+					socketRef.current.emit('answer', {
+						sdp: localSdp,
+						answerSendID: socketRef.current.id,
+						answerReceiveID: offerSendID,
+					});
+				} catch (e) {
+					console.error(e);
+				}
+			},
+		);
 
-	// 	socketRef.current.on(
-	// 		'getAnswer',
-	// 		(data: { sdp: RTCSessionDescription; answerSendID: string }) => {
-	// 			const { sdp, answerSendID } = data;
-	// 			console.log('get answer');
-	// 			const pc: RTCPeerConnection = pcsRef.current[answerSendID];
-	// 			if (!pc) return;
-	// 			pc.setRemoteDescription(new RTCSessionDescription(sdp));
-	// 		},
-	// 	);
+		socketRef.current.on(
+			'getAnswer',
+			(data: { sdp: RTCSessionDescription; answerSendID: string }) => {
+				const { sdp, answerSendID } = data;
+				console.log('get answer');
+				const pc: RTCPeerConnection = pcsRef.current[answerSendID];
+				if (!pc) return;
+				pc.setRemoteDescription(new RTCSessionDescription(sdp));
+			},
+		);
 
-	// 	socketRef.current.on(
-	// 		'getCandidate',
-	// 		async (data: { candidate: RTCIceCandidateInit; candidateSendID: string }) => {
-	// 			console.log('get candidate');
-	// 			const pc: RTCPeerConnection = pcsRef.current[data.candidateSendID];
-	// 			if (!pc) return;
-	// 			await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-	// 			console.log('candidate add success');
-	// 		},
-	// 	);
+		socketRef.current.on(
+			'getCandidate',
+			async (data: { candidate: RTCIceCandidateInit; candidateSendID: string }) => {
+				console.log('get candidate');
+				const pc: RTCPeerConnection = pcsRef.current[data.candidateSendID];
+				if (!pc) return;
+				await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+				console.log('candidate add success');
+			},
+		);
 
-	// 	socketRef.current.on('user_exit', (data: { id: string }) => {
-	// 		if (!pcsRef.current[data.id]) return;
-	// 		pcsRef.current[data.id].close();
-	// 		delete pcsRef.current[data.id];
-	// 		setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id));
-	// 	});
+		socketRef.current.on('user_exit', (data: { id: string }) => {
+			if (!pcsRef.current[data.id]) return;
+			pcsRef.current[data.id].close();
+			delete pcsRef.current[data.id];
+			setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id));
+		});
 
-	// 	return () => {
-	// 		console.log('disconnect socket and peer connections')
-	// 		if (socketRef.current) {
-	// 			socketRef.current.disconnect();
-	// 		}
-	// 		users.forEach((user) => {
-	// 			if (!pcsRef.current[user.id]) return;
-	// 			pcsRef.current[user.id].close();
-	// 			delete pcsRef.current[user.id];
-	// 		});
-	// 		localStreamRef.current
-	// 			?.getTracks()
-	// 			.forEach(track => track.stop())
-	// 	};
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [createPeerConnection, getLocalStream]);
+		return () => {
+			console.log('disconnect socket and peer connections')
+			if (socketRef.current) {
+				socketRef.current.disconnect();
+			}
+			users.forEach((user) => {
+				if (!pcsRef.current[user.id]) return;
+				pcsRef.current[user.id].close();
+				delete pcsRef.current[user.id];
+			});
+			localStreamRef.current
+				?.getTracks()
+				.forEach(track => track.stop())
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [createPeerConnection, getLocalStream]);
+
+	useEffect(() => {
+
+	}, [])
 
 	return (
 		<div className="bg-gray-50 min-w-screen min-h-screen">

@@ -1,9 +1,9 @@
 import axios, { AxiosRequestConfig } from "axios"
 import cookie from 'react-cookies'
-import { Modal, Toast } from "../components/common/modals";
+import { Modal } from "../components/common/modals";
 
 const http = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACK_URL,
+  baseURL: process.env.NEXT_PUBLIC_BACK_URL || 'http://localhost:8000/api',
   headers: { "content-type": "application/json" },
 })
 

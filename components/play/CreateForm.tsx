@@ -1,4 +1,4 @@
-import { Slider, SliderMarkLabel } from "@mui/material"
+import { Slider } from "@mui/material"
 import Box from '@mui/material/Box'
 import Router from "next/router"
 import { useState } from "react"
@@ -11,6 +11,7 @@ import wrapper from "../../redux/store"
 import styles from '../../styles/play/play.module.scss'
 import { createRoomValidation } from "../../validations"
 import ErrorMessage from "../common/ErrorMssage"
+import Socket from '../../socket'
 
 interface Form {
   title: string
@@ -64,12 +65,13 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
       }
 
       const res = await http.post('/rooms/create', payload)
+      Socket.emitUpdateRoomList()
       console.log(res.data)
       const roomId = res.data.room.id
       Router.push(`/room/${roomId}`)
 
       Modal.close()
-    } catch(err) {
+    } catch (err) {
       console.error('Join validation error', err)
       if (err instanceof yup.ValidationError) {
         setErrorMsg(err.errors[0])
@@ -81,15 +83,15 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
   return (
     <div>
       {errorMsg && // 에러 메세지
-        <ErrorMessage errorMsg={ errorMsg }/>
+        <ErrorMessage errorMsg={errorMsg} />
       }
       <form className={styles.createForm}
         onSubmit={onSubmit}
       >
-        <input type="text" name="title" placeholder="Room Name" value={title} onChange={onChange}/>
+        <input type="text" name="title" placeholder="Room Name" value={title} onChange={onChange} />
         <div className="flex gap-2">
-          <input className="flex-1" disabled={!lock} type="password" name="password" placeholder="Password" value={password as string} onChange={onChange}/>
-          <button style={{color: `${lock ? '#206276' : ''}`}} type="button" onClick={() => setLock(!lock)}>Lock</button>
+          <input className="flex-1" disabled={!lock} type="password" name="password" placeholder="Password" value={password as string} onChange={onChange} />
+          <button style={{ color: `${lock ? '#206276' : ''}` }} type="button" onClick={() => setLock(!lock)}>Lock</button>
         </div>
         <Box className="px-6">
           <span>Max user {form.max}</span>

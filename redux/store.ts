@@ -6,7 +6,7 @@ import reducer from './slices'
 const makeStore = (context: Context) => configureStore({
   reducer,
   devTools: process.env.NODE_ENV !== 'production',
-});
+})
 
 const wrapper = createWrapper(makeStore, {
   debug: process.env.NODE_ENV !== 'production'

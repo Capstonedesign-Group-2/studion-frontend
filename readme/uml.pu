@@ -1,0 +1,99 @@
+@startuml
+
+title Studion
+
+actor Host
+control API
+database DB
+control Socket
+actor User
+
+== 온라인 합주실 ==
+
+Host->Host: 합주실 리스트 페이지 입장
+
+|||
+
+group When entered room list page
+  Host->Socket: [Join] 합주실 리스트
+  activate Socket
+
+  Socket->API
+  activate API
+
+  API->DB
+  activate DB
+  DB->API
+  note right
+  합주실 리스트
+  end note
+  deactivate DB
+
+  API->Socket
+  deactivate API
+
+  Socket<->Host: [On] 합주실 리스트 정보
+  deactivate Socket
+end
+
+|||
+
+group Create new band room
+  Host->API: [Request] 합주실 생성
+  note left
+  title
+  max users
+  [password]
+  content
+  end note
+
+  API->Host: [Response] 합주실 정보
+  Host->Socket : [Join] 합주실 입장
+end
+
+|||
+
+User->User: 합주실 리스트 페이지 입장
+
+group Join room
+  User->Socket: [Join] 합주실 입장
+  Socket->API: [Request] 합주실 정보
+  API->Socket: [Response] 합주실 정보
+
+  group Connect WebRTC
+    Socket->Host: [Emit] 새 유저 입장
+    Host->Socket: [Emit] WebRTC, Data Channel 연결
+    Socket->User: [Emit] WebRTC, Data Channel 연결
+  end
+end
+
+|||
+
+User<->Host: [Connect] WebRTC 통신
+note right of Host
+Audio Stream
+end note
+Host<->User: [Connect] Data Channel 통신
+note left of User
+Pressed Key Data
+type, keycord
+end note
+activate Host
+activate User
+Host->DB: [Request] 가상악기 음원 데이터 요청
+DB->Host: [Response] 가상악기 음원 데이터
+deactivate Host
+
+User->DB: [Request] 가상악기 음원 데이터 요청
+DB->User: [Response] 가상악기 음원 데이터
+deactivate User
+
+== 녹음 릴레이 ==
+
+User->User: 녹음 릴레이 페이지 입장
+
+== 밴드 커뮤니티 ==
+
+User->User: 밴드 커뮤니티 페이지 입장
+
+@enduml

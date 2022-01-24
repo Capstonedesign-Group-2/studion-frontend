@@ -62,6 +62,7 @@ declare interface Room {
 }
 
 declare interface RoomsState {
+  socket: SocketIOClient.Socket | null,
   roomList: Array<Room>
   getRoomListError?: null | string
 }
