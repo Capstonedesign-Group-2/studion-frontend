@@ -13,5 +13,10 @@ export const loginValidation = yup.object().shape({
 })
 
 export const createRoomValidation = yup.object().shape({
-  title: yup.string().required('방 제목을 입력해주세요.')
+  roomInfo: yup.string().required('합주실 정보를 입력해주세요.'),
+  title: yup.string().required('합주실 제목을 입력해주세요.'),
+})
+
+export const enterRoomPassword = yup.object().shape({
+  password: yup.string().required('비밀번호를 입력해주세요.').oneOf([yup.ref('room_password'), null], '비밀번호가 일치하지 않습니다.')
 })

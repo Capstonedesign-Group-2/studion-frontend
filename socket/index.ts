@@ -2,14 +2,23 @@ import { Dispatch } from '@reduxjs/toolkit'
 import io from 'socket.io-client'
 import { getRoomList } from '../redux/actions/room'
 
-interface Data {
-  token: string
-  name: string
-  data: null
-  room: number
+interface JoinData {
+  token: string,
+  name: string,
+  room: string
+  data: {
+    user_id: number
+    password: string
+  }
 }
 
-class Socket {
+interface ExitData {
+  token: string
+  roomId: string
+  userId: number
+}
+
+export class Socket {
   URL: string
   socket: SocketIOClient.Socket
 
@@ -17,8 +26,7 @@ class Socket {
     this.URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000'
     this.socket = io(this.URL)
 
-
-    console.log("[Socket] Connected:", this.URL)
+    console.log("[Socket] Connected:", this.URL, this.socket)
   }
 
   // 합주실 리스트가 업데이트 되었음을 감지 (새로운 방, 없어진 방, 인원수, ...)
@@ -40,11 +48,17 @@ class Socket {
   }
 
   // 합주실 입장
-  joinRoom(data: Data) {
+  joinRoom(data: JoinData) {
     this.socket.emit('join_room', data)
   }
 
+  // 합주실 퇴장
+  exitRoom(data: ExitData) {
+    this.socket.emit('exit', data)
+  }
+
   // WebRTC Peer Connection
+
 
   // 합주실 채팅
   onNewMessage(dispatch: Dispatch<any>) {

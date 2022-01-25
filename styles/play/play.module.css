@@ -9,6 +9,7 @@
 .showRoom {
   @apply flex flex-col gap-4;
 }
+.showRoom input,
 .showRoom p {
   @apply px-3 py-2 text-base border border-studion-400 rounded-md;
 }

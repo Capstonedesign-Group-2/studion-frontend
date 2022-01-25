@@ -54,6 +54,7 @@ declare interface UserInRoom {
 declare interface Room {
   id: number
   title: string
+  password: string
   creater: number
   content: string
   max: number

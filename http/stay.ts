@@ -1,3 +1,4 @@
+import axios from "axios"
 import cookie from "cookie"
 import { GetServerSidePropsContext, PreviewData } from "next"
 import { ParsedUrlQuery } from "querystring"

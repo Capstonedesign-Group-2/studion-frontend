@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import io from 'socket.io-client'
+import { useSelector } from "react-redux"
+import cookie from 'react-cookies'
 
 import ChatSection from "../../components/room/menu/ChatSection"
 import MyInfoSection from "../../components/room/menu/MyInfoSection"
@@ -6,8 +9,9 @@ import RoomInfoSection from "../../components/room/menu/RoomInfoSection"
 import RoomContainer from "../../components/room/RoomConatiner"
 import RoomHeader from "../../components/room/RoomHeader"
 import wrapper from "../../redux/store"
-import { useDispatch } from "react-redux"
-import { stayLoggedIn } from "../../http/auth"
+import { stayLoggedIn } from "../../http/stay"
+import { RootState } from "../../redux/slices"
+import Socket from "../../socket"
 
 const pc_config = {
 	iceServers: [
@@ -19,11 +23,11 @@ const pc_config = {
 
 const Room = () => {
 	const [menu, setMenu] = useState<boolean>(true)
-	const socketRef = useRef<SocketIOClient.Socket>();
-	const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
-	const localVideoRef = useRef<HTMLVideoElement>(null);
-	const localStreamRef = useRef<MediaStream>();
-	const [users, setUsers] = useState<WebRTCUser[]>([]);
+	const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({})
+	const localVideoRef = useRef<HTMLVideoElement>(null)
+	const localStreamRef = useRef<MediaStream>()
+	const [users, setUsers] = useState<WebRTCUser[]>([])
+	const userData = useSelector((state: RootState) => state.user.data)
 
 	const getLocalStream = useCallback(async () => {
 		try {
@@ -38,26 +42,34 @@ const Room = () => {
 			});
 			localStreamRef.current = localStream;
 			if (localVideoRef.current) localVideoRef.current.srcObject = localStream;
-			if (!socketRef.current) return;
-			socketRef.current.emit('join_room', {
-				room: '1234',
-				email: 'sample@naver.com',
-			});
+			if (!Socket.socket) return;
+
+			const data = {
+				token: cookie.load('accessToken'),
+				name: userData?.name,
+				room: '42',
+				data: {
+					user_id: userData?.id,
+					password: '123'
+				}
+			}
+
+			Socket.joinRoom(data)
 		} catch (e) {
 			console.log(`getUserMedia error: ${e}`);
 		}
-	}, []);
+	}, [userData?.name, userData?.id, cookie.load('accessToken')]);
 
 	const createPeerConnection = useCallback((socketID: string, email: string) => {
 		try {
 			const pc = new RTCPeerConnection(pc_config);
 
 			pc.onicecandidate = (e) => {
-				if (!(socketRef.current && e.candidate)) return;
+				if (!(Socket.socket && e.candidate)) return;
 				console.log('onicecandidate');
-				socketRef.current.emit('candidate', {
+				Socket.socket.emit('candidate', {
 					candidate: e.candidate,
-					candidateSendID: socketRef.current.id,
+					candidateSendID: Socket.socket.id,
 					candidateReceiveID: socketID,
 				});
 			};
@@ -97,14 +109,15 @@ const Room = () => {
 	}, []);
 
 	useEffect(() => {
-		socketRef.current = io.connect(process.env.NEXT_PUBLIC_SOCKET_URL || 'stun:stun.l.google.com:19302');
+		Socket.socket = io.connect(process.env.NEXT_PUBLIC_SOCKET_URL || 'stun:stun.l.google.com:19302');
 		getLocalStream();
 
-		socketRef.current.on('all_users', (allUsers: Array<{ id: string; email: string }>) => {
+		Socket.socket.on('all_users', (allUsers: Array<{ id: string; email: string }>) => {
+			console.log('on all_users', allUsers);
 			allUsers.forEach(async (user) => {
 				if (!localStreamRef.current) return;
 				const pc = createPeerConnection(user.id, user.email);
-				if (!(pc && socketRef.current)) return;
+				if (!(pc && Socket.socket)) return;
 				pcsRef.current = { ...pcsRef.current, [user.id]: pc };
 				try {
 					const localSdp = await pc.createOffer({
@@ -113,9 +126,9 @@ const Room = () => {
 					});
 					console.log('create offer success');
 					await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-					socketRef.current.emit('offer', {
+					Socket.socket.emit('offer', {
 						sdp: localSdp,
-						offerSendID: socketRef.current.id,
+						offerSendID: Socket.socket.id,
 						offerSendEmail: 'offerSendSample@sample.com',
 						offerReceiveID: user.id,
 					});
@@ -125,7 +138,7 @@ const Room = () => {
 			});
 		});
 
-		socketRef.current.on(
+		Socket.socket.on(
 			'getOffer',
 			async (data: {
 				sdp: RTCSessionDescription;
@@ -136,7 +149,7 @@ const Room = () => {
 				console.log('get offer');
 				if (!localStreamRef.current) return;
 				const pc = createPeerConnection(offerSendID, offerSendEmail);
-				if (!(pc && socketRef.current)) return;
+				if (!(pc && Socket.socket)) return;
 				pcsRef.current = { ...pcsRef.current, [offerSendID]: pc };
 				try {
 					await pc.setRemoteDescription(new RTCSessionDescription(sdp));
@@ -146,9 +159,9 @@ const Room = () => {
 						offerToReceiveAudio: true,
 					});
 					await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-					socketRef.current.emit('answer', {
+					Socket.socket.emit('answer', {
 						sdp: localSdp,
-						answerSendID: socketRef.current.id,
+						answerSendID: Socket.socket.id,
 						answerReceiveID: offerSendID,
 					});
 				} catch (e) {
@@ -157,7 +170,7 @@ const Room = () => {
 			},
 		);
 
-		socketRef.current.on(
+		Socket.socket.on(
 			'getAnswer',
 			(data: { sdp: RTCSessionDescription; answerSendID: string }) => {
 				const { sdp, answerSendID } = data;
@@ -168,7 +181,7 @@ const Room = () => {
 			},
 		);
 
-		socketRef.current.on(
+		Socket.socket.on(
 			'getCandidate',
 			async (data: { candidate: RTCIceCandidateInit; candidateSendID: string }) => {
 				console.log('get candidate');
@@ -179,7 +192,7 @@ const Room = () => {
 			},
 		);
 
-		socketRef.current.on('user_exit', (data: { id: string }) => {
+		Socket.socket.on('user_exit', (data: { id: string }) => {
 			if (!pcsRef.current[data.id]) return;
 			pcsRef.current[data.id].close();
 			delete pcsRef.current[data.id];
@@ -187,10 +200,16 @@ const Room = () => {
 		});
 
 		return () => {
-			console.log('disconnect socket and peer connections')
-			if (socketRef.current) {
-				socketRef.current.disconnect();
+			console.log('useEffect return exit room');
+
+			const data = {
+				token: cookie.load('accessToken'),
+				roomId: '42',
+				userId: userData?.id
 			}
+
+			Socket.exitRoom(data)
+
 			users.forEach((user) => {
 				if (!pcsRef.current[user.id]) return;
 				pcsRef.current[user.id].close();
@@ -202,10 +221,6 @@ const Room = () => {
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [createPeerConnection, getLocalStream]);
-
-	useEffect(() => {
-
-	}, [])
 
 	return (
 		<div className="bg-gray-50 min-w-screen min-h-screen">

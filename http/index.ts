@@ -34,8 +34,14 @@ http.interceptors.response.use(
         title: 'Oops...',
         text: error.message,
       })
+    } else if (error.response.status === 500) {
+      Modal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: error.message,
+      })
     }
-    Promise.reject(error)
+    // Promise.reject(error)
   }
 )
 

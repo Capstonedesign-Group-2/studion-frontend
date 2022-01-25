@@ -1,38 +1,17 @@
-import React from "react"
-import Router from "next/router"
+import React, { useCallback } from "react"
 
 import { Modal } from "../common/modals"
-import styles from '../../styles/play/play.module.scss'
-import { Room } from "../../redux/slices/room"
+import EnterForm from "./EnterForm"
 
 const RoomBox = ({ room }: { room: Room }) => {
-  const onShowRoom = () => {
+
+  const onShowRoom = useCallback(() => {
     Modal.fire({
       title: <p>{room.title}</p>,
-      html: (
-        <div className={styles.showRoom}>
-          <p>参加者：{room.users.length}名</p>
-          <p className="flex gap-4 justify-center">
-            {room.users.map(user => (
-              <span key={user.id}>{user.user.name}</span>
-            ))}
-          </p>
-          <p className="text-left break-all">
-            {room.content}
-          </p>
-          <button onClick={onEnterRoom}>入場</button>
-        </div>
-      ),
+      html: <EnterForm room={room} />,
       showConfirmButton: false,
     })
-  }
-
-  const onEnterRoom = () => {
-    // 비밀번호가 있으면 체크
-    
-    Router.push(`/room/${room.id}`)
-    Modal.close()
-  }
+  }, [room])
 
   return (
     <div className="flex flex-col relative rounded-lg items-center group hover:cursor-pointer"

@@ -1,6 +1,6 @@
 import AppLayout from "../components/common/AppLayout"
 import PlayContainer from "../components/play/PlayContainer"
-import { stayLoggedIn } from "../http/auth"
+import { stayLoggedIn } from "../http/stay"
 import wrapper from "../redux/store"
 import { getRoomList } from "../redux/actions/room"
 import { useEffect } from "react"
@@ -9,8 +9,10 @@ import { useDispatch } from "react-redux"
 
 const Play = () => {
   const dispatch = useDispatch()
+
   useEffect(() => {
     Socket.onUpdateRoomList(dispatch)
+
     return (() => {
       Socket.removeAllListeners()
     })
