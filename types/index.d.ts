@@ -73,6 +73,6 @@ declare interface RoomsState {
  */
 declare interface WebRTCUser {
   id: string;
-  email: string;
+  name: string;
   stream: MediaStream;
 }

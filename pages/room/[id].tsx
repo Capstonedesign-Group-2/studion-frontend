@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import io from 'socket.io-client'
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import cookie from 'react-cookies'
 
 import ChatSection from "../../components/room/menu/ChatSection"
@@ -12,11 +11,12 @@ import wrapper from "../../redux/store"
 import { stayLoggedIn } from "../../http/stay"
 import { RootState } from "../../redux/slices"
 import Socket from "../../socket"
+import http from "../../http"
 
 const pc_config = {
 	iceServers: [
 		{
-			urls: process.env.NEXT_PUBLIC_ICE_STUN_SERVER as string,
+			urls: process.env.NEXT_PUBLIC_ICE_STUN_SERVER || 'stun:stun.l.google.com:19302',
 		},
 	],
 };
@@ -45,13 +45,9 @@ const Room = () => {
 			if (!Socket.socket) return;
 
 			const data = {
-				token: cookie.load('accessToken'),
 				name: userData?.name,
+				user_id: userData?.id,
 				room: '42',
-				data: {
-					user_id: userData?.id,
-					password: '123'
-				}
 			}
 
 			Socket.joinRoom(data)
@@ -60,13 +56,12 @@ const Room = () => {
 		}
 	}, [userData?.name, userData?.id, cookie.load('accessToken')]);
 
-	const createPeerConnection = useCallback((socketID: string, email: string) => {
+	const createPeerConnection = useCallback((socketID: string, name: string) => {
 		try {
 			const pc = new RTCPeerConnection(pc_config);
 
 			pc.onicecandidate = (e) => {
 				if (!(Socket.socket && e.candidate)) return;
-				console.log('onicecandidate');
 				Socket.socket.emit('candidate', {
 					candidate: e.candidate,
 					candidateSendID: Socket.socket.id,
@@ -85,7 +80,7 @@ const Room = () => {
 						.filter((user) => user.id !== socketID)
 						.concat({
 							id: socketID,
-							email,
+							name,
 							stream: e.streams[0],
 						}),
 				);
@@ -108,15 +103,36 @@ const Room = () => {
 		}
 	}, []);
 
+	const whenUnmounte = () => {
+		console.log('useEffect return exit room');
+		http.post(`/rooms/exit/${42}`, {
+			user_id: userData?.id
+		}).then((res) => {
+			console.log('rooms/exit', res);
+		}).catch((err) => {
+			console.error(err)
+		})
+
+		users.forEach((user) => {
+			if (!pcsRef.current[user.id]) return;
+			pcsRef.current[user.id].close();
+			delete pcsRef.current[user.id];
+		});
+		localStreamRef.current
+			?.getTracks()
+			.forEach(track => track.stop())
+
+		Socket.removeAllListeners()
+	}
+
 	useEffect(() => {
-		Socket.socket = io.connect(process.env.NEXT_PUBLIC_SOCKET_URL || 'stun:stun.l.google.com:19302');
 		getLocalStream();
 
-		Socket.socket.on('all_users', (allUsers: Array<{ id: string; email: string }>) => {
+		Socket.socket.on('all_users', (allUsers: Array<{ id: string; name: string, user_id: number }>) => {
 			console.log('on all_users', allUsers);
-			allUsers.forEach(async (user) => {
+			allUsers.filter(v => v.id !== Socket.socket.id).forEach(async (user) => {
 				if (!localStreamRef.current) return;
-				const pc = createPeerConnection(user.id, user.email);
+				const pc = createPeerConnection(user.id, user.name);
 				if (!(pc && Socket.socket)) return;
 				pcsRef.current = { ...pcsRef.current, [user.id]: pc };
 				try {
@@ -126,10 +142,11 @@ const Room = () => {
 					});
 					console.log('create offer success');
 					await pc.setLocalDescription(new RTCSessionDescription(localSdp));
+					console.log('test', user.id, user.name, Socket.socket.id);
 					Socket.socket.emit('offer', {
 						sdp: localSdp,
 						offerSendID: Socket.socket.id,
-						offerSendEmail: 'offerSendSample@sample.com',
+						offerSendName: user.name,
 						offerReceiveID: user.id,
 					});
 				} catch (e) {
@@ -143,12 +160,12 @@ const Room = () => {
 			async (data: {
 				sdp: RTCSessionDescription;
 				offerSendID: string;
-				offerSendEmail: string;
+				offerSendName: string;
 			}) => {
-				const { sdp, offerSendID, offerSendEmail } = data;
+				const { sdp, offerSendID, offerSendName } = data;
 				console.log('get offer');
 				if (!localStreamRef.current) return;
-				const pc = createPeerConnection(offerSendID, offerSendEmail);
+				const pc = createPeerConnection(offerSendID, offerSendName);
 				if (!(pc && Socket.socket)) return;
 				pcsRef.current = { ...pcsRef.current, [offerSendID]: pc };
 				try {
@@ -199,28 +216,9 @@ const Room = () => {
 			setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id));
 		});
 
-		return () => {
-			console.log('useEffect return exit room');
-
-			const data = {
-				token: cookie.load('accessToken'),
-				roomId: '42',
-				userId: userData?.id
-			}
-
-			Socket.exitRoom(data)
-
-			users.forEach((user) => {
-				if (!pcsRef.current[user.id]) return;
-				pcsRef.current[user.id].close();
-				delete pcsRef.current[user.id];
-			});
-			localStreamRef.current
-				?.getTracks()
-				.forEach(track => track.stop())
-		};
+		return () => whenUnmounte()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [createPeerConnection, getLocalStream]);
+	}, [createPeerConnection, getLocalStream])
 
 	return (
 		<div className="bg-gray-50 min-w-screen min-h-screen">

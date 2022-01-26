@@ -28,11 +28,13 @@ http.interceptors.response.use(
   },
   error => {
     if (error.response.status === 401) {
-      cookie.remove('accessToken')
       Modal.fire({
         icon: 'error',
         title: 'Oops...',
         text: error.message,
+      }).then(() => {
+        cookie.remove('accessToken')
+        window.location.replace('/login')
       })
     } else if (error.response.status === 500) {
       Modal.fire({

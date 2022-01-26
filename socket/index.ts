@@ -3,13 +3,9 @@ import io from 'socket.io-client'
 import { getRoomList } from '../redux/actions/room'
 
 interface JoinData {
-  token: string,
-  name: string,
+  name: string
   room: string
-  data: {
-    user_id: number
-    password: string
-  }
+  user_id: number
 }
 
 interface ExitData {
