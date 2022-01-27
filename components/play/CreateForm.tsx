@@ -64,8 +64,8 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
         password: form.password
       }
 
+      // 합주실 생성
       const res = await http.post('/rooms/create', payload)
-      Socket.emitUpdateRoomList()
       console.log(res.data)
       const roomId = res.data.room.id
       Router.push(`/room/${roomId}`)

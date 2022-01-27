@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import cookie from 'react-cookies'
 
 import ChatSection from "../../components/room/menu/ChatSection"
@@ -12,6 +12,7 @@ import { stayLoggedIn } from "../../http/stay"
 import { RootState } from "../../redux/slices"
 import Socket from "../../socket"
 import http from "../../http"
+import PeerVideo from "../../components/room/player/PeerVideo"
 
 const pc_config = {
 	iceServers: [
@@ -38,19 +39,19 @@ const Room = () => {
 					noiseSuppression: false,
 					latency: 0
 				},
-				video: false,
+				video: true,
 			});
 			localStreamRef.current = localStream;
 			if (localVideoRef.current) localVideoRef.current.srcObject = localStream;
 			if (!Socket.socket) return;
 
-			const data = {
+			const joinData = {
 				name: userData?.name,
 				user_id: userData?.id,
 				room: '42',
 			}
 
-			Socket.joinRoom(data)
+			Socket.joinRoom(joinData)
 		} catch (e) {
 			console.log(`getUserMedia error: ${e}`);
 		}
@@ -74,7 +75,7 @@ const Room = () => {
 			};
 
 			pc.ontrack = (e) => {
-				console.log('ontrack success');
+				console.log('ontrack success', e);
 				setUsers((oldUsers) =>
 					oldUsers
 						.filter((user) => user.id !== socketID)
@@ -103,16 +104,21 @@ const Room = () => {
 		}
 	}, []);
 
+	// useEffect return
 	const whenUnmounte = () => {
 		console.log('useEffect return exit room');
+
+		// 합주실 나가기
 		http.post(`/rooms/exit/${42}`, {
 			user_id: userData?.id
 		}).then((res) => {
-			console.log('rooms/exit', res);
+			console.log(`rooms/exit/${42}`, res)
+			Socket.emitUpdateRoomList()
 		}).catch((err) => {
 			console.error(err)
 		})
 
+		// 연결 끊기
 		users.forEach((user) => {
 			if (!pcsRef.current[user.id]) return;
 			pcsRef.current[user.id].close();
@@ -122,103 +128,122 @@ const Room = () => {
 			?.getTracks()
 			.forEach(track => track.stop())
 
+		// 소켓 이벤트 제거
 		Socket.removeAllListeners()
 	}
 
 	useEffect(() => {
-		getLocalStream();
+		// 합주실에 이미 있을경우 제거
 
-		Socket.socket.on('all_users', (allUsers: Array<{ id: string; name: string, user_id: number }>) => {
-			console.log('on all_users', allUsers);
-			allUsers.filter(v => v.id !== Socket.socket.id).forEach(async (user) => {
-				if (!localStreamRef.current) return;
-				const pc = createPeerConnection(user.id, user.name);
-				if (!(pc && Socket.socket)) return;
-				pcsRef.current = { ...pcsRef.current, [user.id]: pc };
-				try {
-					const localSdp = await pc.createOffer({
-						offerToReceiveAudio: true,
-						offerToReceiveVideo: false,
-					});
-					console.log('create offer success');
-					await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-					console.log('test', user.id, user.name, Socket.socket.id);
-					Socket.socket.emit('offer', {
-						sdp: localSdp,
-						offerSendID: Socket.socket.id,
-						offerSendName: user.name,
-						offerReceiveID: user.id,
-					});
-				} catch (e) {
-					console.error(e);
-				}
+		// 합주실 입장
+		http.post(`/rooms/enter/${42}`, {
+			user_id: userData?.id,
+			password: "123"
+		}).then((res) => {
+			Socket.emitUpdateRoomList()
+			console.log(`/rooms/enter/${42}`, res)
+
+			getLocalStream();
+
+			Socket.socket.on('all_users', (allUsers: Array<{ id: string; name: string, user_id: number }>) => {
+				console.log('on all_users', allUsers, Socket.socket.id);
+				allUsers.forEach(async (user) => {
+					if (!localStreamRef.current) return;
+					const pc = createPeerConnection(user.id, user.name);
+					if (!(pc && Socket.socket)) return;
+					pcsRef.current = { ...pcsRef.current, [user.id]: pc };
+					try {
+						const localSdp = await pc.createOffer({
+							offerToReceiveAudio: true,
+							offerToReceiveVideo: true,
+						});
+						console.log('create offer success');
+						await pc.setLocalDescription(new RTCSessionDescription(localSdp));
+						console.log('test', user.id, user.name, Socket.socket.id);
+						Socket.socket.emit('offer', {
+							sdp: localSdp,
+							offerSendID: Socket.socket.id,
+							offerSendName: userData?.name,
+							offerReceiveID: user.id,
+						});
+					} catch (e) {
+						console.error(e);
+					}
+				});
 			});
-		});
 
-		Socket.socket.on(
-			'getOffer',
-			async (data: {
-				sdp: RTCSessionDescription;
-				offerSendID: string;
-				offerSendName: string;
-			}) => {
-				const { sdp, offerSendID, offerSendName } = data;
-				console.log('get offer');
-				if (!localStreamRef.current) return;
-				const pc = createPeerConnection(offerSendID, offerSendName);
-				if (!(pc && Socket.socket)) return;
-				pcsRef.current = { ...pcsRef.current, [offerSendID]: pc };
-				try {
-					await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-					console.log('answer set remote description success');
-					const localSdp = await pc.createAnswer({
-						offerToReceiveVideo: false,
-						offerToReceiveAudio: true,
-					});
-					await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-					Socket.socket.emit('answer', {
-						sdp: localSdp,
-						answerSendID: Socket.socket.id,
-						answerReceiveID: offerSendID,
-					});
-				} catch (e) {
-					console.error(e);
-				}
-			},
-		);
+			Socket.socket.on(
+				'getOffer',
+				async (data: {
+					sdp: RTCSessionDescription;
+					offerSendID: string;
+					offerSendName: string;
+				}) => {
+					const { sdp, offerSendID, offerSendName } = data;
+					console.log('get offer');
+					if (!localStreamRef.current) return;
+					const pc = createPeerConnection(offerSendID, offerSendName);
+					if (!(pc && Socket.socket)) return;
+					pcsRef.current = { ...pcsRef.current, [offerSendID]: pc };
+					try {
+						await pc.setRemoteDescription(new RTCSessionDescription(sdp));
+						console.log('answer set remote description success');
+						const localSdp = await pc.createAnswer({
+							offerToReceiveVideo: true,
+							offerToReceiveAudio: true,
+						});
+						await pc.setLocalDescription(new RTCSessionDescription(localSdp));
+						Socket.socket.emit('answer', {
+							sdp: localSdp,
+							answerSendID: Socket.socket.id,
+							answerReceiveID: offerSendID,
+						});
+					} catch (e) {
+						console.error(e);
+					}
+				},
+			);
 
-		Socket.socket.on(
-			'getAnswer',
-			(data: { sdp: RTCSessionDescription; answerSendID: string }) => {
-				const { sdp, answerSendID } = data;
-				console.log('get answer');
-				const pc: RTCPeerConnection = pcsRef.current[answerSendID];
-				if (!pc) return;
-				pc.setRemoteDescription(new RTCSessionDescription(sdp));
-			},
-		);
+			Socket.socket.on(
+				'getAnswer',
+				(data: { sdp: RTCSessionDescription; answerSendID: string }) => {
+					const { sdp, answerSendID } = data;
+					console.log('get answer');
+					const pc: RTCPeerConnection = pcsRef.current[answerSendID];
+					if (!pc) return;
+					pc.setRemoteDescription(new RTCSessionDescription(sdp));
+				},
+			);
 
-		Socket.socket.on(
-			'getCandidate',
-			async (data: { candidate: RTCIceCandidateInit; candidateSendID: string }) => {
-				console.log('get candidate');
-				const pc: RTCPeerConnection = pcsRef.current[data.candidateSendID];
-				if (!pc) return;
-				await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-				console.log('candidate add success');
-			},
-		);
+			Socket.socket.on(
+				'getCandidate',
+				async (data: { candidate: RTCIceCandidateInit; candidateSendID: string }) => {
+					console.log('get candidate');
+					const pc: RTCPeerConnection = pcsRef.current[data.candidateSendID];
+					if (!pc) return;
+					await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+					console.log('candidate add success');
+				},
+			);
 
-		Socket.socket.on('user_exit', (data: { id: string }) => {
-			if (!pcsRef.current[data.id]) return;
-			pcsRef.current[data.id].close();
-			delete pcsRef.current[data.id];
-			setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id));
-		});
+			Socket.socket.on('user_exit', (data: { id: string }) => {
+				if (!pcsRef.current[data.id]) return;
+				pcsRef.current[data.id].close();
+				delete pcsRef.current[data.id];
+				setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id));
+			});
+		}).
+			catch((err) => {
+				console.error(err)
+			})
 
 		return () => whenUnmounte()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [createPeerConnection, getLocalStream])
+	}, [])
+
+	useEffect(() => {
+		console.log('users', users);
+	}, [users])
 
 	return (
 		<div className="bg-gray-50 min-w-screen min-h-screen">
@@ -239,6 +264,9 @@ const Room = () => {
 					<div className="w-full py-7 md:px-4">
 						<RoomInfoSection />
 					</div>
+					{users && users.map(v => (
+						<PeerVideo key={v.id} name={v.name} stream={v.stream} />
+					))}
 					<ChatSection />
 				</div>
 			)}

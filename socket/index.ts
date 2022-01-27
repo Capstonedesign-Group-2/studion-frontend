@@ -2,19 +2,19 @@ import { Dispatch } from '@reduxjs/toolkit'
 import io from 'socket.io-client'
 import { getRoomList } from '../redux/actions/room'
 
-interface JoinData {
+export interface JoinData {
   name: string
   room: string
   user_id: number
 }
 
-interface ExitData {
+export interface ExitData {
   token: string
   roomId: string
   userId: number
 }
 
-export class Socket {
+class Socket {
   URL: string
   socket: SocketIOClient.Socket
 
