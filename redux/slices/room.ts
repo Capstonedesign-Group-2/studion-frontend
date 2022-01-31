@@ -5,6 +5,7 @@ import { getRoomList } from '../actions/room';
 const initialState = {
   socket: null,
   roomList: [],
+  channelList: [],
 
   getRoomListError: null,
 } as RoomsState;
@@ -15,7 +16,7 @@ const roomSlice = createSlice({
   reducers: {
     setSocket(state, action) {
       state.socket = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder

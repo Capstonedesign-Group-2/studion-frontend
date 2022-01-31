@@ -12,7 +12,6 @@ import { stayLoggedIn } from "../../http/stay"
 import { RootState } from "../../redux/slices"
 import Socket from "../../socket"
 import http from "../../http"
-import PeerVideo from "../../components/room/player/PeerVideo"
 
 const pc_config = {
 	iceServers: [
@@ -20,15 +19,21 @@ const pc_config = {
 			urls: process.env.NEXT_PUBLIC_ICE_STUN_SERVER || 'stun:stun.l.google.com:19302',
 		},
 	],
-};
+}
 
 const Room = () => {
 	const [menu, setMenu] = useState<boolean>(true)
 	const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({})
-	const localVideoRef = useRef<HTMLVideoElement>(null)
+	const dcsRef = useRef<{ [userId: string]: RTCDataChannel }>({})
+	const dtcsRef = useRef<{ [channelLabel: string]: RTCDataChannel }>({})
+	const localAudioRef = useRef<HTMLAudioElement>(null)
 	const localStreamRef = useRef<MediaStream>()
 	const [users, setUsers] = useState<WebRTCUser[]>([])
 	const userData = useSelector((state: RootState) => state.user.data)
+
+	const masterGainNode = useRef<GainNode>()
+	const localGainNode = useRef<GainNode>()
+	const audioCtxRef = useRef<AudioContext>()
 
 	const getLocalStream = useCallback(async () => {
 		try {
@@ -39,11 +44,21 @@ const Room = () => {
 					noiseSuppression: false,
 					latency: 0
 				},
-				video: true,
+				video: false,
 			});
-			localStreamRef.current = localStream;
-			if (localVideoRef.current) localVideoRef.current.srcObject = localStream;
-			if (!Socket.socket) return;
+			localStreamRef.current = localStream
+			if (localAudioRef.current) localAudioRef.current.srcObject = localStream
+
+			if (!(audioCtxRef.current && masterGainNode.current)) return
+
+			localGainNode.current = audioCtxRef.current.createGain()
+			let source = audioCtxRef.current.createMediaStreamSource(localStream)
+			source.connect(localGainNode.current)
+			localGainNode.current.connect(masterGainNode.current)
+			localGainNode.current.gain.value = 1
+			console.log('connected local stream at mixer', source)
+
+			if (!Socket.socket) return
 
 			const joinData = {
 				name: userData?.name,
@@ -53,29 +68,29 @@ const Room = () => {
 
 			Socket.joinRoom(joinData)
 		} catch (e) {
-			console.log(`getUserMedia error: ${e}`);
+			console.log(`getUserMedia error: ${e}`)
 		}
-	}, [userData?.name, userData?.id, cookie.load('accessToken')]);
+	}, [userData?.name, userData?.id, cookie.load('accessToken')])
 
 	const createPeerConnection = useCallback((socketID: string, name: string) => {
 		try {
-			const pc = new RTCPeerConnection(pc_config);
+			const pc = new RTCPeerConnection(pc_config)
 
 			pc.onicecandidate = (e) => {
-				if (!(Socket.socket && e.candidate)) return;
+				if (!(Socket.socket && e.candidate)) return
 				Socket.socket.emit('candidate', {
 					candidate: e.candidate,
 					candidateSendID: Socket.socket.id,
 					candidateReceiveID: socketID,
-				});
-			};
+				})
+			}
 
 			pc.oniceconnectionstatechange = (e) => {
-				console.log('on ice connections state change', e);
-			};
+				// console.log('on ice connections state change', e)
+			}
 
 			pc.ontrack = (e) => {
-				console.log('ontrack success', e);
+				// console.log('ontrack success', e)
 				setUsers((oldUsers) =>
 					oldUsers
 						.filter((user) => user.id !== socketID)
@@ -84,29 +99,48 @@ const Room = () => {
 							name,
 							stream: e.streams[0],
 						}),
-				);
-			};
-
-			if (localStreamRef.current) {
-				console.log('localstream add');
-				localStreamRef.current.getTracks().forEach((track) => {
-					if (!localStreamRef.current) return;
-					pc.addTrack(track, localStreamRef.current);
-				});
-			} else {
-				console.log('no local stream');
+				)
 			}
 
-			return pc;
-		} catch (e) {
-			console.error(e);
-			return undefined;
-		}
-	}, []);
+			pc.ondatachannel = (e) => {
+				console.log('Data channel is created!', e.channel)
+				dtcsRef.current = { ...dtcsRef.current, [e.channel.label]: e.channel }
+				e.channel.onopen = () => {
+					e.channel.send('welcome ' + e.channel.label)
+					console.log('datachannel onopen')
+					users.forEach((user) => {
+						dtcsRef.current[`${user.id}_${user.name}`].send('new datachannel open ' + e.channel.label)
+					})
+				}
+			}
 
+			if (localStreamRef.current) {
+				// console.log('localstream add')
+				localStreamRef.current.getTracks().forEach((track) => {
+					if (!localStreamRef.current) return
+					pc.addTrack(track, localStreamRef.current)
+				})
+			} else {
+				// console.log('no local stream')
+			}
+
+			return pc
+		} catch (e) {
+			console.error(e)
+			return undefined
+		}
+	}, [users])
+
+	const sendMessage = () => {
+		console.log(dtcsRef.current, users)
+		users.forEach((user) => {
+			if (!dtcsRef.current[user.id]) return
+			dtcsRef.current[user.id].send('hi')
+		})
+	}
 	// useEffect return
 	const whenUnmounte = () => {
-		console.log('useEffect return exit room');
+		console.log('useEffect return exit room')
 
 		// 합주실 나가기
 		http.post(`/rooms/exit/${42}`, {
@@ -120,9 +154,9 @@ const Room = () => {
 
 		// 연결 끊기
 		users.forEach((user) => {
-			if (!pcsRef.current[user.id]) return;
-			pcsRef.current[user.id].close();
-			delete pcsRef.current[user.id];
+			if (!pcsRef.current[user.id]) return
+			pcsRef.current[user.id].close()
+			delete pcsRef.current[user.id]
 		});
 		localStreamRef.current
 			?.getTracks()
@@ -141,33 +175,56 @@ const Room = () => {
 			password: "123"
 		}).then((res) => {
 			Socket.emitUpdateRoomList()
-			console.log(`/rooms/enter/${42}`, res)
+			// console.log(`/rooms/enter/${42}`, res)
 
-			getLocalStream();
+			// 믹서 세팅
+			audioCtxRef.current = new AudioContext()
+			masterGainNode.current = audioCtxRef.current.createGain()
+			masterGainNode.current.connect(audioCtxRef.current.destination)
+			masterGainNode.current.gain.value = 0.1
+
+			// 유저 스트림
+			getLocalStream()
 
 			Socket.socket.on('all_users', (allUsers: Array<{ id: string; name: string, user_id: number }>) => {
-				console.log('on all_users', allUsers, Socket.socket.id);
+				// console.log('on all_users', allUsers, Socket.socket.id)
 				allUsers.forEach(async (user) => {
-					if (!localStreamRef.current) return;
-					const pc = createPeerConnection(user.id, user.name);
-					if (!(pc && Socket.socket)) return;
-					pcsRef.current = { ...pcsRef.current, [user.id]: pc };
+					if (!localStreamRef.current) return
+
+					// 피어 연결
+					const pc = createPeerConnection(user.id, user.name)
+					if (!(pc && Socket.socket)) return
+					pcsRef.current = { ...pcsRef.current, [user.id]: pc }
+
+					// 데이터 채널 연결
+					const dc = pc.createDataChannel(`${Socket.socket.id}`)
+					dcsRef.current = { ...dcsRef.current, [user.id]: dc }
+					console.log("create new DataChannel", dcsRef.current)
+
+					if (!dcsRef.current[user.id]) return
+					console.log('set data channel onmessage')
+					dcsRef.current[user.id].onmessage = (e) => {
+						console.log('Data Channel Message:', e.data)
+					}
+					console.log('set data channel onmessage success')
+
+					// 오퍼 전송
 					try {
 						const localSdp = await pc.createOffer({
 							offerToReceiveAudio: true,
-							offerToReceiveVideo: true,
-						});
-						console.log('create offer success');
-						await pc.setLocalDescription(new RTCSessionDescription(localSdp));
-						console.log('test', user.id, user.name, Socket.socket.id);
+							offerToReceiveVideo: false,
+						})
+						// console.log('create offer success')
+						await pc.setLocalDescription(new RTCSessionDescription(localSdp))
+						// console.log('test', user.id, user.name, Socket.socket.id)
 						Socket.socket.emit('offer', {
 							sdp: localSdp,
 							offerSendID: Socket.socket.id,
 							offerSendName: userData?.name,
 							offerReceiveID: user.id,
-						});
+						})
 					} catch (e) {
-						console.error(e);
+						console.error(e)
 					}
 				});
 			});
@@ -175,31 +232,31 @@ const Room = () => {
 			Socket.socket.on(
 				'getOffer',
 				async (data: {
-					sdp: RTCSessionDescription;
-					offerSendID: string;
-					offerSendName: string;
+					sdp: RTCSessionDescription
+					offerSendID: string
+					offerSendName: string
 				}) => {
-					const { sdp, offerSendID, offerSendName } = data;
-					console.log('get offer');
-					if (!localStreamRef.current) return;
-					const pc = createPeerConnection(offerSendID, offerSendName);
-					if (!(pc && Socket.socket)) return;
-					pcsRef.current = { ...pcsRef.current, [offerSendID]: pc };
+					const { sdp, offerSendID, offerSendName } = data
+					// console.log('get offer')
+					if (!localStreamRef.current) return
+					const pc = createPeerConnection(offerSendID, offerSendName)
+					if (!(pc && Socket.socket)) return
+					pcsRef.current = { ...pcsRef.current, [offerSendID]: pc }
 					try {
-						await pc.setRemoteDescription(new RTCSessionDescription(sdp));
-						console.log('answer set remote description success');
+						await pc.setRemoteDescription(new RTCSessionDescription(sdp))
+						// console.log('answer set remote description success')
 						const localSdp = await pc.createAnswer({
 							offerToReceiveVideo: true,
-							offerToReceiveAudio: true,
+							offerToReceiveAudio: false,
 						});
-						await pc.setLocalDescription(new RTCSessionDescription(localSdp));
+						await pc.setLocalDescription(new RTCSessionDescription(localSdp))
 						Socket.socket.emit('answer', {
 							sdp: localSdp,
 							answerSendID: Socket.socket.id,
 							answerReceiveID: offerSendID,
-						});
+						})
 					} catch (e) {
-						console.error(e);
+						console.error(e)
 					}
 				},
 			);
@@ -207,31 +264,31 @@ const Room = () => {
 			Socket.socket.on(
 				'getAnswer',
 				(data: { sdp: RTCSessionDescription; answerSendID: string }) => {
-					const { sdp, answerSendID } = data;
-					console.log('get answer');
-					const pc: RTCPeerConnection = pcsRef.current[answerSendID];
-					if (!pc) return;
-					pc.setRemoteDescription(new RTCSessionDescription(sdp));
+					const { sdp, answerSendID } = data
+					// console.log('get answer')
+					const pc: RTCPeerConnection = pcsRef.current[answerSendID]
+					if (!pc) return
+					pc.setRemoteDescription(new RTCSessionDescription(sdp))
 				},
 			);
 
 			Socket.socket.on(
 				'getCandidate',
 				async (data: { candidate: RTCIceCandidateInit; candidateSendID: string }) => {
-					console.log('get candidate');
-					const pc: RTCPeerConnection = pcsRef.current[data.candidateSendID];
-					if (!pc) return;
-					await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-					console.log('candidate add success');
+					// console.log('get candidate')
+					const pc: RTCPeerConnection = pcsRef.current[data.candidateSendID]
+					if (!pc) return
+					await pc.addIceCandidate(new RTCIceCandidate(data.candidate))
+					// console.log('candidate add success')
 				},
 			);
 
 			Socket.socket.on('user_exit', (data: { id: string }) => {
-				if (!pcsRef.current[data.id]) return;
-				pcsRef.current[data.id].close();
-				delete pcsRef.current[data.id];
-				setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id));
-			});
+				if (!pcsRef.current[data.id]) return
+				pcsRef.current[data.id].close()
+				delete pcsRef.current[data.id]
+				setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id))
+			})
 		}).
 			catch((err) => {
 				console.error(err)
@@ -241,8 +298,18 @@ const Room = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
+	// 유저(채널)이 바뀔때마다 믹서 설정
 	useEffect(() => {
-		console.log('users', users);
+		console.log(users)
+		users.map((user) => {
+			let userSource = audioCtxRef.current?.createMediaStreamSource(user.stream)
+			console.log('set mixer', userSource)
+
+			if (!masterGainNode.current) return
+			user.gain = audioCtxRef.current?.createGain()
+			userSource?.connect(user.gain as GainNode)
+			userSource?.connect(masterGainNode.current)
+		})
 	}, [users])
 
 	return (
@@ -264,9 +331,7 @@ const Room = () => {
 					<div className="w-full py-7 md:px-4">
 						<RoomInfoSection />
 					</div>
-					{users && users.map(v => (
-						<PeerVideo key={v.id} name={v.name} stream={v.stream} />
-					))}
+					<button onClick={() => sendMessage()}>send</button>
 					<ChatSection />
 				</div>
 			)}
@@ -275,7 +340,7 @@ const Room = () => {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
-	await stayLoggedIn(context, store);
+	await stayLoggedIn(context, store)
 	return { props: {} }
 })
 

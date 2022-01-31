@@ -72,7 +72,14 @@ declare interface RoomsState {
  * pages/room/[id]
  */
 declare interface WebRTCUser {
-  id: string;
-  name: string;
-  stream: MediaStream;
+  id: string
+  name: string
+  stream: MediaStream
+  gain?: GainNode
+}
+
+declare interface MixerState {
+  masterGainNode: GainNode | null
+  localGainNode: GainNode | null
+  channels: WebRTCUser[]
 }
