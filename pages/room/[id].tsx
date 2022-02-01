@@ -25,7 +25,6 @@ const Room = () => {
 	const [menu, setMenu] = useState<boolean>(true)
 	const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({})
 	const dcsRef = useRef<{ [userId: string]: RTCDataChannel }>({})
-	const dtcsRef = useRef<{ [channelLabel: string]: RTCDataChannel }>({})
 	const localAudioRef = useRef<HTMLAudioElement>(null)
 	const localStreamRef = useRef<MediaStream>()
 	const [users, setUsers] = useState<WebRTCUser[]>([])
@@ -76,6 +75,7 @@ const Room = () => {
 		try {
 			const pc = new RTCPeerConnection(pc_config)
 
+
 			pc.onicecandidate = (e) => {
 				if (!(Socket.socket && e.candidate)) return
 				Socket.socket.emit('candidate', {
@@ -103,14 +103,10 @@ const Room = () => {
 			}
 
 			pc.ondatachannel = (e) => {
-				console.log('Data channel is created!', e.channel)
-				dtcsRef.current = { ...dtcsRef.current, [e.channel.label]: e.channel }
-				e.channel.onopen = () => {
-					e.channel.send('welcome ' + e.channel.label)
-					console.log('datachannel onopen')
-					users.forEach((user) => {
-						dtcsRef.current[`${user.id}_${user.name}`].send('new datachannel open ' + e.channel.label)
-					})
+				console.log('datachannel event:', e);
+				if (e.type === 'datachannel') {
+					initDataChannel(e.channel);
+					dcsRef.current = { ...dcsRef.current, [e.channel.label]: e.channel }
 				}
 			}
 
@@ -131,13 +127,44 @@ const Room = () => {
 		}
 	}, [users])
 
+	const openDataChannel = (pc: RTCPeerConnection) => {
+		console.log('try to open datachannel');
+		try {
+			let dc = pc.createDataChannel(`${Socket.socket.id}`);
+			return initDataChannel(dc)
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	const initDataChannel = (dc: RTCDataChannel) => {
+		dc.onerror = (err) => {
+			console.log('datachannel error : ' + err);
+		}
+
+		dc.onmessage = (e) => {
+			console.log('received dc data : ' + e.data);
+		}
+
+		dc.onopen = (e) => {
+			console.log('dc is opened', e);
+		}
+
+		dc.onclose = (e) => {
+			console.log('dc is disconnected', e);
+		}
+
+		return dc
+	}
+
 	const sendMessage = () => {
-		console.log(dtcsRef.current, users)
+		console.log(dcsRef.current, Socket.socket.id)
 		users.forEach((user) => {
-			if (!dtcsRef.current[user.id]) return
-			dtcsRef.current[user.id].send('hi')
+			if (!dcsRef.current[user.id]) return
+			dcsRef.current[user.id].send('hi')
 		})
 	}
+
 	// useEffect return
 	const whenUnmounte = () => {
 		console.log('useEffect return exit room')
@@ -173,7 +200,7 @@ const Room = () => {
 		http.post(`/rooms/enter/${42}`, {
 			user_id: userData?.id,
 			password: "123"
-		}).then((res) => {
+		}).then(() => {
 			Socket.emitUpdateRoomList()
 			// console.log(`/rooms/enter/${42}`, res)
 
@@ -197,16 +224,8 @@ const Room = () => {
 					pcsRef.current = { ...pcsRef.current, [user.id]: pc }
 
 					// 데이터 채널 연결
-					const dc = pc.createDataChannel(`${Socket.socket.id}`)
-					dcsRef.current = { ...dcsRef.current, [user.id]: dc }
-					console.log("create new DataChannel", dcsRef.current)
-
-					if (!dcsRef.current[user.id]) return
-					console.log('set data channel onmessage')
-					dcsRef.current[user.id].onmessage = (e) => {
-						console.log('Data Channel Message:', e.data)
-					}
-					console.log('set data channel onmessage success')
+					const dc = openDataChannel(pc)
+					dcsRef.current = { ...dcsRef.current, [user.id]: dc as RTCDataChannel }
 
 					// 오퍼 전송
 					try {
@@ -287,6 +306,8 @@ const Room = () => {
 				if (!pcsRef.current[data.id]) return
 				pcsRef.current[data.id].close()
 				delete pcsRef.current[data.id]
+				dcsRef.current[data.id].close()
+				delete dcsRef.current[data.id]
 				setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id))
 			})
 		}).
@@ -300,10 +321,8 @@ const Room = () => {
 
 	// 유저(채널)이 바뀔때마다 믹서 설정
 	useEffect(() => {
-		console.log(users)
 		users.map((user) => {
 			let userSource = audioCtxRef.current?.createMediaStreamSource(user.stream)
-			console.log('set mixer', userSource)
 
 			if (!masterGainNode.current) return
 			user.gain = audioCtxRef.current?.createGain()
