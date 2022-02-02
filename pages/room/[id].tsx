@@ -12,6 +12,7 @@ import { stayLoggedIn } from "../../http/stay"
 import { RootState } from "../../redux/slices"
 import Socket from "../../socket"
 import http from "../../http"
+import { Channel } from "../../components/room/player/mixer/Channel"
 
 const pc_config = {
 	iceServers: [
@@ -27,12 +28,15 @@ const Room = () => {
 	const dcsRef = useRef<{ [userId: string]: RTCDataChannel }>({})
 	const localAudioRef = useRef<HTMLAudioElement>(null)
 	const localStreamRef = useRef<MediaStream>()
-	const [users, setUsers] = useState<WebRTCUser[]>([])
+	const [channels, setChannels] = useState<Channel[]>([])
 	const userData = useSelector((state: RootState) => state.user.data)
 
 	const masterGainNode = useRef<GainNode>()
 	const localGainNode = useRef<GainNode>()
 	const audioCtxRef = useRef<AudioContext>()
+
+	const masterGain = useSelector<RootState, number>(state => state.mixer.masterGain)
+	const localGain = useSelector<RootState, number>(state => state.mixer.localGain)
 
 	const getLocalStream = useCallback(async () => {
 		try {
@@ -55,7 +59,7 @@ const Room = () => {
 			source.connect(localGainNode.current)
 			localGainNode.current.connect(masterGainNode.current)
 			localGainNode.current.gain.value = 1
-			console.log('connected local stream at mixer', source)
+			// console.log('connected local stream at mixer', source)
 
 			if (!Socket.socket) return
 
@@ -71,7 +75,7 @@ const Room = () => {
 		}
 	}, [userData?.name, userData?.id, cookie.load('accessToken')])
 
-	const createPeerConnection = useCallback((socketID: string, name: string) => {
+	const createPeerConnection = useCallback((socketId: string, name: string) => {
 		try {
 			const pc = new RTCPeerConnection(pc_config)
 
@@ -81,7 +85,7 @@ const Room = () => {
 				Socket.socket.emit('candidate', {
 					candidate: e.candidate,
 					candidateSendID: Socket.socket.id,
-					candidateReceiveID: socketID,
+					candidateReceiveID: socketId,
 				})
 			}
 
@@ -90,15 +94,10 @@ const Room = () => {
 			}
 
 			pc.ontrack = (e) => {
-				// console.log('ontrack success', e)
-				setUsers((oldUsers) =>
-					oldUsers
-						.filter((user) => user.id !== socketID)
-						.concat({
-							id: socketID,
-							name,
-							stream: e.streams[0],
-						}),
+				setChannels((oldChannels) =>
+					oldChannels
+						.filter((channel) => channel.socketId !== socketId)
+						.concat(new Channel(socketId, name, e.streams[0])),
 				)
 			}
 
@@ -125,7 +124,7 @@ const Room = () => {
 			console.error(e)
 			return undefined
 		}
-	}, [users])
+	}, [])
 
 	const openDataChannel = (pc: RTCPeerConnection) => {
 		console.log('try to open datachannel');
@@ -159,9 +158,9 @@ const Room = () => {
 
 	const sendMessage = () => {
 		console.log(dcsRef.current, Socket.socket.id)
-		users.forEach((user) => {
-			if (!dcsRef.current[user.id]) return
-			dcsRef.current[user.id].send('hi')
+		channels.forEach((channel) => {
+			if (!dcsRef.current[channel.socketId]) return
+			dcsRef.current[channel.socketId].send('hi')
 		})
 	}
 
@@ -180,10 +179,10 @@ const Room = () => {
 		})
 
 		// 연결 끊기
-		users.forEach((user) => {
-			if (!pcsRef.current[user.id]) return
-			pcsRef.current[user.id].close()
-			delete pcsRef.current[user.id]
+		channels.forEach((channel) => {
+			if (!pcsRef.current[channel.socketId]) return
+			pcsRef.current[channel.socketId].close()
+			delete pcsRef.current[channel.socketId]
 		});
 		localStreamRef.current
 			?.getTracks()
@@ -308,7 +307,7 @@ const Room = () => {
 				delete pcsRef.current[data.id]
 				dcsRef.current[data.id].close()
 				delete dcsRef.current[data.id]
-				setUsers((oldUsers) => oldUsers.filter((user) => user.id !== data.id))
+				setChannels((oldChannles) => oldChannles.filter((channel) => channel.socketId !== data.id))
 			})
 		}).
 			catch((err) => {
@@ -321,15 +320,25 @@ const Room = () => {
 
 	// 유저(채널)이 바뀔때마다 믹서 설정
 	useEffect(() => {
-		users.map((user) => {
-			let userSource = audioCtxRef.current?.createMediaStreamSource(user.stream)
+		channels.map((channel) => {
+			let userSource = audioCtxRef.current?.createMediaStreamSource(channel.stream)
 
-			if (!masterGainNode.current) return
-			user.gain = audioCtxRef.current?.createGain()
-			userSource?.connect(user.gain as GainNode)
+			if (!(masterGainNode.current && audioCtxRef.current)) return
+			channel.setGainNode(audioCtxRef.current.createGain() as GainNode)
+			userSource?.connect(channel.gainNode as GainNode)
 			userSource?.connect(masterGainNode.current)
 		})
-	}, [users])
+		console.log('set channels', channels);
+	}, [channels])
+
+	// 믹서 세팅
+	useEffect(() => {
+		if (!masterGainNode.current) return
+		masterGainNode.current.gain.value = masterGain
+
+		if (!localGainNode.current) return
+		localGainNode.current.gain.value = localGain
+	}, [masterGain, localGain])
 
 	return (
 		<div className="bg-gray-50 min-w-screen min-h-screen">

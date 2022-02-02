@@ -1,3 +1,5 @@
+import { Channel } from "../components/room/player/mixer/Channel";
+
 /**
  * redux/slice/user
  */
@@ -79,7 +81,7 @@ declare interface WebRTCUser {
 }
 
 declare interface MixerState {
-  masterGainNode: GainNode | null
-  localGainNode: GainNode | null
-  channels: WebRTCUser[]
+  masterGain: number
+  localGain: number
+  channels: Channel[]
 }

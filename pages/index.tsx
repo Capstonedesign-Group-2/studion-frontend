@@ -1,20 +1,12 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 
 import AppLayout from '../components/common/AppLayout'
 import MainSection from '../components/main/MainContainer'
 import { stayLoggedIn } from '../http/stay'
-import { getUser } from '../redux/actions/user'
 import wrapper from '../redux/store'
 
 const Home: NextPage = () => {
-  // const dispatch = useDispatch()
-  // useEffect(() => {
-  //   dispatch(getUser())
-  // })
-
   return (
     <div>
       <Head>

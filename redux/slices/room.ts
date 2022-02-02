@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { RoomsState } from '../../types';
 
 import { getRoomList } from '../actions/room';
 

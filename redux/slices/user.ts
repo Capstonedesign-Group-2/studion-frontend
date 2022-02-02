@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { UsersState } from '../../types';
 
 import { getUser, logIn, logOut, signUp } from '../actions/user'
 

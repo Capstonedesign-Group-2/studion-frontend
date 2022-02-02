@@ -1,21 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { MixerState } from '../../types';
 
 const initialState = {
-  masterGainNode: null,
-  localGainNode: null,
-  channels: [], // users
-
+  masterGain: 1,
+  localGain: 1,
+  channels: [],
 } as MixerState;
 
 const mixerSlice = createSlice({
   name: 'mixer',
   initialState,
   reducers: {
-    setMasterGainNode(state, action) {
-      state.masterGainNode = action.payload;
+    setMasterGain(state, action) {
+      state.masterGain = action.payload;
     },
-    setLocalGainNode(state, action) {
-      state.localGainNode = action.payload;
+    setLocalGain(state, action) {
+      state.localGain = action.payload;
+    },
+    setChannels(state, action) {
+      state.channels = state.channels.concat(action.payload)
     }
   },
 });
