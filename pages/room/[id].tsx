@@ -12,7 +12,7 @@ import { stayLoggedIn } from "../../http/stay"
 import { RootState } from "../../redux/slices"
 import Socket from "../../socket"
 import http from "../../http"
-import { Channel } from "../../components/room/player/mixer/Channel"
+import Mixer, { Channel } from "../../components/room/player/mixer/Mixer"
 
 const pc_config = {
 	iceServers: [
@@ -23,20 +23,16 @@ const pc_config = {
 }
 
 const Room = () => {
+	const userData = useSelector((state: RootState) => state.user.data)
 	const [menu, setMenu] = useState<boolean>(true)
+
+	// webRTC
 	const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({})
 	const dcsRef = useRef<{ [userId: string]: RTCDataChannel }>({})
-	const localAudioRef = useRef<HTMLAudioElement>(null)
+
+	// mixer
+	const mixerRef = useRef<Mixer>()
 	const localStreamRef = useRef<MediaStream>()
-	const [channels, setChannels] = useState<Channel[]>([])
-	const userData = useSelector((state: RootState) => state.user.data)
-
-	const masterGainNode = useRef<GainNode>()
-	const localGainNode = useRef<GainNode>()
-	const audioCtxRef = useRef<AudioContext>()
-
-	const masterGain = useSelector<RootState, number>(state => state.mixer.masterGain)
-	const localGain = useSelector<RootState, number>(state => state.mixer.localGain)
 
 	const getLocalStream = useCallback(async () => {
 		try {
@@ -50,16 +46,9 @@ const Room = () => {
 				video: false,
 			});
 			localStreamRef.current = localStream
-			if (localAudioRef.current) localAudioRef.current.srcObject = localStream
-
-			if (!(audioCtxRef.current && masterGainNode.current)) return
-
-			localGainNode.current = audioCtxRef.current.createGain()
-			let source = audioCtxRef.current.createMediaStreamSource(localStream)
-			source.connect(localGainNode.current)
-			localGainNode.current.connect(masterGainNode.current)
-			localGainNode.current.gain.value = 1
-			// console.log('connected local stream at mixer', source)
+			if (!mixerRef.current) return
+			mixerRef.current.addNewChannel(new Channel(userData.name, Socket.socket.id, localStream))
+			console.log('set local channel', mixerRef.current);
 
 			if (!Socket.socket) return
 
@@ -94,11 +83,8 @@ const Room = () => {
 			}
 
 			pc.ontrack = (e) => {
-				setChannels((oldChannels) =>
-					oldChannels
-						.filter((channel) => channel.socketId !== socketId)
-						.concat(new Channel(socketId, name, e.streams[0])),
-				)
+				mixerRef.current?.addNewChannel(new Channel(name, socketId, e.streams[0]))
+				console.log('add new channel', mixerRef.current);
 			}
 
 			pc.ondatachannel = (e) => {
@@ -157,8 +143,8 @@ const Room = () => {
 	}
 
 	const sendMessage = () => {
-		console.log(dcsRef.current, Socket.socket.id)
-		channels.forEach((channel) => {
+		// console.log(mixerRef.current?.channels);
+		mixerRef.current?.channels.forEach((channel) => {
 			if (!dcsRef.current[channel.socketId]) return
 			dcsRef.current[channel.socketId].send('hi')
 		})
@@ -179,7 +165,7 @@ const Room = () => {
 		})
 
 		// 연결 끊기
-		channels.forEach((channel) => {
+		mixerRef.current?.channels.forEach((channel) => {
 			if (!pcsRef.current[channel.socketId]) return
 			pcsRef.current[channel.socketId].close()
 			delete pcsRef.current[channel.socketId]
@@ -187,6 +173,9 @@ const Room = () => {
 		localStreamRef.current
 			?.getTracks()
 			.forEach(track => track.stop())
+
+		// 나감 이벤트
+		Socket.exitRoom()
 
 		// 소켓 이벤트 제거
 		Socket.removeAllListeners()
@@ -204,10 +193,8 @@ const Room = () => {
 			// console.log(`/rooms/enter/${42}`, res)
 
 			// 믹서 세팅
-			audioCtxRef.current = new AudioContext()
-			masterGainNode.current = audioCtxRef.current.createGain()
-			masterGainNode.current.connect(audioCtxRef.current.destination)
-			masterGainNode.current.gain.value = 0.1
+			mixerRef.current = new Mixer(new AudioContext)
+			console.log('new mixer', mixerRef.current);
 
 			// 유저 스트림
 			getLocalStream()
@@ -307,7 +294,7 @@ const Room = () => {
 				delete pcsRef.current[data.id]
 				dcsRef.current[data.id].close()
 				delete dcsRef.current[data.id]
-				setChannels((oldChannles) => oldChannles.filter((channel) => channel.socketId !== data.id))
+				mixerRef.current?.deleteChannel(data.id)
 			})
 		}).
 			catch((err) => {
@@ -317,28 +304,6 @@ const Room = () => {
 		return () => whenUnmounte()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
-
-	// 유저(채널)이 바뀔때마다 믹서 설정
-	useEffect(() => {
-		channels.map((channel) => {
-			let userSource = audioCtxRef.current?.createMediaStreamSource(channel.stream)
-
-			if (!(masterGainNode.current && audioCtxRef.current)) return
-			channel.setGainNode(audioCtxRef.current.createGain() as GainNode)
-			userSource?.connect(channel.gainNode as GainNode)
-			userSource?.connect(masterGainNode.current)
-		})
-		console.log('set channels', channels);
-	}, [channels])
-
-	// 믹서 세팅
-	useEffect(() => {
-		if (!masterGainNode.current) return
-		masterGainNode.current.gain.value = masterGain
-
-		if (!localGainNode.current) return
-		localGainNode.current.gain.value = localGain
-	}, [masterGain, localGain])
 
 	return (
 		<div className="bg-gray-50 min-w-screen min-h-screen">

@@ -1,6 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit'
 import io from 'socket.io-client'
 import { getRoomList } from '../redux/actions/room'
+import { User } from '../types'
 
 export interface JoinData {
   name: string
@@ -49,8 +50,8 @@ class Socket {
   }
 
   // 합주실 퇴장
-  exitRoom(data: ExitData) {
-    this.socket.emit('exit', data)
+  exitRoom() {
+    this.socket.emit('exit_room')
   }
 
   // WebRTC Peer Connection
