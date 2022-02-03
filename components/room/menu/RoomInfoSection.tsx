@@ -8,7 +8,7 @@ const RoomInfoSection = () => {
 
   const onEditBtn = useCallback(() => {
     Modal.fire({
-      html: <RoomEditForm/>,
+      html: <RoomEditForm />,
       showConfirmButton: false
     })
   }, [])
@@ -19,7 +19,7 @@ const RoomInfoSection = () => {
       <div className="flex justify-between px-6 py-4 text-xl font-medium text-gray-900">
         <div>
           <button className="mr-4 duration-150 text-studion-500"
-            style={{ transform: showInfo? '' : 'rotate(-90deg)' }}
+            style={{ transform: showInfo ? '' : 'rotate(-90deg)' }}
             onClick={() => setShowInfo(!showInfo)}
           >
             ▽

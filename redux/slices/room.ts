@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { RoomsState } from '../../types';
 
+import { RoomsState } from '../../types';
 import { getRoomList } from '../actions/room';
 
 const initialState = {
-  socket: null,
   roomList: [],
   channelList: [],
+  users: [],
 
   getRoomListError: null,
 } as RoomsState;
@@ -15,9 +15,12 @@ const roomSlice = createSlice({
   name: 'room',
   initialState,
   reducers: {
-    setSocket(state, action) {
-      state.socket = action.payload;
+    addUser(state, action) {
+      state.users = state.users.concat(action.payload);
     },
+    deleteUser(state, action) {
+      state.users = state.users.filter(v => v.id !== action.payload.id)
+    }
   },
   extraReducers: (builder) => {
     builder

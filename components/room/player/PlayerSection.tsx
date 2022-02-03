@@ -7,7 +7,7 @@ const PlayerSection = () => {
         # Player List
       </h3>
       <div className="bg-gray-300 drop-shadow-2xl">
-        <MixerContainer/>
+        <MixerContainer />
       </div>
     </div>
   )

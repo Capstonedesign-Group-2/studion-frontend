@@ -65,23 +65,7 @@ declare interface Room {
 }
 
 declare interface RoomsState {
-  socket: SocketIOClient.Socket | null,
   roomList: Array<Room>
   getRoomListError?: null | string
-}
-
-/**
- * pages/room/[id]
- */
-declare interface WebRTCUser {
-  id: string
-  name: string
-  stream: MediaStream
-  gain?: GainNode
-}
-
-declare interface MixerState {
-  masterGain: number
-  localGain: number
-  channels: Channel[]
+  users: { id: string, name: string }[]
 }

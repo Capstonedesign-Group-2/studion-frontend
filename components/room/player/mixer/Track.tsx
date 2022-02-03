@@ -3,7 +3,11 @@ import { useState, useCallback } from 'react'
 
 import { VolumeSlider } from './VolumeSlider'
 
-const Track = () => {
+interface Props {
+  user: { id: string, name: string }
+}
+
+const Track = ({ user }: Props) => {
   const [valume, setValume] = useState<number>(100)
   const [solo, setSolo] = useState<boolean>(false)
   const [mute, setMute] = useState<boolean>(false)
@@ -44,7 +48,7 @@ const Track = () => {
           US
         </div>
         <p className="text-white">
-          name
+          {user?.name}
         </p>
       </div>
 

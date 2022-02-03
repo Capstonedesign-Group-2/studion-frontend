@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useSelector } from "react-redux"
-import cookie from 'react-cookies'
+import { useDispatch, useSelector } from "react-redux"
 
 import ChatSection from "../../components/room/menu/ChatSection"
 import MyInfoSection from "../../components/room/menu/MyInfoSection"
@@ -13,6 +12,7 @@ import { RootState } from "../../redux/slices"
 import Socket from "../../socket"
 import http from "../../http"
 import Mixer, { Channel } from "../../components/room/player/mixer/Mixer"
+import roomSlice from "../../redux/slices/room"
 
 const pc_config = {
 	iceServers: [
@@ -23,7 +23,9 @@ const pc_config = {
 }
 
 const Room = () => {
+	const dispatch = useDispatch()
 	const userData = useSelector((state: RootState) => state.user.data)
+	const users = useSelector<RootState, { id: string, name: string }[]>(state => state.room.users)
 	const [menu, setMenu] = useState<boolean>(true)
 
 	// webRTC
@@ -46,11 +48,13 @@ const Room = () => {
 				video: false,
 			});
 			localStreamRef.current = localStream
-			if (!mixerRef.current) return
-			mixerRef.current.addNewChannel(new Channel(userData.name, Socket.socket.id, localStream))
-			console.log('set local channel', mixerRef.current);
 
-			if (!Socket.socket) return
+			if (!(mixerRef.current && Socket.socket)) return
+
+			console.log('set local channel', mixerRef.current);
+			console.log(Socket.socket);
+			mixerRef.current.addNewChannel(new Channel(userData?.name, Socket.socket.id, localStream))
+			dispatch(roomSlice.actions.addUser({ id: Socket.socket.id, name: userData?.name }))
 
 			const joinData = {
 				name: userData?.name,
@@ -62,12 +66,11 @@ const Room = () => {
 		} catch (e) {
 			console.log(`getUserMedia error: ${e}`)
 		}
-	}, [userData?.name, userData?.id, cookie.load('accessToken')])
+	}, [userData?.name, userData?.id]) // cookie.load('accessToken')
 
 	const createPeerConnection = useCallback((socketId: string, name: string) => {
 		try {
 			const pc = new RTCPeerConnection(pc_config)
-
 
 			pc.onicecandidate = (e) => {
 				if (!(Socket.socket && e.candidate)) return
@@ -83,8 +86,9 @@ const Room = () => {
 			}
 
 			pc.ontrack = (e) => {
-				mixerRef.current?.addNewChannel(new Channel(name, socketId, e.streams[0]))
 				console.log('add new channel', mixerRef.current);
+				mixerRef.current?.addNewChannel(new Channel(name, socketId, e.streams[0]))
+				dispatch(roomSlice.actions.addUser({ id: socketId, name }))
 			}
 
 			pc.ondatachannel = (e) => {
@@ -102,7 +106,7 @@ const Room = () => {
 					pc.addTrack(track, localStreamRef.current)
 				})
 			} else {
-				// console.log('no local stream')
+				console.error('no local stream')
 			}
 
 			return pc
@@ -143,10 +147,10 @@ const Room = () => {
 	}
 
 	const sendMessage = () => {
-		// console.log(mixerRef.current?.channels);
-		mixerRef.current?.channels.forEach((channel) => {
-			if (!dcsRef.current[channel.socketId]) return
-			dcsRef.current[channel.socketId].send('hi')
+		console.log(mixerRef.current?.channels, users);
+		users.forEach(user => {
+			if (!dcsRef.current[user.id]) return
+			dcsRef.current[user.id].send('hi')
 		})
 	}
 
@@ -165,10 +169,10 @@ const Room = () => {
 		})
 
 		// 연결 끊기
-		mixerRef.current?.channels.forEach((channel) => {
-			if (!pcsRef.current[channel.socketId]) return
-			pcsRef.current[channel.socketId].close()
-			delete pcsRef.current[channel.socketId]
+		users.forEach((user) => {
+			if (!pcsRef.current[user.id]) return
+			pcsRef.current[user.id].close()
+			delete pcsRef.current[user.id]
 		});
 		localStreamRef.current
 			?.getTracks()
@@ -193,7 +197,7 @@ const Room = () => {
 			// console.log(`/rooms/enter/${42}`, res)
 
 			// 믹서 세팅
-			mixerRef.current = new Mixer(new AudioContext)
+			mixerRef.current = new Mixer()
 			console.log('new mixer', mixerRef.current);
 
 			// 유저 스트림
@@ -295,6 +299,7 @@ const Room = () => {
 				dcsRef.current[data.id].close()
 				delete dcsRef.current[data.id]
 				mixerRef.current?.deleteChannel(data.id)
+				dispatch(roomSlice.actions.deleteUser(data))
 			})
 		}).
 			catch((err) => {

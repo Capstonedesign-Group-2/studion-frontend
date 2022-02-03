@@ -1,11 +1,11 @@
 export default class Mixer {
-  channels: Channel[]
+  channels: { [SocketId: string]: Channel }
   audioContext: AudioContext
   masterGainNode: GainNode | null
 
-  constructor(audioContext: AudioContext) {
-    this.channels = []
-    this.audioContext = audioContext
+  constructor() {
+    this.channels = {}
+    this.audioContext = new AudioContext
     this.masterGainNode = this.audioContext.createGain()
 
     // 마스터 게인 노드 연결
@@ -26,14 +26,15 @@ export default class Mixer {
       source.connect(newChannel.gainNode)
       newChannel.gainNode.connect(this.masterGainNode)
       newChannel.gainNode.gain.value = 1
-      this.channels = this.channels.concat(newChannel)
+      this.channels[newChannel.socketId] = newChannel
     } else {
       console.error('not gainNode or masterGainNode')
     }
   }
 
   deleteChannel(dataId: string) { // data.id === Socket id
-    this.channels = this.channels.filter((channel) => channel.socketId !== dataId)
+    // this.channels = this.channels.filter((channel) => channel.socketId !== dataId)
+    delete this.channels[dataId]
   }
 }
 
