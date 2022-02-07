@@ -69,3 +69,11 @@ declare interface RoomsState {
   getRoomListError?: null | string
   users: { id: string, name: string }[]
 }
+
+/**
+ * pages/room/[id]
+ */
+declare interface DcData {
+  type: 'drum' | 'piano'
+  content: string
+}

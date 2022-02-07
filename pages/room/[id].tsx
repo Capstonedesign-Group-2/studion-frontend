@@ -13,6 +13,7 @@ import Socket from "../../socket"
 import http from "../../http"
 import Mixer, { Channel } from "../../components/room/player/mixer/Mixer"
 import roomSlice from "../../redux/slices/room"
+import { DcData } from "../../types"
 
 const pc_config = {
 	iceServers: [
@@ -132,7 +133,8 @@ const Room = () => {
 		}
 
 		dc.onmessage = (e) => {
-			console.log('received dc data : ' + e.data);
+			const { type, content } = JSON.parse(e.data)
+			console.log('received dc data : ', content);
 		}
 
 		dc.onopen = (e) => {
@@ -150,7 +152,18 @@ const Room = () => {
 		console.log(mixerRef.current?.channels, users);
 		users.forEach(user => {
 			if (!dcsRef.current[user.id]) return
-			dcsRef.current[user.id].send('hi')
+			const message = {
+				type: 'test',
+				content: 'hi'
+			}
+			dcsRef.current[user.id].send(JSON.stringify(message))
+		})
+	}
+
+	const sendDataToAllUsers = (data: DcData) => {
+		users.forEach(user => {
+			if (!dcsRef.current[user.id]) return
+			dcsRef.current[user.id].send(JSON.stringify(data))
 		})
 	}
 
@@ -319,7 +332,7 @@ const Room = () => {
 			<div className="pt-12 xl:mr-96"
 				style={{ marginRight: menu ? '' : '0px' }}
 			>
-				<RoomContainer />
+				<RoomContainer sendDataToAllUsers={sendDataToAllUsers} />
 			</div>
 
 			{/* 메뉴 */}

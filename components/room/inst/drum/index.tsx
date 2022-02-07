@@ -10,7 +10,7 @@ interface Track {
 }
 
 const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
-  const [playing, setPlaying] = useState<string>('')
+  const [playing, setPlaying] = useState<string[]>([])
   const [tracks, setTracks] = useState<Track[]>([])
   const audioCtxRef = useRef<AudioContext>()
   const gainNode = useRef<GainNode>()
@@ -28,9 +28,9 @@ const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
       audioBufferSourceNode.connect(gainNode.current).connect(audioCtxRef.current.destination)
       audioBufferSourceNode.start()
     }
-    setPlaying(key)
+    setPlaying((prev) => [...prev, key])
     setTimeout(() => {
-      setPlaying('')
+      setPlaying((prev) => prev.filter(v => v === key))
     }, 100)
   }, [tracks])
 
@@ -76,7 +76,7 @@ const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
         <div className="grid grid-cols-3 gap-2 rounded-l-md">
           {DATA && DATA.map((pad) => (
             <div className="flex justify-center items-center text-white bg-studion-300 w-24 h-24 rounded-md duration-75"
-              style={playing === pad.letter ? playingStyle : {}}
+              style={playing.find(v => v === pad.letter) ? playingStyle : {}}
               onClick={() => onPlay(pad.letter)}
               key={pad.id}
             >
