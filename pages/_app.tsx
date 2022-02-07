@@ -6,6 +6,7 @@ import cookie from 'react-cookies'
 import { RootState } from '../redux/slices'
 import wrapper from '../redux/store'
 import { Modal } from '../components/common/modals'
+import Router from 'next/router'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -19,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         confirmButtonColor: '#007E8E',
       }).then(() => {
         cookie.remove('accessToken')
-        window.location.replace('/')
+        Router.push('/login')
       })
     }
   }, [getUserError])
