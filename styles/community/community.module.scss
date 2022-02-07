@@ -1,0 +1,210 @@
+.communityContainer {
+    @apply xl:mx-0 lg:mx-0 mx-auto px-2;
+    .communitySection {
+        @apply max-w-screen-md h-auto;
+    
+        .communityCard {
+            @apply bg-white border-solid border-gray-200 border-2 mb-2 h-auto;
+            width: 35em;
+            .cardUser {
+                @apply flex border-b-gray-100 border-x-white border-t-white border-2 border-solid items-center relative;
+    
+                img {
+                    @apply rounded-full w-9 h-9 m-3;
+                }
+                span {
+                    @apply grow;
+                }
+                svg {
+                    @apply relative right-3 mr-0 grow-0 cursor-pointer ease-in-out duration-200;
+                }
+                svg:hover {
+                    @apply scale-125 ;
+                    
+                }
+                .dropDown {
+                    @apply w-20 absolute right-0 top-10 border-gray-100 border-2 bg-white rounded-md;
+                    animation: dropDown 0.5s;
+                }
+                @keyframes dropDown {
+                    from {top: 0px;}
+                    to {top: 40px;}
+                }
+            }
+            .cardContent {
+                @apply w-full h-auto mb-2;
+                img {
+                    @apply max-h-96 mx-auto flex justify-center bg-studion-200;
+                }
+                audio {
+                    @apply w-full mt-3 px-4; 
+                }
+                article {
+                    @apply text-base pl-2 mt-2 ml-2 break-all;
+                }
+            }
+            .cardComment {
+                @apply flex items-center h-10 ml-4;
+                input {
+                    @apply grow h-6 outline-0;
+                }
+                button {
+                    @apply grow-0 w-14 font-bold text-studion-200 hover:text-studion-300;
+                }
+            }
+            .buttons {
+                @apply flex my-3;
+                svg {
+                    @apply w-5 h-5 ml-4 cursor-pointer;
+                }
+                .svgLike {
+                    @apply text-studion-100 fill-studion-100;
+                }
+                svg:hover {
+                    @apply hover:fill-studion-200 text-studion-200;
+                }
+            }
+        }
+     
+    }
+}
+.createButton {
+    @apply w-full h-6;
+    button {
+        @apply w-24 text-white rounded-lg h-10 bg-studion-300 cursor-pointer ease-in-out duration-200 absolute right-0 top-0;
+    }
+    button:hover {
+        @apply bg-studion-200;
+    }
+}
+.rightSection {
+    @apply w-80 mt-7;
+    .chatSection {
+        @apply w-full bg-white border-gray-200 border-2;
+        .profile {
+            @apply flex items-center;
+            img {
+                @apply rounded-full w-14 h-14 m-3;
+            }
+            span {
+                @apply text-base font-medium;
+            }      
+        }
+        .chatMember {
+            @apply flex items-center hover:bg-gray-200 pl-2;
+            img {
+                @apply rounded-full w-10 h-10 m-2;
+            }
+            .userName {
+                @apply text-base;
+            }
+            .chat {
+                @apply text-xs truncate;
+            }
+        }
+        
+    }
+} 
+
+.createSwal{
+    border-radius: 20px !important; 
+    height: 75vh;
+    min-height: 391px;
+    width: 860px !important;
+    min-width: 688px !important;
+}
+
+
+
+.cardModal {
+    @apply w-auto h-full;
+    .contentContainer {
+        @apply w-full h-full flex justify-center;
+        .imgSection {
+            @apply min-w-min max-w-xl h-auto flex bg-black items-center;
+        }
+        .commentSection {
+            @apply hidden md:block w-1/2 pl-4 h-full;
+            .userInfo {
+                @apply flex items-center w-full;
+                img {
+                    @apply w-9 h-9 m-3 rounded-full;
+                }
+                .id {
+                    @apply justify-self-start font-semibold;
+                }
+            }
+            .userComment {
+                @apply h-full border-2 border-studion-200;
+                .commentScroll {
+                    -ms-overflow-style: none;
+                    // max-height: 27em;
+                    @apply overflow-auto;
+                }
+                .commentScroll::-webkit-scrollbar {
+                    display: none;
+                }
+            }
+            .createComment {
+                @apply relative bottom-0 border-2 border-studion-200;
+                div {
+                    @apply flex w-full h-10 items-center text-sm;
+                    input {
+                        @apply caret-studion-200 hover:ring-studion-200 grow outline-0;
+                    }
+                    button {
+                        @apply grow-0;
+                    }
+                    button:hover {
+                        @apply bg-studion-200 rounded-lg text-studion-200;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.createModal {
+    @apply flex flex-col text-black;
+    header {
+        @apply font-semibold flex justify-center mb-3;
+        p {
+            @apply grow;
+        }
+        button {
+            @apply absolute right-10 grow-0 bg-studion-300 text-white w-12 rounded;
+        }
+    }
+    section {
+        @apply flex-1 flex;
+        .imgPreview {
+            @apply w-7/12 flex items-center justify-center ;
+            height: 66vh;
+            background: black;
+            svg {
+                color:white;
+            }
+            p {
+                color:white;
+            }
+            
+            img {
+                max-width: 100%;
+                max-height: 66vh;
+            }
+        }
+        aside {
+            @apply grow;
+            .content {
+                @apply w-full p-3;
+                textarea {
+                    width: 100%;
+                    min-height: 168px;
+                    resize: none;
+                    outline: none;
+                    font-size: medium;
+                }
+            }
+        }    
+    }
+}
