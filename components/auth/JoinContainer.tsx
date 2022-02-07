@@ -14,7 +14,7 @@ const JoinContainer = () => {
   const dispatch = useDispatch()
   const isSigningUp = useSelector((state: RootState) => state.user.isSigningUP)
   const signupError = useSelector((state: RootState) => state.user.signupError)
-  const userData = useSelector((state: RootState) => state.user.data)
+  const accessToken = useSelector((state: RootState) => state.user.accessToken)
   const [errorMsg, setErrorMsg] = useState('')
   const [form, setForm] = useState({
     name: '',
@@ -39,7 +39,7 @@ const JoinContainer = () => {
     // 유효성 검사
     try {
       await joinValidation.validate(form)
-    } catch(err) {
+    } catch (err) {
       console.error('Join validation error', err)
       if (err instanceof yup.ValidationError) {
         setErrorMsg(err.errors[0])
@@ -51,7 +51,7 @@ const JoinContainer = () => {
 
   // 회원가입 로딩
   useEffect(() => {
-    if(isSigningUp) {
+    if (isSigningUp) {
       Modal.fire({
         title: 'Sign up . . .',
         showConfirmButton: false,
@@ -65,7 +65,7 @@ const JoinContainer = () => {
 
   // 회원가입 성공 / 실패
   useEffect(() => {
-    if(userData) {
+    if (accessToken) {
       Toast.fire({
         icon: 'success',
         title: 'Signed up successfully'
@@ -74,7 +74,7 @@ const JoinContainer = () => {
     } else if (signupError) {
       setErrorMsg(signupError)
     }
-  }, [userData, signupError])
+  }, [accessToken, signupError])
 
   return (
     <div className={styles.container}>
@@ -82,24 +82,24 @@ const JoinContainer = () => {
       <article>
         <div className={styles.formDiv}>
           {errorMsg && // 에러 메세지
-            <ErrorMessage errorMsg={ errorMsg }/>
+            <ErrorMessage errorMsg={errorMsg} />
           }
           <form onSubmit={submitHandler}>
             {/* 이름 */}
             <label htmlFor="name">Name</label>
-            <input id='name' name='name' type="text" value={name} onChange={onChange}/>
+            <input id='name' name='name' type="text" value={name} onChange={onChange} />
 
             {/* 이메일 */}
             <label htmlFor="email" className='mt-4'>Email address</label>
-            <input id='email' name='email' type="email" value={email} onChange={onChange}/>
+            <input id='email' name='email' type="email" value={email} onChange={onChange} />
 
             {/* 비밀번호 */}
             <label htmlFor="password" className='mt-4'>Password</label>
-            <input id='password' name='password' type="password" value={password} onChange={onChange}/>
+            <input id='password' name='password' type="password" value={password} onChange={onChange} />
 
             {/* 비밀번호 확인 */}
             <label htmlFor="password_confirmation" className='mt-4'>Confirm Password</label>
-            <input id='password_confirmation' name='password_confirmation' type="password" value={password_confirmation} onChange={onChange}/>
+            <input id='password_confirmation' name='password_confirmation' type="password" value={password_confirmation} onChange={onChange} />
 
             <button type='submit'>Create Account</button>
           </form>
