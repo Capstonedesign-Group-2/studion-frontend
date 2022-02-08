@@ -71,7 +71,7 @@ export class Channel {
 
   setGain(value: number) {
     if (!this.gainNode) return
-
-    this.gainNode.gain.value = value / 120
+    console.log(this);
+    this.gainNode.gain.value = value
   }
 }

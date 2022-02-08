@@ -15,7 +15,7 @@ const MixerContainer = ({ mixerRef }: Props) => {
   return (
     <div className="grid grid-cols-9 gap-1 2xl:grid-cols-12">
       {users.map(user => (
-        <Track key={user.id} user={user} />
+        <Track key={user.id} user={user} mixerRef={mixerRef} />
       ))}
       <div className="col-start-9 2xl:col-start-12">
         <MasterTrack mixerRef={mixerRef} />

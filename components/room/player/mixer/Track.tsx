@@ -1,13 +1,15 @@
 import Box from '@mui/material/Box'
 import { useState, useCallback } from 'react'
+import Mixer from './Mixer'
 
 import { VolumeSlider } from './VolumeSlider'
 
 interface Props {
   user: { id: string, name: string }
+  mixerRef: React.MutableRefObject<Mixer | undefined>
 }
 
-const Track = ({ user }: Props) => {
+const Track = ({ user, mixerRef }: Props) => {
   const [valume, setValume] = useState<number>(100)
   const [solo, setSolo] = useState<boolean>(false)
   const [mute, setMute] = useState<boolean>(false)
@@ -36,9 +38,11 @@ const Track = ({ user }: Props) => {
 
   const handleValumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
+      if (!mixerRef.current) return
+      mixerRef.current.channels[user.id]?.setGain(newValue / 120)
       setValume(newValue);
     }
-  }, [])
+  }, [mixerRef, user])
 
   return (
     <div className="bg-gray-600 flex flex-col gap-4 py-4 px-2 items-center">
