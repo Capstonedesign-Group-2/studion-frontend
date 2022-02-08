@@ -1,8 +1,7 @@
-import cookies from "next-cookies"
-
 import Header from "../components/common/Header"
 import LoginContainer from "../components/auth/LoginContainer"
 import wrapper from "../redux/store"
+import { stayLoggedIn } from "../http/stay"
 
 const Login = () => {
   return (
@@ -13,10 +12,9 @@ const Login = () => {
   )
 }
 
-export const getServerSideProps = wrapper.getServerSideProps((store) => async (ctx) => {
-  const allCookies = cookies(ctx)
-  const accessTokenByCookie = allCookies['accessToken']
-  if (accessTokenByCookie !== undefined) {
+export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
+  await stayLoggedIn(context, store)
+  if (store.getState().user.data) { // 유저 데이터가 있으면 '/'로 리다이렉트
     return {
       redirect: {
         destination: '/',

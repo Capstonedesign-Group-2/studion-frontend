@@ -30,7 +30,7 @@ const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
     }
     setPlaying((prev) => [...prev, key])
     setTimeout(() => {
-      setPlaying((prev) => prev.filter(v => v === key))
+      setPlaying((prev) => prev.filter(v => v !== key))
     }, 100)
   }, [tracks])
 

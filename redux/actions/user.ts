@@ -3,6 +3,7 @@ import axios from 'axios'
 import cookie from 'react-cookies'
 
 import http from '../../http'
+import { LoginData, SignUpData, User } from '../../types'
 
 export const delay = (time: number, value: any) => new Promise((resolve, reject) => {
   setTimeout(() => {

@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios"
 import cookie from 'react-cookies'
-import { Modal } from "../components/common/modals";
 
 const http = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACK_URL || 'http://localhost:8000/api',
@@ -27,22 +26,23 @@ http.interceptors.response.use(
     return config
   },
   error => {
-    if (error.response.status === 401) {
-      Modal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error.message,
-      }).then(() => {
-        cookie.remove('accessToken')
-        window.location.replace('/login')
-      })
-    } else if (error.response.status === 500) {
-      Modal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error.message,
-      })
-    }
+    // if (error.response.status === 401) {
+    //   Modal.fire({
+    //     icon: 'error',
+    //     title: 'Oops...',
+    //     text: error.message,
+    //   }).then(() => {
+    //     cookie.remove('accessToken')
+    //     window.location.replace('/login')
+    //   })
+    // } else if (error.response.status === 500) {
+    //   Modal.fire({
+    //     icon: 'error',
+    //     title: 'Oops...',
+    //     text: error.message,
+    //   })
+    // }
+    console.error(error)
     // Promise.reject(error)
   }
 )
