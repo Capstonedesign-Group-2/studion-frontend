@@ -15,6 +15,7 @@ import Mixer, { Channel } from "../../components/room/player/mixer/Mixer"
 import roomSlice from "../../redux/slices/room"
 import { DcData } from "../../types"
 import DrumComponent from "../../components/room/inst/drum"
+import PianoComponent from "../../components/room/inst/piano"
 
 const pc_config = {
 	iceServers: [
@@ -40,6 +41,7 @@ const Room = () => {
 
 	// playInst
 	const drumInst = useRef<React.ElementRef<typeof DrumComponent>>(null)
+	const pianoInst = useRef<React.ElementRef<typeof PianoComponent>>(null)
 
 	const getLocalStream = useCallback(async () => {
 		try {
@@ -143,6 +145,15 @@ const Room = () => {
 				case 'drum':
 					if (!drumInst.current) return
 					drumInst.current.onPlay(key)
+					break
+				case 'onPiano':
+					if (!pianoInst.current) return
+					pianoInst.current.onPlay(key)
+					break
+				case 'offPiano':
+					if (!pianoInst.current) return
+					pianoInst.current.offPlay(key)
+					break
 			}
 		}
 
@@ -345,6 +356,7 @@ const Room = () => {
 				<RoomContainer
 					sendDataToAllUsers={sendDataToAllUsers}
 					drumInst={drumInst}
+					pianoInst={pianoInst}
 				/>
 			</div>
 

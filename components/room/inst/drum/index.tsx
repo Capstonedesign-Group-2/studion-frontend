@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
+import { forwardRef, ForwardRefRenderFunction, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import Box from '@mui/material/Box'
 
 import { VolumeSlider } from '../../player/mixer/VolumeSlider'
@@ -19,7 +19,7 @@ interface Props {
   sendDataToAllUsers: (data: DcData) => void
 }
 
-const DrumComponent: React.ForwardRefRenderFunction<PlayDrumHandle, Props> = ({ selectedInst, sendDataToAllUsers }, ref) => {
+const DrumComponent: ForwardRefRenderFunction<PlayDrumHandle, Props> = ({ selectedInst, sendDataToAllUsers }, ref) => {
   const [playing, setPlaying] = useState<string[]>([])
   const [tracks, setTracks] = useState<Track[]>([])
   const audioCtxRef = useRef<AudioContext>()

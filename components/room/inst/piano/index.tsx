@@ -1,17 +1,28 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { forwardRef, ForwardRefRenderFunction, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano'
 import Soundfont from 'soundfont-player'
 import "react-piano/dist/styles.css"
 import Box from '@mui/material/Box'
 
 import { VolumeSlider } from '../../player/mixer/VolumeSlider'
+import { DcData } from '../../../../types'
 
 interface PlayingNote {
   midiNumber: string
   playingNote: Soundfont.Player | undefined
 }
 
-const PianoComponent = ({ selectedInst }: { selectedInst: string }) => {
+export interface PlayPianoHandle {
+  onPlay: (key: string) => void
+  offPlay: (key: string) => void
+}
+
+interface Props {
+  selectedInst: string
+  sendDataToAllUsers: (data: DcData) => void
+}
+
+const PianoComponent: ForwardRefRenderFunction<PlayPianoHandle, Props> = ({ selectedInst, sendDataToAllUsers }, ref) => {
   const firstNote = MidiNumbers.fromNote('c3')
   const lastNote = MidiNumbers.fromNote('f4')
   const keyboardShortcuts = KeyboardShortcuts.create({
@@ -31,18 +42,21 @@ const PianoComponent = ({ selectedInst }: { selectedInst: string }) => {
   }, [])
 
   const onPlayNote = useCallback((midiNumber: string) => {
-    if (selectedInst === 'piano') {
-      const playingNote = pianoRef.current?.start(midiNumber, 0, { gain: volume / 120, release: 1 })
-      setPlayingNotes(prev => prev?.concat({ midiNumber, playingNote }))
-    }
-  }, [volume, selectedInst])
+    console.log('play on piano:', midiNumber);
+    const playingNote = pianoRef.current?.start(midiNumber, 0, { gain: volume / 120, release: 1 })
+    setPlayingNotes(prev => prev?.concat({ midiNumber, playingNote }))
+  }, [volume])
 
   const onStopNote = useCallback((midiNumber: string) => {
-    if (selectedInst === 'piano') {
-      playingNotes?.find(v => v.midiNumber === midiNumber)?.playingNote?.stop()
-      setPlayingNotes(prev => prev?.filter(v => v.midiNumber !== midiNumber))
-    }
-  }, [playingNotes, selectedInst])
+    console.log('play off piano:', midiNumber);
+    playingNotes?.find(v => v.midiNumber === midiNumber)?.playingNote?.stop()
+    setPlayingNotes(prev => prev?.filter(v => v.midiNumber !== midiNumber))
+  }, [playingNotes])
+
+  useImperativeHandle(ref, () => ({
+    onPlay: (midiNumber: string) => onPlayNote(midiNumber),
+    offPlay: (midiNumber: string) => onStopNote(midiNumber)
+  }));
 
   useEffect(() => {
     audioCtxRef.current = new AudioContext()
@@ -58,10 +72,24 @@ const PianoComponent = ({ selectedInst }: { selectedInst: string }) => {
         <Piano
           noteRange={{ first: firstNote, last: lastNote }}
           playNote={(midiNumber: string) => {
-            onPlayNote(midiNumber)
+            if (selectedInst === 'piano') {
+              onPlayNote(midiNumber)
+              const dcData = {
+                type: 'onPiano',
+                key: midiNumber
+              } as DcData
+              sendDataToAllUsers(dcData)
+            }
           }}
           stopNote={(midiNumber: string) => {
-            onStopNote(midiNumber)
+            if (selectedInst === 'piano') {
+              onStopNote(midiNumber)
+              const dcData = {
+                type: 'offPiano',
+                key: midiNumber
+              } as DcData
+              sendDataToAllUsers(dcData)
+            }
           }}
           width={1000}
           keyboardShortcuts={keyboardShortcuts}
@@ -86,4 +114,4 @@ const PianoComponent = ({ selectedInst }: { selectedInst: string }) => {
   )
 }
 
-export default PianoComponent
+export default forwardRef(PianoComponent)
