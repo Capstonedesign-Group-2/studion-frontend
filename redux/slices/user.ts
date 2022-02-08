@@ -30,7 +30,6 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
       // 로그인
       .addCase(logIn.pending, (state, action) => { // user/logIn/pending
         state.isLoggingIn = true;
