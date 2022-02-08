@@ -77,3 +77,12 @@ declare interface DcData {
   type: 'drum' | 'piano'
   content: string
 }
+
+/**
+ * components/room/menu/Chat*
+ */
+declare interface IChatItem {
+  id: number
+  content: string
+  user: User
+}
