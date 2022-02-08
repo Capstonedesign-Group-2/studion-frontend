@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 import styles from '../../styles/common/layout.module.scss'
 
@@ -11,7 +12,7 @@ const Footer = () => {
             {/* 정보 */}
             <article className={styles.studion}>
               <h4>STUDION</h4>
-              永進専門大学 コンピュータ情報系列<br/>
+              永進専門大学 コンピュータ情報系列<br />
               Github: <a href="https://github.com/Capstonedesign-Group-2">https://github.com/Capstonedesign-Group-2</a>
             </article>
 
@@ -20,9 +21,9 @@ const Footer = () => {
               <article>
                 <h4>NAVIGATION</h4>
                 <ul>
-                  <li><a href="/">バンドルーム</a></li>
+                  <li><Link href="/play"><a href="/">バンドルーム</a></Link></li>
                   <li><a href="/">録音リレー</a></li>
-                  <li><a href="/">コミュニティ</a></li>
+                  <li><Link href="/community"><a href="/">コミュニティ</a></Link></li>
                 </ul>
               </article>
 
