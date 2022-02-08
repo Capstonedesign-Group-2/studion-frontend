@@ -45,7 +45,7 @@ const Room = () => {
 
 	const getLocalStream = useCallback(async () => {
 		try {
-			const localStream = await navigator.mediaDevices.getUserMedia({
+			localStreamRef.current = await navigator.mediaDevices.getUserMedia({
 				audio: {
 					echoCancellation: false,
 					autoGainControl: false,
@@ -54,13 +54,12 @@ const Room = () => {
 				},
 				video: false,
 			});
-			localStreamRef.current = localStream
 
-			if (!(mixerRef.current && Socket.socket)) return
+			if (!(mixerRef.current && Socket.socket && localStreamRef.current)) return
 
 			console.log('set local channel', mixerRef.current);
 			console.log(Socket.socket);
-			mixerRef.current.addNewChannel(new Channel(userData?.name, Socket.socket.id, localStream))
+			mixerRef.current.addNewChannel(new Channel(userData?.name, Socket.socket.id, localStreamRef.current))
 			dispatch(roomSlice.actions.addUser({ id: Socket.socket.id, name: userData?.name }))
 
 			const joinData = {
@@ -74,6 +73,26 @@ const Room = () => {
 			console.log(`getUserMedia error: ${e}`)
 		}
 	}, [userData?.name, userData?.id]) // cookie.load('accessToken')
+
+	async function getAudios() {
+		if (!localStreamRef.current) return
+		try {
+			const devices = navigator.mediaDevices.enumerateDevices();
+			const audios = (await devices).filter((device) => device.kind === "audioinput");
+			const currentAudio = localStreamRef.current.getAudioTracks()[0].label;
+			audios.forEach(audio => {
+				const option = document.createElement("option");
+				option.value = audio.deviceId;
+				option.innerText = audio.label;
+				if (currentAudio === audio.label) {
+					option.selected = true;
+				}
+				// audiosSelect.appendChild(option);
+			})
+		} catch (e) {
+			console.error(e);
+		}
+	}
 
 	const createPeerConnection = useCallback((socketId: string, name: string) => {
 		try {
@@ -166,18 +185,6 @@ const Room = () => {
 		}
 
 		return dc
-	}
-
-	const sendMessage = () => {
-		// console.log(mixerRef.current?.channels, users);
-		users.forEach(user => {
-			if (!dcsRef.current[user.id]) return
-			const message = {
-				type: 'test',
-				content: 'hi'
-			}
-			dcsRef.current[user.id].send(JSON.stringify(message))
-		})
 	}
 
 	const sendDataToAllUsers = (data: DcData) => {
@@ -368,7 +375,6 @@ const Room = () => {
 					<div className="w-full py-7 md:px-4">
 						<RoomInfoSection />
 					</div>
-					<button onClick={() => sendMessage()}>send</button>
 					<ChatSection />
 				</div>
 			)}
