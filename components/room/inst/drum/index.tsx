@@ -1,15 +1,25 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import Box from '@mui/material/Box'
 
 import { VolumeSlider } from '../../player/mixer/VolumeSlider'
 import { DATA, playingStyle, loadBuffer } from './drum'
+import { DcData } from "../../../../types"
 
 interface Track {
   letter: string
   buffer: AudioBuffer
 }
 
-const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
+export interface PlayDrumHandle {
+  onPlay: (key: string) => void
+}
+
+interface Props {
+  selectedInst: string
+  sendDataToAllUsers: (data: DcData) => void
+}
+
+const DrumComponent: React.ForwardRefRenderFunction<PlayDrumHandle, Props> = ({ selectedInst, sendDataToAllUsers }, ref) => {
   const [playing, setPlaying] = useState<string[]>([])
   const [tracks, setTracks] = useState<Track[]>([])
   const audioCtxRef = useRef<AudioContext>()
@@ -21,8 +31,13 @@ const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
     }
   }, [])
 
+  useImperativeHandle(ref, () => ({
+    onPlay: (key: string) => onPlay(key)
+  }));
+
   const onPlay = useCallback((key: string) => {
     if (audioCtxRef.current && gainNode.current) {
+      console.log('play drum:', key);
       const audioBufferSourceNode = audioCtxRef.current.createBufferSource()
       audioBufferSourceNode.buffer = tracks.find(v => v.letter === key)!.buffer
       audioBufferSourceNode.connect(gainNode.current).connect(audioCtxRef.current.destination)
@@ -37,11 +52,14 @@ const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
     const key = e.key.toUpperCase()
     if (tracks.find(v => v.letter === key)) {
-      // console.log(volume)
-      // datachannel로 { type: drum, volume } 등 보내기
+      const dcData = {
+        type: 'drum',
+        key: key
+      }
+      sendDataToAllUsers(dcData)
       onPlay(key)
     }
-  }, [tracks, onPlay])
+  }, [tracks, onPlay, sendDataToAllUsers])
 
   useEffect(() => {
     audioCtxRef.current = new AudioContext()
@@ -106,5 +124,6 @@ const DrumComponent = ({ selectedInst }: { selectedInst: string }) => {
     </div>
   )
 }
+DrumComponent.displayName = "DrumComponent";
 
-export default DrumComponent
+export default forwardRef(DrumComponent)

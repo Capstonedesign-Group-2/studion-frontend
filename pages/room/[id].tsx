@@ -14,6 +14,7 @@ import http from "../../http"
 import Mixer, { Channel } from "../../components/room/player/mixer/Mixer"
 import roomSlice from "../../redux/slices/room"
 import { DcData } from "../../types"
+import DrumComponent from "../../components/room/inst/drum"
 
 const pc_config = {
 	iceServers: [
@@ -36,6 +37,9 @@ const Room = () => {
 	// mixer
 	const mixerRef = useRef<Mixer>()
 	const localStreamRef = useRef<MediaStream>()
+
+	// playInst
+	const drumInst = useRef<React.ElementRef<typeof DrumComponent>>(null)
 
 	const getLocalStream = useCallback(async () => {
 		try {
@@ -133,8 +137,13 @@ const Room = () => {
 		}
 
 		dc.onmessage = (e) => {
-			const { type, content } = JSON.parse(e.data)
-			console.log('received dc data : ', content);
+			const { type, key } = JSON.parse(e.data) as DcData
+			console.log('received dc data :', type, key);
+			switch (type) {
+				case 'drum':
+					if (!drumInst.current) return
+					drumInst.current.onPlay(key)
+			}
 		}
 
 		dc.onopen = (e) => {
@@ -149,7 +158,7 @@ const Room = () => {
 	}
 
 	const sendMessage = () => {
-		console.log(mixerRef.current?.channels, users);
+		// console.log(mixerRef.current?.channels, users);
 		users.forEach(user => {
 			if (!dcsRef.current[user.id]) return
 			const message = {
@@ -163,6 +172,7 @@ const Room = () => {
 	const sendDataToAllUsers = (data: DcData) => {
 		users.forEach(user => {
 			if (!dcsRef.current[user.id]) return
+			console.log(data);
 			dcsRef.current[user.id].send(JSON.stringify(data))
 		})
 	}
@@ -332,7 +342,10 @@ const Room = () => {
 			<div className="pt-12 xl:mr-96"
 				style={{ marginRight: menu ? '' : '0px' }}
 			>
-				<RoomContainer sendDataToAllUsers={sendDataToAllUsers} />
+				<RoomContainer
+					sendDataToAllUsers={sendDataToAllUsers}
+					drumInst={drumInst}
+				/>
 			</div>
 
 			{/* 메뉴 */}

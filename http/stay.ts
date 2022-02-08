@@ -3,7 +3,6 @@ import { GetServerSidePropsContext, PreviewData } from "next"
 import { ParsedUrlQuery } from "querystring"
 
 import { getUser } from "../redux/actions/user"
-import userSlice from "../redux/slices/user"
 
 export const stayLoggedIn = async (context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>, store: any) => {
   const parsedCookies = context.req
@@ -14,6 +13,5 @@ export const stayLoggedIn = async (context: GetServerSidePropsContext<ParsedUrlQ
     await store.dispatch(getUser({
       accessToken: accessToken,
     }))
-    store.dispatch(userSlice.actions.setAccessToken(accessToken))
   }
 }

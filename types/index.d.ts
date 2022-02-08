@@ -74,8 +74,8 @@ declare interface RoomsState {
  * pages/room/[id]
  */
 declare interface DcData {
-  type: 'drum' | 'piano'
-  content: string
+  type: string // drum, piano, ...
+  key: string
 }
 
 /**
