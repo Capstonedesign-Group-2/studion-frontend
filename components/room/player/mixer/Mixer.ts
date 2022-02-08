@@ -10,7 +10,7 @@ export default class Mixer {
 
     // 마스터 게인 노드 연결
     this.masterGainNode.connect(this.audioContext.destination)
-    this.masterGainNode.gain.value = 0.1
+    this.masterGainNode.gain.value = 1
   }
 
   addNewChannel(newChannel: Channel) {
@@ -35,6 +35,11 @@ export default class Mixer {
   deleteChannel(dataId: string) { // data.id === Socket id
     // this.channels = this.channels.filter((channel) => channel.socketId !== dataId)
     delete this.channels[dataId]
+  }
+
+  setMasterGain(value: number) {
+    if (!this.masterGainNode) return
+    this.masterGainNode.gain.value = value
   }
 }
 

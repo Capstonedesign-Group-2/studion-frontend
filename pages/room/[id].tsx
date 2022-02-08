@@ -357,6 +357,7 @@ const Room = () => {
 					sendDataToAllUsers={sendDataToAllUsers}
 					drumInst={drumInst}
 					pianoInst={pianoInst}
+					mixerRef={mixerRef}
 				/>
 			</div>
 

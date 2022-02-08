@@ -1,9 +1,14 @@
 import Box from '@mui/material/Box'
 import { useCallback, useState } from "react"
+import Mixer from './Mixer'
 
 import { VolumeSlider } from "./VolumeSlider"
 
-const MasterTrack = () => {
+interface Props {
+  mixerRef: React.MutableRefObject<Mixer | undefined>
+}
+
+const MasterTrack = ({ mixerRef }: Props) => {
   const [valume, setValume] = useState<number>(100)
   const [mute, setMute] = useState<boolean>(false)
 
@@ -28,8 +33,10 @@ const MasterTrack = () => {
   const handleValumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
       setValume(newValue);
+      if (!mixerRef.current) return
+      mixerRef.current.setMasterGain(newValue / 120)
     }
-  }, [])
+  }, [mixerRef])
 
   return (
     <div className="bg-gray-600 h-full flex flex-col-reverse items-center gap-4 py-4 px-2">

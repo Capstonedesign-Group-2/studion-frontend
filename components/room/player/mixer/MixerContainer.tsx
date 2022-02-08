@@ -2,9 +2,14 @@ import { useSelector } from "react-redux"
 
 import { RootState } from "../../../../redux/slices"
 import MasterTrack from "./MasterTrack"
+import Mixer from "./Mixer"
 import Track from "./Track"
 
-const MixerContainer = () => {
+interface Props {
+  mixerRef: React.MutableRefObject<Mixer | undefined>
+}
+
+const MixerContainer = ({ mixerRef }: Props) => {
   const users = useSelector<RootState, { id: string, name: string }[]>(state => state.room.users)
 
   return (
@@ -13,7 +18,7 @@ const MixerContainer = () => {
         <Track key={user.id} user={user} />
       ))}
       <div className="col-start-9 2xl:col-start-12">
-        <MasterTrack />
+        <MasterTrack mixerRef={mixerRef} />
       </div>
     </div>
   )
