@@ -1,16 +1,11 @@
 import { useEffect, useRef, useState } from "react"
 
+import { IChatItem } from "../../../types"
 import ChatForm from "./ChatForm"
 import ChatItem from "./ChatItem"
 
-export interface ChatItem {
-  id: number
-  content: string
-  user: User
-}
-
 const ChatSection = () => {
-  const [chatList, setChatList] = useState<ChatItem[]>(DATA)
+  const [chatList, setChatList] = useState<IChatItem[]>(DATA)
   const chatListRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -117,4 +112,4 @@ const DATA = [
       updated_at: 'asd'
     }
   },
-] as ChatItem[]
+] as IChatItem[]

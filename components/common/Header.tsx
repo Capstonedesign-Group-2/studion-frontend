@@ -24,12 +24,12 @@ const Header = () => {
               </a>
             </Link>
           </div>
-          
+
           {!(router.pathname === '/login' || router.pathname === '/join') &&
             <div className={styles.link}>
               <Link href="/play"><a>バンドルーム</a></Link>
               <a href="">録音リレー</a>
-              <a href="">コミュニティ</a>
+              <Link href="/community"><a href="">コミュニティ</a></Link>
             </div>
           }
 
@@ -37,19 +37,19 @@ const Header = () => {
             {/* 로그인 상태 확인 */}
             {userData
               ? <div className={styles.authBtn}>
-                  <button onClick={() => setMenu(!menu)}>
-                    {/* 프로필 사진 여부 */}
-                    {userData.image
-                      ? <Image className={styles.userImage} src={userData.image} alt="profile image"/>
-                      : <div className={styles.userIntial}><p>{userData.name.slice(0, 2).toUpperCase()}</p></div>
-                    }
-                  </button>
-                  { menu && <MenuBox menu={menu} setMenu={setMenu}/> }
-                </div>
+                <button onClick={() => setMenu(!menu)}>
+                  {/* 프로필 사진 여부 */}
+                  {userData.image
+                    ? <Image className={styles.userImage} src={userData.image} alt="profile image" />
+                    : <div className={styles.userIntial}><p>{userData.name.slice(0, 2).toUpperCase()}</p></div>
+                  }
+                </button>
+                {menu && <MenuBox menu={menu} setMenu={setMenu} />}
+              </div>
               : <div className={styles.unAuthBtn}>
-                  <Link href="/login"><a><button className={styles.loginBtn}>Login</button></a></Link>
-                  <Link href="/join"><a><button className={styles.joinBtn}>Join</button></a></Link>
-                </div>
+                <Link href="/login"><a><button className={styles.loginBtn}>Login</button></a></Link>
+                <Link href="/join"><a><button className={styles.joinBtn}>Join</button></a></Link>
+              </div>
             }
           </div>
         </div>

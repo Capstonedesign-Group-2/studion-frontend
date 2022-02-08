@@ -1,10 +1,10 @@
 import Image from "next/image"
 import { useSelector } from "react-redux"
+
 import { RootState } from "../../../redux/slices"
+import { IChatItem } from "../../../types"
 
-import { ChatItem } from "./ChatSection"
-
-const ChatItem = ({ chatItem }: { chatItem: ChatItem }) => {
+const ChatItem = ({ chatItem }: { chatItem: IChatItem }) => {
   const userData = useSelector((state: RootState) => state.user.data)
 
   // 내가 보냈을 때
@@ -21,10 +21,10 @@ const ChatItem = ({ chatItem }: { chatItem: ChatItem }) => {
     <div className="w-full flex gap-2">
       <div>
         {chatItem.user.image
-          ? <Image className="w-full rounded-full" src='/' layout="fill" alt="profile image"/>
+          ? <Image className="w-full rounded-full" src='/' layout="fill" alt="profile image" />
           : <div className='flex-initial flex w-8 aspect-square rounded-full bg-studion-400 justify-center items-center text-white text-sm'>
-              <p>{chatItem.user.name.slice(0, 2).toUpperCase()}</p>
-            </div>
+            <p>{chatItem.user.name.slice(0, 2).toUpperCase()}</p>
+          </div>
         }
       </div>
       <div className="w-full flex flex-col">
