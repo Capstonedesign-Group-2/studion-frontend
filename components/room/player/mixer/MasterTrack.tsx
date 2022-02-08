@@ -13,8 +13,10 @@ const MasterTrack = ({ mixerRef }: Props) => {
   const [mute, setMute] = useState<boolean>(false)
 
   const onMute = useCallback(() => {
+    if (!mixerRef.current) return
+    mixerRef.current.setMasterMute(mute)
     setMute(!mute)
-  }, [mute])
+  }, [mute, mixerRef])
 
   const setMuteStyle = useCallback(() => {
     let setColor = '#f87171'
@@ -32,9 +34,9 @@ const MasterTrack = ({ mixerRef }: Props) => {
 
   const handleValumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
-      setValume(newValue);
       if (!mixerRef.current) return
       mixerRef.current.setMasterGain(newValue / 120)
+      setValume(newValue);
     }
   }, [mixerRef])
 

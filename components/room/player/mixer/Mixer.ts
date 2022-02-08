@@ -2,15 +2,16 @@ export default class Mixer {
   channels: { [SocketId: string]: Channel }
   audioContext: AudioContext
   masterGainNode: GainNode | null
+  masterMuteNode: GainNode | null
 
   constructor() {
     this.channels = {}
     this.audioContext = new AudioContext
     this.masterGainNode = this.audioContext.createGain()
+    this.masterMuteNode = this.audioContext.createGain()
 
-    // 마스터 게인 노드 연결
-    this.masterGainNode.connect(this.audioContext.destination)
-    this.masterGainNode.gain.value = 1
+    this.masterGainNode.connect(this.masterMuteNode) // 마스터 게인 노드 연결
+    this.masterMuteNode.connect(this.audioContext.destination) // 마스터 뮤트 노드 연결
   }
 
   addNewChannel(newChannel: Channel) {
@@ -25,7 +26,6 @@ export default class Mixer {
     if (newChannel.gainNode && this.masterGainNode) {
       source.connect(newChannel.gainNode)
       newChannel.gainNode.connect(this.masterGainNode)
-      newChannel.gainNode.gain.value = 1
       this.channels[newChannel.socketId] = newChannel
     } else {
       console.error('not gainNode or masterGainNode')
@@ -40,6 +40,15 @@ export default class Mixer {
   setMasterGain(value: number) {
     if (!this.masterGainNode) return
     this.masterGainNode.gain.value = value
+  }
+
+  setMasterMute(mute: boolean) { // default false
+    if (!this.masterMuteNode) return
+    if (!mute) {
+      this.masterMuteNode.gain.value = 0
+    } else {
+      this.masterMuteNode.gain.value = 1
+    }
   }
 }
 
