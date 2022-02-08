@@ -25,6 +25,8 @@ const pc_config = {
 	],
 }
 
+const ROOM_ID = '1'
+
 const Room = () => {
 	const dispatch = useDispatch()
 	const userData = useSelector((state: RootState) => state.user.data)
@@ -38,60 +40,77 @@ const Room = () => {
 	// mixer
 	const mixerRef = useRef<Mixer>()
 	const localStreamRef = useRef<MediaStream>()
+	const [audios, setAudios] = useState<MediaDeviceInfo[]>([])
 
 	// playInst
 	const drumInst = useRef<React.ElementRef<typeof DrumComponent>>(null)
 	const pianoInst = useRef<React.ElementRef<typeof PianoComponent>>(null)
 
-	const getLocalStream = useCallback(async () => {
-		try {
-			localStreamRef.current = await navigator.mediaDevices.getUserMedia({
-				audio: {
-					echoCancellation: false,
-					autoGainControl: false,
-					noiseSuppression: false,
-					latency: 0
+	const getLocalStream = useCallback(async (deviceId: string | null) => {
+		const initialConstrains = {
+			audio: {
+				echoCancellation: false,
+				autoGainControl: false,
+				noiseSuppression: false,
+				latency: 0
+			},
+			video: false,
+		}
+		const audioConstraints = {
+			audio: {
+				deviceId: {
+					exact: deviceId
 				},
-				video: false,
-			});
+				echoCancellation: false,
+				autoGainControl: false,
+				noiseSuppression: false,
+				latency: 0
+			},
+			video: false,
+		}
+		try {
+			localStreamRef.current = await navigator.mediaDevices.getUserMedia(
+				deviceId ? audioConstraints : initialConstrains
+			);
 
-			if (!(mixerRef.current && Socket.socket && localStreamRef.current)) return
+			// get user audios
+			if (!deviceId) { // deviceId가 없을때 한번만 실행
+				if (!(mixerRef.current && Socket.socket && localStreamRef.current)) return
 
-			console.log('set local channel', mixerRef.current);
-			console.log(Socket.socket);
-			mixerRef.current.addNewChannel(new Channel(userData?.name, Socket.socket.id, localStreamRef.current))
-			dispatch(roomSlice.actions.addUser({ id: Socket.socket.id, name: userData?.name }))
+				console.log('set local channel', mixerRef.current);
 
-			const joinData = {
-				name: userData?.name,
-				user_id: userData?.id,
-				room: '42',
+				mixerRef.current.addNewChannel(new Channel(userData?.name, Socket.socket.id, localStreamRef.current))
+				dispatch(roomSlice.actions.addUser({ id: Socket.socket.id, name: userData?.name }))
+
+				getAudios()
 			}
-
-			Socket.joinRoom(joinData)
 		} catch (e) {
 			console.log(`getUserMedia error: ${e}`)
 		}
 	}, [userData?.name, userData?.id]) // cookie.load('accessToken')
 
-	async function getAudios() {
+	const getAudios = async () => {
 		if (!localStreamRef.current) return
 		try {
 			const devices = navigator.mediaDevices.enumerateDevices();
-			const audios = (await devices).filter((device) => device.kind === "audioinput");
+			const audioDevices = (await devices).filter((device) => device.kind === "audioinput");
 			const currentAudio = localStreamRef.current.getAudioTracks()[0].label;
-			audios.forEach(audio => {
-				const option = document.createElement("option");
-				option.value = audio.deviceId;
-				option.innerText = audio.label;
-				if (currentAudio === audio.label) {
-					option.selected = true;
-				}
-				// audiosSelect.appendChild(option);
-			})
+			setAudios((prev) => [...prev, ...audioDevices])
 		} catch (e) {
 			console.error(e);
 		}
+	}
+
+	const handleAudioChange = async (deviceId: string) => {
+		await getLocalStream(deviceId);
+		// pcsRef.current?.map(pc => {
+		// 	if(!localStreamRef.current) return
+		// 	const audioTrack = localStreamRef.current.getAudioTracks()[0];
+		// 	const audioSender = pc
+		// 		.getSenders()
+		// 		.find((sender) => sender.track.kind === "audio");
+		// 	audioSender.replaceTrack(audioTrack);
+		// })
 	}
 
 	const createPeerConnection = useCallback((socketId: string, name: string) => {
@@ -200,10 +219,10 @@ const Room = () => {
 		console.log('useEffect return exit room')
 
 		// 합주실 나가기
-		http.post(`/rooms/exit/${42}`, {
+		http.post(`/rooms/exit/${ROOM_ID}`, {
 			user_id: userData?.id
 		}).then((res) => {
-			console.log(`rooms/exit/${42}`, res)
+			console.log(`rooms/exit/${ROOM_ID}`, res)
 			Socket.emitUpdateRoomList()
 		}).catch((err) => {
 			console.error(err)
@@ -230,19 +249,27 @@ const Room = () => {
 		// 합주실에 이미 있을경우 제거
 
 		// 합주실 입장
-		http.post(`/rooms/enter/${42}`, {
+		http.post(`/rooms/enter/${ROOM_ID}`, {
 			user_id: userData?.id,
 			password: "123"
 		}).then(() => {
 			Socket.emitUpdateRoomList()
-			// console.log(`/rooms/enter/${42}`, res)
+			// console.log(`/rooms/enter/${ROOM_ID}`, res)
 
 			// 믹서 세팅
 			mixerRef.current = new Mixer()
 			console.log('new mixer', mixerRef.current);
 
 			// 유저 스트림
-			getLocalStream()
+			getLocalStream(null)
+
+			const joinData = {
+				name: userData?.name,
+				user_id: userData?.id,
+				room: ROOM_ID,
+			}
+
+			Socket.joinRoom(joinData)
 
 			Socket.socket.on('all_users', (allUsers: Array<{ id: string; name: string, user_id: number }>) => {
 				// console.log('on all_users', allUsers, Socket.socket.id)
@@ -342,10 +369,9 @@ const Room = () => {
 				mixerRef.current?.deleteChannel(data.id)
 				dispatch(roomSlice.actions.deleteUser(data))
 			})
-		}).
-			catch((err) => {
-				console.error(err)
-			})
+		}).catch((err) => {
+			console.error(err)
+		})
 
 		return () => whenUnmounte()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -371,7 +397,7 @@ const Room = () => {
 			{/* 메뉴 */}
 			{menu && (
 				<div className="fixed z-10 bg-gray-200 pb-20 h-screen top-0 pt-12 right-0 flex flex-col items-center shadow-md md:w-96">
-					<MyInfoSection />
+					<MyInfoSection audios={audios} />
 					<div className="w-full py-7 md:px-4">
 						<RoomInfoSection />
 					</div>

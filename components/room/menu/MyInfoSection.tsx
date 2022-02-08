@@ -1,8 +1,13 @@
 import Image from "next/image"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../redux/slices"
+import AudioSelect from "./AudioSelect"
 
-const MyInfoSection = () => {
+interface Props {
+  audios: MediaDeviceInfo[]
+}
+
+const MyInfoSection = ({ audios }: Props) => {
   const userData = useSelector((state: RootState) => state.user.data)
 
   return (
@@ -10,10 +15,10 @@ const MyInfoSection = () => {
       <div className="flex flex-col items-center md:items-start md:flex-row">
         <div className="w-40 relative">
           {userData?.image
-            ? <Image className="w-full rounded-full" src='/' layout="fill" alt="profile image"/>
+            ? <Image className="w-full rounded-full" src='/' layout="fill" alt="profile image" />
             : <div className='flex w-full aspect-square rounded-full bg-studion-400 justify-center items-center text-white text-7xl md:text-4xl xl:text-5xl'>
-                <p>{userData?.name.slice(0, 2).toUpperCase()}</p>
-              </div>
+              <p>{userData?.name.slice(0, 2).toUpperCase()}</p>
+            </div>
           }
         </div>
         <div className="md:ml-10 w-full">
@@ -25,6 +30,7 @@ const MyInfoSection = () => {
               {userData?.name}
             </h3>
           </div>
+          <AudioSelect audios={audios} />
         </div>
       </div>
     </div>
