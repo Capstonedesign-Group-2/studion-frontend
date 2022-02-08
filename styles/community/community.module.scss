@@ -172,7 +172,7 @@
             @apply grow;
         }
         button {
-            @apply absolute right-10 grow-0 bg-studion-300 text-white w-12 rounded;
+            @apply absolute right-10 grow-0 bg-studion-300 text-white w-14 h-9 rounded text-sm;
         }
     }
     section {
@@ -189,7 +189,10 @@
             }
             
             img {
+                // @apply md:min-width;
                 max-width: 100%;
+                // min-width: 
+                // min-width: 400px;
                 max-height: 66vh;
             }
         }
@@ -206,5 +209,15 @@
                 }
             }
         }    
+    }
+}
+.editDeleteModal{
+    @apply border-2 flex-col flex;
+    width: 4.8em;
+    button {
+
+    }
+    button:hover {
+        @apply bg-gray-100;
     }
 }

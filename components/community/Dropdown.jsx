@@ -43,13 +43,9 @@ const Dropdown = ({image, Audio, user, content}) => {
         })
     }
     return (
-        <div className="border-2 grid justify-items-center">
-            <div>
-                <button onClick={onEditModal}>수정</button>
-            </div>
-            <div>
-                <button onClick={onDeleteModal}>삭제</button>
-            </div>
+        <div className={styles.editDeleteModal}>
+            <button onClick={onEditModal}>수정</button>            
+            <button onClick={onDeleteModal}>삭제</button>
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import styles from "../../styles/community/community.module.scss"
 import CommunityCard from "./CommunityCard";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useCallback } from "react";
 const CommunitySection = (props) => {
     const { posts } = props;
@@ -33,6 +33,7 @@ const CommunitySection = (props) => {
             content: '',
         })
     },[input.content])
+    const topRef = useRef()
     return (
         <div className={ styles.communitySection }>
             {

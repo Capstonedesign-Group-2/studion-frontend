@@ -2,7 +2,7 @@ import RightSection from "./RightSection";
 import CommunitySection from "./CommunitySection";
 import CreateCard from "./CreateCard";
 import { Modal } from '../common/modals'
-
+import { useRef } from 'react'
 import styles from "../../styles/community/community.module.scss"
 
 const CommunityContainer = () => {

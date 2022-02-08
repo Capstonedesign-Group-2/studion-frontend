@@ -3,7 +3,6 @@ import styles from "../../styles/community/community.module.scss";
 import { Modal } from '../common/modals';
 
 const EditCardModal = ({image, user, content}) => {
-    console.log(image)
     const [imgSrc, setImgSrc] = useState(image);
     const [textArea, setTextArea] = useState(content);
     const onImgChange = (e) => {
@@ -18,13 +17,9 @@ const EditCardModal = ({image, user, content}) => {
             setImgSrc('');
         }
     }
-    // const onChange = ( e => {
-    //     const {name, value} = e.target;
-    //     setTextArea( => ({
-    //       ...,
-    //       [name]: value
-    //     }));
-    // });
+    const onChange = (e => {
+        setTextArea(e.target.value);
+    });
     const editSuccess = () => {
         Modal.fire({
             title: 'Do you want to save the changes?',
@@ -35,9 +30,9 @@ const EditCardModal = ({image, user, content}) => {
           }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-              Swal.fire('Saved!', '', 'success')
+              Modal.fire('Saved!', '', 'success')
             } else if (result.isDenied) {
-              Swal.fire('Changes are not saved', '', 'info')
+              Modal.fire('Changes are not saved', '', 'info')
             }
           })
     }
@@ -67,20 +62,20 @@ const EditCardModal = ({image, user, content}) => {
                                 <img src={imgSrc} alt="" />
                             </label>
                             <input id='img' name='img' onChange={onImgChange} type="file" hidden/>
-                            {
+                            {/* {
                                 console.log(imgSrc)
-                            }
+                            } */}
                         </div>
                         <aside className=''>
                             <div className={styles.content}>
                                 {/* 계정 정보 */}
-                                <div className='flex border-2 border-studion-400 w-full items-center'>
+                                <div className='flex w-full items-center'>
                                     <img src={user.image} className='w-8 h-8 rounded-full' alt="" />
                                     <span className='ml-3 text-sm font-semibold text-black'>{user.name}</span>
                                 </div>
                                 {/* textfield */}
                                 <div className='w-full mt-4'>
-                                    <textarea className='w-full' name='content' placeholder='문구 입력...' value={content}>asdasd</textarea>
+                                    <textarea className='w-full' name='content' value={textArea} placeholder='문구 입력...' onChange={onChange}></textarea>
                                 </div>
                             </div>
                         </aside>

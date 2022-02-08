@@ -1,5 +1,7 @@
 import Header from "../components/common/Header"
 import CommunityContainer from "../components/community/CommunityContainer"
+import { stayLoggedIn } from '../http/stay'
+import wrapper from '../redux/store'
 
 const Community = () => {
   return (
@@ -9,5 +11,10 @@ const Community = () => {
     </div>
   )
 }
+
+export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
+  await stayLoggedIn(context, store);
+  return { props: {} }
+})
 
 export default Community
