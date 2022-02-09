@@ -47,9 +47,9 @@ const Track = ({ user, mixerRef }: Props) => {
   return (
     <div className="bg-gray-600 flex flex-col gap-4 py-4 px-2 items-center">
       {/* 플레이어 프로필 */}
-      <div>
+      <div className='flex flex-col justify-center items-center'>
         <div className="flex w-10 h-10 justify-center items-center rounded-full bg-white border-2 border-studion-100">
-          US
+          <p>{user?.name.slice(0, 2).toUpperCase()}</p>
         </div>
         <p className="text-white">
           {user?.name}

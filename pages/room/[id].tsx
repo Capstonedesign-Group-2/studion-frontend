@@ -77,15 +77,23 @@ const Room = () => {
 			if (!deviceId) { // deviceId가 없을때 한번만 실행
 				if (!(mixerRef.current && Socket.socket && localStreamRef.current)) return
 
-				console.log('set local channel', mixerRef.current);
+				// console.log('set local channel', mixerRef.current);
 
 				mixerRef.current.addNewChannel(new Channel(userData?.name, Socket.socket.id, localStreamRef.current))
 				dispatch(roomSlice.actions.addUser({ id: Socket.socket.id, name: userData?.name }))
 
 				getAudios()
+
+				const joinData = {
+					name: userData?.name,
+					user_id: userData?.id,
+					room: ROOM_ID,
+				}
+
+				Socket.joinRoom(joinData)
 			}
 		} catch (e) {
-			console.log(`getUserMedia error: ${e}`)
+			console.error(`getUserMedia error: ${e}`)
 		}
 	}, [userData?.name, userData?.id]) // cookie.load('accessToken')
 
@@ -131,13 +139,13 @@ const Room = () => {
 			}
 
 			pc.ontrack = (e) => {
-				console.log('add new channel', mixerRef.current);
+				// console.log('add new channel', mixerRef.current);
 				mixerRef.current?.addNewChannel(new Channel(name, socketId, e.streams[0]))
 				dispatch(roomSlice.actions.addUser({ id: socketId, name }))
 			}
 
 			pc.ondatachannel = (e) => {
-				console.log('datachannel event:', e);
+				// console.log('datachannel event:', e);
 				if (e.type === 'datachannel') {
 					initDataChannel(e.channel);
 					dcsRef.current = { ...dcsRef.current, [e.channel.label]: e.channel }
@@ -162,18 +170,18 @@ const Room = () => {
 	}, [])
 
 	const openDataChannel = (pc: RTCPeerConnection) => {
-		console.log('try to open datachannel');
+		// console.log('try to open datachannel');
 		try {
 			let dc = pc.createDataChannel(`${Socket.socket.id}`);
 			return initDataChannel(dc)
 		} catch (err) {
-			console.log(err);
+			console.error('open datachannel error:', err);
 		}
 	}
 
 	const initDataChannel = (dc: RTCDataChannel) => {
 		dc.onerror = (err) => {
-			console.log('datachannel error : ' + err);
+			console.error('datachannel error:', err);
 		}
 
 		dc.onmessage = (e) => {
@@ -196,11 +204,11 @@ const Room = () => {
 		}
 
 		dc.onopen = (e) => {
-			console.log('dc is opened', e);
+			// console.log('dc is opened', e);
 		}
 
 		dc.onclose = (e) => {
-			console.log('dc is disconnected', e);
+			// console.log('dc is disconnected', e);
 		}
 
 		return dc
@@ -209,14 +217,14 @@ const Room = () => {
 	const sendDataToAllUsers = (data: DcData) => {
 		users.forEach(user => {
 			if (!dcsRef.current[user.id]) return
-			console.log(data);
+			// console.log(data);
 			dcsRef.current[user.id].send(JSON.stringify(data))
 		})
 	}
 
 	// useEffect return
 	const whenUnmounte = () => {
-		console.log('useEffect return exit room')
+		// console.log('useEffect return exit room')
 
 		// 합주실 나가기
 		http.post(`/rooms/exit/${ROOM_ID}`, {
@@ -258,18 +266,10 @@ const Room = () => {
 
 			// 믹서 세팅
 			mixerRef.current = new Mixer()
-			console.log('new mixer', mixerRef.current);
+			// console.log('new mixer', mixerRef.current);
 
 			// 유저 스트림
 			getLocalStream(null)
-
-			const joinData = {
-				name: userData?.name,
-				user_id: userData?.id,
-				room: ROOM_ID,
-			}
-
-			Socket.joinRoom(joinData)
 
 			Socket.socket.on('all_users', (allUsers: Array<{ id: string; name: string, user_id: number }>) => {
 				// console.log('on all_users', allUsers, Socket.socket.id)

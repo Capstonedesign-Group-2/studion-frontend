@@ -37,7 +37,7 @@ const DrumComponent: ForwardRefRenderFunction<PlayDrumHandle, Props> = ({ select
 
   const onPlay = useCallback((key: string) => {
     if (audioCtxRef.current && gainNode.current) {
-      console.log('play drum:', key);
+      // console.log('play drum:', key);
       const audioBufferSourceNode = audioCtxRef.current.createBufferSource()
       audioBufferSourceNode.buffer = tracks.find(v => v.letter === key)!.buffer
       audioBufferSourceNode.connect(gainNode.current).connect(audioCtxRef.current.destination)

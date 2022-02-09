@@ -42,13 +42,13 @@ const PianoComponent: ForwardRefRenderFunction<PlayPianoHandle, Props> = ({ sele
   }, [])
 
   const onPlayNote = useCallback((midiNumber: string) => {
-    console.log('play on piano:', midiNumber);
+    // console.log('play on piano:', midiNumber);
     const playingNote = pianoRef.current?.start(midiNumber, 0, { gain: volume / 120, release: 1 })
     setPlayingNotes(prev => prev?.concat({ midiNumber, playingNote }))
   }, [volume])
 
   const onStopNote = useCallback((midiNumber: string) => {
-    console.log('play off piano:', midiNumber);
+    // console.log('play off piano:', midiNumber);
     playingNotes?.find(v => v.midiNumber === midiNumber)?.playingNote?.stop()
     setPlayingNotes(prev => prev?.filter(v => v.midiNumber !== midiNumber))
   }, [playingNotes])
