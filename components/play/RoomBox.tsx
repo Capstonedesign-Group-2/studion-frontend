@@ -1,4 +1,5 @@
 import React, { useCallback } from "react"
+import { Room } from "../../types"
 
 import { Modal } from "../common/modals"
 import EnterForm from "./EnterForm"

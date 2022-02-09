@@ -21,9 +21,9 @@ const Footer = () => {
               <article>
                 <h4>NAVIGATION</h4>
                 <ul>
-                  <li><Link href="/play"><a href="/">バンドルーム</a></Link></li>
-                  <li><a href="/">録音リレー</a></li>
-                  <li><Link href="/community"><a href="/">コミュニティ</a></Link></li>
+                  <li><Link href="/play"><a>バンドルーム</a></Link></li>
+                  <li><a>録音リレー</a></li>
+                  <li><Link href="/community"><a>コミュニティ</a></Link></li>
                 </ul>
               </article>
 
@@ -31,7 +31,7 @@ const Footer = () => {
               <article>
                 <h4>DIRECTIONS</h4>
                 <ul>
-                  <li><a href="/">使い方</a></li>
+                  <li><a>使い方</a></li>
                 </ul>
               </article>
             </div>

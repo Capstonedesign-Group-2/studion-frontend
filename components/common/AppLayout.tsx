@@ -2,7 +2,6 @@ import React from "react"
 
 import Header from './Header'
 import Footer from './Footer'
-import Loader from './Loader'
 
 import styles from '../../styles/common/layout.module.scss'
 
@@ -13,13 +12,13 @@ type Props = {
 const AppLayout = ({ children }: Props) => {
   return (
     <div className={styles.appLayout}>
-      <Header/>
+      <Header />
 
       <main className={styles.mainContainer}>
-        { children }
+        {children}
       </main>
 
-      <Footer/>
+      <Footer />
     </div>
   )
 }

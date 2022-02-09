@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 import http from '../../http'
+import { Room } from '../../types'
 
 export const createNewRoom = createAsyncThunk<Room[], Room>(
   'room/createNewRoom',

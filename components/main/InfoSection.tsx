@@ -15,8 +15,8 @@ const InfoSection = () => {
         <h2>Online Studio</h2>
         <h5>スタジオン</h5>
       </article>
-      
-      <Swiper 
+
+      <Swiper
         className={styles.slider}
         slidesPerView={1}
         speed={500}
@@ -49,7 +49,7 @@ const InfoSection = () => {
               </ul>
               <div className='flex justify-end'>
                 <div className={styles.details}>
-                  <a href="/">자세히 보기 →</a>
+                  <a>자세히 보기 →</a>
                 </div>
               </div>
             </div>
@@ -74,7 +74,7 @@ const InfoSection = () => {
               </ul>
               <div className='flex justify-end'>
                 <div className={styles.details}>
-                  <a href="/">자세히 보기 →</a>
+                  <a>자세히 보기 →</a>
                 </div>
               </div>
             </div>

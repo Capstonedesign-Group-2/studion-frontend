@@ -18,7 +18,7 @@ const CommentModal = (props) => {
                     <div className={styles.userInfo}>
                         <img src={user.image} alt="" />
                         <div className={styles.id}>{user.name}</div>
-                        
+
                     </div>
                     <hr />
                     {/* 댓글 */}
@@ -30,8 +30,8 @@ const CommentModal = (props) => {
                                 <p className="text-xs">{content}</p>
                             </div>
                             {
-                                comments.map(comment => (
-                                    <Comment comment={comment} />
+                                comments.map((comment, i) => (
+                                    <Comment key={i} comment={comment} />
                                 ))
                             }
                         </div>
@@ -39,7 +39,7 @@ const CommentModal = (props) => {
                     {/* 댓글 달 공간 */}
                     <form className={styles.createComment}>
                         <div>
-                            <input placeholder="댓글 달기..."/>
+                            <input placeholder="댓글 달기..." />
                             <button>게시</button>
                         </div>
                     </form>

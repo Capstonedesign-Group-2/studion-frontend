@@ -2,10 +2,9 @@
   "name": "frontend",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "next -p 3000",
+    "build": "cross-env ANALYZE=true NODE_ENV=production next build",
+    "start": "cross-env NODE_ENV=production next start -p 3000"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
@@ -36,6 +35,7 @@
     "@types/react": "17.0.38",
     "@types/socket.io-client": "1.4.34",
     "@types/styled-components": "^5.1.19",
+    "cross-env": "^7.0.3",
     "autoprefixer": "^10.4.0",
     "eslint": "8.5.0",
     "eslint-config-next": "12.0.7",

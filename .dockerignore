@@ -1,2 +1,4 @@
-node_modules
 .next
+.git
+node_modules
+.gitignore

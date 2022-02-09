@@ -32,7 +32,7 @@ const MenuBox = ({ menu, setMenu }: Props) => {
   return (
     <div ref={menuRef} className={styles.userOption}>
       <div className={styles.optionList}>
-        <a href="/">Edit Profile</a>
+        <a>Edit Profile</a>
         <a onClick={onLogout}>Log Out</a>
       </div>
     </div>

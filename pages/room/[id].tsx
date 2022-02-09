@@ -25,7 +25,7 @@ const pc_config = {
 	],
 }
 
-const ROOM_ID = '1'
+const ROOM_ID = 1
 
 const Room = () => {
 	const dispatch = useDispatch()
@@ -87,7 +87,7 @@ const Room = () => {
 				const joinData = {
 					name: userData?.name,
 					user_id: userData?.id,
-					room: ROOM_ID,
+					room: ROOM_ID.toString(),
 				}
 
 				Socket.joinRoom(joinData)
@@ -227,8 +227,8 @@ const Room = () => {
 		// console.log('useEffect return exit room')
 
 		// 합주실 나가기
-		http.post(`/rooms/exit/${ROOM_ID}`, {
-			user_id: userData?.id
+		http.delete(`/rooms/exit/${ROOM_ID}`, {
+			data: { user_id: userData?.id }
 		}).then((res) => {
 			console.log(`rooms/exit/${ROOM_ID}`, res)
 			Socket.emitUpdateRoomList()

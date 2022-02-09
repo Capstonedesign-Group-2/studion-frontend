@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux"
 import { RootState } from "../../redux/slices"
+import { Room } from "../../types"
 import RoomBox from "./RoomBox"
 
 const RoomList = () => {

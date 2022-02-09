@@ -11,7 +11,6 @@ import wrapper from "../../redux/store"
 import styles from '../../styles/play/play.module.scss'
 import { createRoomValidation } from "../../validations"
 import ErrorMessage from "../common/ErrorMssage"
-import Socket from '../../socket'
 
 interface Form {
   title: string

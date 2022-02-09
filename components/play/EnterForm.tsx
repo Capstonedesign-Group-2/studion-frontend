@@ -4,6 +4,7 @@ import * as yup from 'yup'
 
 import wrapper from '../../redux/store'
 import styles from '../../styles/play/play.module.scss'
+import { Room } from '../../types'
 import { enterRoomPassword } from '../../validations'
 import ErrorMessage from '../common/ErrorMssage'
 import { Modal } from '../common/modals'

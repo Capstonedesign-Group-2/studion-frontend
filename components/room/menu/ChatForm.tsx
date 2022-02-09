@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../redux/slices"
-
-import { ChatItem } from "./ChatSection"
+import { IChatItem } from "../../../types"
 
 interface Props {
-  setChatList: React.Dispatch<React.SetStateAction<ChatItem[]>>
+  setChatList: React.Dispatch<React.SetStateAction<IChatItem[]>>
 }
 
 const ChatForm = ({ setChatList }: Props) => {
@@ -24,7 +23,7 @@ const ChatForm = ({ setChatList }: Props) => {
       id: new Date().getTime(),
       content: newChat,
       user: userData
-    } as ChatItem
+    } as IChatItem
     setChatList((prev) => [...prev, newChatItem])
     setNewChat('')
   }, [newChat, userData])
