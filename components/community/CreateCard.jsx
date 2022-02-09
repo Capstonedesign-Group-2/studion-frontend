@@ -1,34 +1,77 @@
 import { useState } from 'react';
 import styles from "../../styles/community/community.module.scss";
-
+import { useSelector } from 'react-redux';
+import wrapper from '../../redux/store';
+import http from "../../http/index";
 const CreateCard = (props) => {
-    const { name, image } = props.user;
-    const [imgSrc, setImgSrc] = useState('');
+    const userData = useSelector(state => state.user.data);
+    // const { name, image } = props.user;
+    const [imageTarget, setImageTarget] = useState({})
+    const [post, setPost] = useState({
+        user_id: userData.id,
+        content: '',
+        image: ''
+    });
+    const { user_id, content, image } = post;
+    const onContentChange = (e) => {
+        const { name, value } = e.target;
+        setPost({
+            ...post,
+            [name]: value
+        })
+    }
     const onImgChange = (e) => {
         if(e.target.files.length) {
             var imgTarget = (e.target.files)[0];
             var fileReader = new FileReader();
             fileReader.readAsDataURL(imgTarget);
             fileReader.onload = function (e) {
-                setImgSrc(e.target.result);
+                setPost({
+                    ...post,
+                    image: e.target.result
+                });
+                setImageTarget({
+                    ...imageTarget,
+                    imageTarget: imgTarget
+                })
             }
         } else {
-            setImgSrc('');
+            setPost({
+                ...post,
+                image: ''
+            });
         }
+        console.log(post);
     }
-
+    const onCreatePost = () => {
+        let formData = new FormData();
+        let config = {
+            header: {'content-type': 'multipart/form-data'}
+        }
+        formData.append("user_id", user_id)
+        formData.append("content", content)
+        formData.append("image", imageTarget.imageTarget)
+        // console.log(post.image)
+        http.post('/posts/create', formData, config)
+        .then(res => {
+            console.log(res);
+        })
+        .catch(err => {
+            console.log('ERROR');
+        })
+    }
     return (
         <div className='h-full'>
-            <form action="" className='h-full'>
+            <div className='h-full'>
                 <div className={styles.createModal}>
                 <header>
                     <p className=''>게시물 작성</p>
-                    <button className=''>게시</button>
+                    <button className='' onClick={onCreatePost}>게시</button>
                 </header>
                 <section>
                     {/* 이미지 추가 / 프리뷰 */}
                     <div className={styles.imgPreview}>
-                        {!imgSrc 
+                        {!image 
                         ? <label htmlFor="img" className=''>
                                 <svg aria-label="이미지나 동영상과 같은 미디어를 나타내는 아이콘" className="mx-auto" color="#262626" fill="#262626" height="77" role="img" viewBox="0 0 97.6 77.3" width="96">
                                     <path d="M16.3 24h.3c2.8-.2 4.9-2.6 4.8-5.4-.2-2.8-2.6-4.9-5.4-4.8s-4.9 2.6-4.8 5.4c.1 2.7 2.4 4.8 5.1 4.8zm-2.4-7.2c.5-.6 1.3-1 2.1-1h.2c1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1-1.7 0-3.1-1.4-3.1-3.1 0-.8.3-1.5.8-2.1z" fill="currentColor"></path>
@@ -40,7 +83,7 @@ const CreateCard = (props) => {
                         : null
                         }
                         <label htmlFor='img'>
-                            <img src={imgSrc} alt="" />
+                            <img src={image} alt="" />
                         </label>
                         <input id='img' name='img' onChange={onImgChange} type="file" hidden/>
                     </div>
@@ -48,20 +91,20 @@ const CreateCard = (props) => {
                         <div className={styles.content}>
                             {/* 계정 정보 */}
                             <div className='flex w-full items-center'>
-                                <img src={image} className='w-8 h-8 rounded-full' alt="" />
-                                <span className='ml-3 text-sm font-semibold text-black'>{name}</span>
+                                <img src={userData.image} className='w-8 h-8 rounded-full' alt="" />
+                                <span className='ml-3 text-sm font-semibold text-black'>{userData.name}</span>
                             </div>
                             {/* textfield */}
                             <div className='w-full mt-4'>
-                                <textarea className='w-full' name='content' placeholder='문구 입력...'></textarea>
+                                <textarea className='w-full' name='content' placeholder='문구 입력...' onChange={onContentChange}></textarea>
                             </div>
                         </div>
                     </aside>
                 </section>
             </div>
-        </form>       
+        </div>       
     </div>             
     )
 }
 
-export default CreateCard;
+export default wrapper.withRedux(CreateCard);

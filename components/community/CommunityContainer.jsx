@@ -1,11 +1,13 @@
 import RightSection from "./RightSection";
 import CommunitySection from "./CommunitySection";
 import CreateCard from "./CreateCard";
-import { Modal } from '../common/modals'
-import { useRef } from 'react'
-import styles from "../../styles/community/community.module.scss"
-
+import { Modal } from '../common/modals';
+import { useState, useRef } from 'react';
+import styles from "../../styles/community/community.module.scss";
+// import { useSelector } from 'react-redux';
+// import { RootState } from '../../redux/slices'
 const CommunityContainer = () => {
+    // const userData = useSelector((state: RootState ) => state.user.data)
     const onShowModal = () => {
         Modal.fire({
             html: <CreateCard user={user}/>,
@@ -54,7 +56,6 @@ const posts = [
     {
         id: 1,
         user_id: 1,
-        // title: 'title',
         Audio: {
             id: 1,
             title: 'This is my voice',
