@@ -1,26 +1,54 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import styles from "../../styles/community/community.module.scss";
 import { Modal } from '../common/modals';
+import http from "../../http/index";
+import wrapper from '../../redux/store';
 
-const EditCardModal = ({image, user, content}) => {
-    const [imgSrc, setImgSrc] = useState(image);
-    const [textArea, setTextArea] = useState(content);
+const EditCardModal = (props) => {
+    const {post_id} = props;
+    const userData = useSelector(state => state.user.data);
+    const [post, setPost] = useState({
+        user_id: userData.id,
+        content: props.content,
+        image: props.image
+    })
+    const { user_id, content } = post;
+    const [imageTarget, setImageTarget] = useState({});
+    
     const onImgChange = (e) => {
         if(e.target.files.length) {
             var imgTarget = (e.target.files)[0];
             var fileReader = new FileReader();
             fileReader.readAsDataURL(imgTarget);
             fileReader.onload = function (e) {
-                setImgSrc(e.target.result);
+                setPost({
+                    ...post,
+                    image:e.target.result
+                })
+                setImageTarget({
+                    ...imageTarget,
+                    imageTarget: imgTarget
+                })
             }
         } else {
-            setImgSrc('');
+            setPost({
+                ...post,
+                image: ''
+            });
         }
     }
     const onChange = (e => {
-        setTextArea(e.target.value);
+        setPost({
+            ...post,
+            content: e.target.value
+        });
     });
     const editSuccess = () => {
+        console.log(post.image)
+        console.log(imageTarget)
+        console.log("user_id" + user_id)
+        console.log("post_id:" + post_id)
         Modal.fire({
             title: 'Do you want to save the changes?',
             showDenyButton: true,
@@ -29,16 +57,35 @@ const EditCardModal = ({image, user, content}) => {
             denyButtonText: `Don't save`,
           }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-              Modal.fire('Saved!', '', 'success')
-            } else if (result.isDenied) {
+            if(result.isConfirmed) {
+                let formData = new FormData();
+                let config = {
+                    header: {'content-type': 'multipart/form-data'}
+                }
+                formData.append("_method", 'PATCH');
+                formData.append("user_id", user_id)
+                formData.append("content", content)
+                formData.append("image", imageTarget.imageTarget)
+                for (var value of formData.values()) {
+                    console.log(value);
+                 }
+                http.post('/posts/update/' + post_id , formData, config)
+                .then(res => {
+                    console.log(res);
+                    Modal.fire('Saved!', '', 'success')
+                })
+                .catch(err => {
+                    console.log("ERROR");
+                    Modal.fire('ERROR', '', 'info')  
+                })}
+            else if (result.isDenied) {
               Modal.fire('Changes are not saved', '', 'info')
             }
           })
     }
     return (
         <div className=''>
-            <form action="" className=''>
+            <div className=''>
                 <div className={styles.createModal}>
                     <header>
                         <p className=''>게시물 수정</p>
@@ -47,7 +94,7 @@ const EditCardModal = ({image, user, content}) => {
                     <section className='flex-1 flex'>
                         {/* 이미지 추가 / 프리뷰 */}
                         <div className={styles.imgPreview}>
-                            {!imgSrc 
+                            {!post.image 
                             ? <label htmlFor="img" className=''>
                                     <svg aria-label="이미지나 동영상과 같은 미디어를 나타내는 아이콘" className="mx-auto" color="#262626" fill="#262626" height="77" role="img" viewBox="0 0 97.6 77.3" width="96">
                                         <path d="M16.3 24h.3c2.8-.2 4.9-2.6 4.8-5.4-.2-2.8-2.6-4.9-5.4-4.8s-4.9 2.6-4.8 5.4c.1 2.7 2.4 4.8 5.1 4.8zm-2.4-7.2c.5-.6 1.3-1 2.1-1h.2c1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1-1.7 0-3.1-1.4-3.1-3.1 0-.8.3-1.5.8-2.1z" fill="currentColor"></path>
@@ -59,31 +106,31 @@ const EditCardModal = ({image, user, content}) => {
                             : null
                             }
                             <label htmlFor='img'>
-                                <img src={imgSrc} alt="" />
+                                <img src={post.image} alt="" />
                             </label>
                             <input id='img' name='img' onChange={onImgChange} type="file" hidden/>
                             {/* {
-                                console.log(imgSrc)
+                                console.log(image)
                             } */}
                         </div>
                         <aside className=''>
                             <div className={styles.content}>
                                 {/* 계정 정보 */}
                                 <div className='flex w-full items-center'>
-                                    <img src={user.image} className='w-8 h-8 rounded-full' alt="" />
-                                    <span className='ml-3 text-sm font-semibold text-black'>{user.name}</span>
+                                    <img src={userData.image} className='w-8 h-8 rounded-full' alt="" />
+                                    <span className='ml-3 text-sm font-semibold text-black'>{userData.name}</span>
                                 </div>
                                 {/* textfield */}
                                 <div className='w-full mt-4'>
-                                    <textarea className='w-full' name='content' value={textArea} placeholder='문구 입력...' onChange={onChange}></textarea>
+                                    <textarea className='w-full' name='content' value={post.content} placeholder='문구 입력...' onChange={onChange}></textarea>
                                 </div>
                             </div>
                         </aside>
                     </section>
                 </div>
-            </form>       
+            </div>       
         </div>  
     )
 }
 
-export default EditCardModal;
+export default wrapper.withRedux(EditCardModal);

@@ -3,6 +3,7 @@ import styles from "../../styles/community/community.module.scss";
 import { useSelector } from 'react-redux';
 import wrapper from '../../redux/store';
 import http from "../../http/index";
+import { Modal, Toast } from '../common/modals';
 const CreateCard = (props) => {
     const userData = useSelector(state => state.user.data);
     // const { name, image } = props.user;
@@ -55,6 +56,10 @@ const CreateCard = (props) => {
         http.post('/posts/create', formData, config)
         .then(res => {
             console.log(res);
+            Toast.fire({
+                icon: 'success',
+                title: 'Save successfully'
+            })
         })
         .catch(err => {
             console.log('ERROR');

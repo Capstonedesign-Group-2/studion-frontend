@@ -2,10 +2,10 @@ import EditCardModal from './EditCardModal'
 import { Modal } from '../common/modals'
 import styles from "../../styles/community/community.module.scss";
 
-const Dropdown = ({image, Audio, user, content}) => {
+const Dropdown = ({image, Audio, user, content, post_id}) => {
     const onEditModal = () => {
         Modal.fire({
-            html: <EditCardModal image={image} user={user} content={content}/>,
+            html: <EditCardModal post_id={post_id} image={image} user={user} content={content}/>,
             showConfirmButton: false,
             customClass: styles.createSwal,
             width: '1024px',
