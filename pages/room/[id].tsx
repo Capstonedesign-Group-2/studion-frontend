@@ -276,7 +276,7 @@ const Room = () => {
 				allUsers.forEach(async (user) => {
 					if (!localStreamRef.current) return
 
-					// 피어 연결
+					// 처음 접속시 현재 접속된 피어들 연결
 					const pc = createPeerConnection(user.id, user.name)
 					if (!(pc && Socket.socket)) return
 					pcsRef.current = { ...pcsRef.current, [user.id]: pc }
@@ -315,6 +315,7 @@ const Room = () => {
 				}) => {
 					const { sdp, offerSendID, offerSendName } = data
 					// console.log('get offer')
+					// 새로운 피어 들어왔을 시 연결
 					if (!localStreamRef.current) return
 					const pc = createPeerConnection(offerSendID, offerSendName)
 					if (!(pc && Socket.socket)) return

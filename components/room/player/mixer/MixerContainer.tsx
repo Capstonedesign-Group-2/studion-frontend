@@ -3,6 +3,7 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../../../redux/slices"
 import MasterTrack from "./MasterTrack"
 import Mixer from "./Mixer"
+import Recorder from "./Recorder"
 import Track from "./Track"
 
 interface Props {
@@ -17,8 +18,11 @@ const MixerContainer = ({ mixerRef }: Props) => {
       {users.map(user => (
         <Track key={`${user.name}_${user.id}`} user={user} mixerRef={mixerRef} />
       ))}
-      <div className="col-start-9 2xl:col-start-12">
+      <div className="col-start-6 2xl:col-start-9">
         <MasterTrack mixerRef={mixerRef} />
+      </div>
+      <div className="col-span-3 col-start-7 2xl:col-start-10">
+        <Recorder />
       </div>
     </div>
   )
