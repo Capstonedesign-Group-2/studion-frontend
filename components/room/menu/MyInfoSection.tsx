@@ -30,9 +30,9 @@ const MyInfoSection = ({ audios }: Props) => {
               {userData?.name}
             </h3>
           </div>
-          <div className="bg-studion-400 text-ellipsis overflow-hidden">
+          {/* <div className="bg-studion-400 text-ellipsis overflow-hidden">
             <AudioSelect audios={audios} />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

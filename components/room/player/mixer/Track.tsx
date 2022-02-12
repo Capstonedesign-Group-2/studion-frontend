@@ -1,15 +1,16 @@
 import Box from '@mui/material/Box'
 import { useState, useCallback } from 'react'
-import Mixer from './Mixer'
+import { Channel } from './Mixer'
+import Panner from './RotaryKnob'
 
 import { VolumeSlider } from './VolumeSlider'
 
 interface Props {
   user: { id: string, name: string }
-  mixerRef: React.MutableRefObject<Mixer | undefined>
+  channel: Channel
 }
 
-const Track = ({ user, mixerRef }: Props) => {
+const Track = ({ user, channel }: Props) => {
   const [valume, setValume] = useState<number>(100)
   const [solo, setSolo] = useState<boolean>(false)
   const [mute, setMute] = useState<boolean>(false)
@@ -20,6 +21,7 @@ const Track = ({ user, mixerRef }: Props) => {
 
   const onMute = useCallback(() => {
     setMute(!mute)
+    channel.setMute(mute)
   }, [mute])
 
   const setMuteStyle = useCallback(() => {
@@ -38,11 +40,11 @@ const Track = ({ user, mixerRef }: Props) => {
 
   const handleValumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
-      if (!mixerRef.current) return
-      mixerRef.current.channels[user.id]?.setGain(newValue / 120)
+      if (!channel) return
+      channel.setGain(newValue / 120)
       setValume(newValue);
     }
-  }, [mixerRef, user])
+  }, [channel, user])
 
   return (
     <div className="bg-gray-600 flex flex-col gap-4 py-4 px-2 items-center">
@@ -56,9 +58,12 @@ const Track = ({ user, mixerRef }: Props) => {
         </p>
       </div>
 
+      {/* Panner 노브 */}
+      <Panner label='PAN' channel={channel} />
+
       {/* Solo 버튼 */}
       <div className='flex flex-col' onClick={onSolo}>
-        <label htmlFor='soloeBtn' className="text-white text-sm text-center hover:cursor-pointer"
+        <label htmlFor='soloBtn' className="text-white text-sm text-center hover:cursor-pointer"
           style={{ color: solo ? 'white' : '#a1a1aa' }}
         >
           SOLO
@@ -66,7 +71,7 @@ const Track = ({ user, mixerRef }: Props) => {
         <button
         >
           <div className="bg-gray-300 h-5 w-12 border-b-4 border-studion-100 shadow"
-            style={{ borderColor: solo ? '' : '#a1a1aa' }} id='soloeBtn'
+            style={{ borderColor: solo ? '' : '#a1a1aa' }} id='soloBtn'
           ></div>
         </button>
       </div>
@@ -99,7 +104,7 @@ const Track = ({ user, mixerRef }: Props) => {
           onChange={handleValumeChange}
         />
       </Box>
-    </div>
+    </div >
   )
 }
 
