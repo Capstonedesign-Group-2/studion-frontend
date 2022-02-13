@@ -10,9 +10,11 @@ const triangle = {
 
 const Recorder = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
+  const dpmRef = useRef<Promise<MediaStream>>()
   const recRef = useRef<MediaRecorder>()
-  const [downloadUrl, setDownloadUrl] = useState<string>('')
+  const [downloadUrls, setDownloadUrls] = useState<string[]>([])
   const [clock, setClock] = useState<number>(0)
+  const clockRef = useRef<number>(0)
   const timerInterval = useRef<number>()
 
   const onPlay = () => {
@@ -21,20 +23,15 @@ const Recorder = () => {
 
   const onRecording = async () => {
     setIsPlaying(true)
-    navigator.mediaDevices.getDisplayMedia({
-      video: { width: 640, height: 480 },
-      audio: {
-        echoCancellation: false,
-        autoGainControl: false,
-        noiseSuppression: false,
-      }
-    }).then((stream) => {
+    dpmRef.current?.then((stream) => {
       recording(stream)
       recRef.current?.start()
       const now = Date.now()
       setClock(0)
+      clockRef.current = 0
       timerInterval.current = window.setInterval(() => {
-        setClock(Date.now() - now)
+        clockRef.current = Date.now() - now
+        setClock(clockRef.current)
       }, 50)
     })
   }
@@ -47,13 +44,12 @@ const Recorder = () => {
       if (recRef.current?.state === 'inactive') {
         let blob = new Blob(videoChunks, { type: 'video/webm; codecs=vp9,opus' })
         console.log(blob, URL.createObjectURL(blob))
-        // setDownloadUrl(URL.createObjectURL(blob))
 
         let reader = new FileReader()
         reader.readAsArrayBuffer(blob);
         reader.onload = () => {
-          let length = parseInt((clock / 1000).toFixed(0))
-          console.log(length)
+          let length = parseInt((clockRef.current / 1000).toFixed(0))
+          console.log(length, clock)
           let offlineAudioContext = new OfflineAudioContext(2, 44100 * length, 44100);
           let soundSource = offlineAudioContext.createBufferSource();
           let videoFileAsBuffer = reader.result; // arraybuffer
@@ -83,7 +79,7 @@ const Recorder = () => {
     var new_file = URL.createObjectURL(bufferToWave(abuffer, total_samples));
 
     // Make it downloadable
-    setDownloadUrl(new_file)
+    setDownloadUrls((prev) => [...prev, new_file])
   }
 
   // Convert AudioBuffer to a Blob using WAVE representation
@@ -146,12 +142,21 @@ const Recorder = () => {
     recRef.current?.stop()
     clearInterval(timerInterval.current);
     console.log(recRef.current?.stream.getAudioTracks())
-    console.log('stop recording', recRef.current, downloadUrl)
+    console.log('stop recording', recRef.current, downloadUrls)
   }
 
   useEffect(() => {
-    console.log('downloadUrl:', downloadUrl)
-  }, [downloadUrl])
+    dpmRef.current = navigator.mediaDevices.getDisplayMedia({
+      video: { width: 640, height: 480 },
+      audio: {
+        echoCancellation: false,
+        autoGainControl: false,
+        noiseSuppression: false,
+      }
+    })
+
+    console.log(dpmRef.current)
+  }, [])
 
   return (
     <div className="bg-gray-600 h-full flex flex-col gap-4 py-12 px-8">
@@ -196,8 +201,11 @@ const Recorder = () => {
           </div>
         </button>
       </div>
-      {/* {downloadUrl && <video src={downloadUrl} controls />} */}
-      {downloadUrl && <a href={downloadUrl} download>다운로드</a>}
+      {downloadUrls && downloadUrls.map((url) => (
+        <div key={url}>
+          <audio src={url} controls />
+        </div>
+      ))}
     </div>
   )
 }

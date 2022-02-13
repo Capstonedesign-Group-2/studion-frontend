@@ -31,7 +31,7 @@ const RotaryKnob = ({ label, channel }: Props) => {
     if (degreeRef.current < 0) {
       degreeRef.current = degreeRef.current + 360
     }
-    if (degreeRef.current >= 0 && degreeRef.current <= 360) {
+    if (degreeRef.current >= 20 && degreeRef.current <= 340) {
       degreeRatio = ((degreeRef.current - 180) * 130 / 180)
       setDeg(parseInt(degreeRatio.toString()))
       channel.setPan(parseInt(degreeRatio.toString()) / 130)
