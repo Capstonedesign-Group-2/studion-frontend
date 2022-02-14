@@ -78,7 +78,8 @@ const Room = () => {
 
 				// console.log('set local channel', mixerRef.current);
 
-				mixerRef.current.addNewChannel(new Channel(userData?.name, Socket.socket.id, localStreamRef.current))
+				// mixerRef.current.addNewChannel(new Channel(userData?.name, Socket.socket.id, localStreamRef.current))
+				new Channel(userData?.name, Socket.socket.id, localStreamRef.current)
 				dispatch(roomSlice.actions.addUser({ id: Socket.socket.id, name: userData?.name }))
 
 				getAudios()
@@ -139,7 +140,8 @@ const Room = () => {
 
 			pc.ontrack = (e) => {
 				// console.log('add new channel', mixerRef.current);
-				mixerRef.current?.addNewChannel(new Channel(name, socketId, e.streams[0]))
+				// mixerRef.current?.addNewChannel(new Channel(name, socketId, e.streams[0]))
+				new Channel(name, socketId, e.streams[0])
 				dispatch(roomSlice.actions.addUser({ id: socketId, name }))
 			}
 
