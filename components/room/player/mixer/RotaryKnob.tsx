@@ -12,6 +12,7 @@ const RotaryKnob = ({ label, channel }: Props) => {
   const [deg, setDeg] = useState<number>(0)
 
   const onMouseMove = (evt: MouseEvent) => {
+    console.log('on mouse move')
     if (!knobRef.current) return
 
     let el = knobRef.current,
@@ -39,11 +40,13 @@ const RotaryKnob = ({ label, channel }: Props) => {
   }
 
   const onMouseDown = () => {
+    console.log('on mouse down')
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp)
   }
 
   const onMouseUp = () => {
+    console.log('on mouse up')
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp)
   }

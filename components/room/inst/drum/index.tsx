@@ -27,7 +27,7 @@ const DrumComponent: ForwardRefRenderFunction<PlayDrumHandle, Props> = ({ select
 
   const handleVolumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number' && gainNode.current) {
-      gainNode.current.gain.value = newValue / 1200
+      gainNode.current.gain.value = newValue / 120
     }
   }, [])
 
@@ -73,7 +73,7 @@ const DrumComponent: ForwardRefRenderFunction<PlayDrumHandle, Props> = ({ select
         })
       })
       gainNode.current = audioCtxRef.current.createGain()
-      gainNode.current.gain.value = 100 / 1200
+      gainNode.current.gain.value = 100 / 120
     }
   }, [])
 
