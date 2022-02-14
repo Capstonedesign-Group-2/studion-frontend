@@ -19,6 +19,7 @@ const RoomContainer = ({ sendDataToAllUsers, drumInst, pianoInst, mixerRef }: Pr
         sendDataToAllUsers={sendDataToAllUsers}
         drumInst={drumInst}
         pianoInst={pianoInst}
+        mixerRef={mixerRef}
       />
       <PlayerSection
         mixerRef={mixerRef}

@@ -1,3 +1,5 @@
+import { Drum } from "../../inst/drum/drum"
+
 export default class Mixer {
   channels: { [SocketId: string]: Channel }
   audioContext: AudioContext
@@ -39,6 +41,9 @@ export default class Mixer {
     } else {
       console.error('not Nodes or masterGainNode')
     }
+
+    // 드럼
+    newChannel.drum = new Drum(this.audioContext, newChannel)
   }
 
   deleteChannel(dataId: string) { // data.id === Socket id
@@ -67,6 +72,7 @@ export class Channel {
   gainNode: GainNode | null
   muteNode: GainNode | null
   pannerNode: StereoPannerNode | null
+  drum: Drum | null
 
   constructor(name: string, SocketId: string, stream: MediaStream) {
     this.name = name
@@ -76,6 +82,7 @@ export class Channel {
     this.gainNode = null
     this.muteNode = null
     this.pannerNode = null
+    this.drum = null
   }
 
   setNodes(gainNode: GainNode, muteNode: GainNode, pannerNode: StereoPannerNode) {

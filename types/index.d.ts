@@ -76,6 +76,7 @@ declare interface RoomsState {
 declare interface DcData {
   type: string // drum, piano, ...
   key: string
+  socketId: string
 }
 
 /**

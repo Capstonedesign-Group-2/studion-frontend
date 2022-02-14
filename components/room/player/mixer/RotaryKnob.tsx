@@ -12,7 +12,6 @@ const RotaryKnob = ({ label, channel }: Props) => {
   const [deg, setDeg] = useState<number>(0)
 
   const onMouseMove = (evt: MouseEvent) => {
-    console.log('on mouse move')
     if (!knobRef.current) return
 
     let el = knobRef.current,
@@ -24,7 +23,7 @@ const RotaryKnob = ({ label, channel }: Props) => {
       degreeRatio
 
     center_x = (el.getBoundingClientRect().left) + (el.offsetWidth / 2)
-    center_y = (el.getBoundingClientRect().top) + (el.offsetHeight / 2)
+    center_y = (el.getBoundingClientRect().top) + (el.offsetHeight / 2) + window.scrollY
     mouse_x = evt.pageX
     mouse_y = evt.pageY
     radians = Math.atan2(mouse_x - center_x, mouse_y - center_y)
@@ -32,7 +31,7 @@ const RotaryKnob = ({ label, channel }: Props) => {
     if (degreeRef.current < 0) {
       degreeRef.current = degreeRef.current + 360
     }
-    if (degreeRef.current >= 20 && degreeRef.current <= 340) {
+    if (degreeRef.current >= 0 && degreeRef.current <= 360) {
       degreeRatio = ((degreeRef.current - 180) * 130 / 180)
       setDeg(parseInt(degreeRatio.toString()))
       channel.setPan(parseInt(degreeRatio.toString()) / 130)
@@ -40,13 +39,11 @@ const RotaryKnob = ({ label, channel }: Props) => {
   }
 
   const onMouseDown = () => {
-    console.log('on mouse down')
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp)
   }
 
   const onMouseUp = () => {
-    console.log('on mouse up')
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp)
   }
@@ -58,6 +55,10 @@ const RotaryKnob = ({ label, channel }: Props) => {
       knobRef.current?.removeEventListener('mousedown', onMouseDown)
     }
   }, [])
+
+  useEffect(() => {
+    console.log(knobRef.current?.getBoundingClientRect())
+  }, [knobRef])
 
   return (
     <div className="flex flex-col justify-center items-center">

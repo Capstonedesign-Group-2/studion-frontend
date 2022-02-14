@@ -1,3 +1,45 @@
+import { Channel } from "../../player/mixer/Mixer"
+
+export class Drum {
+  ctx: AudioContext
+  channel: Channel
+  gainNode: GainNode
+  tracks: {
+    letter: string
+    buffer: AudioBuffer
+  }[]
+
+  constructor(ctx: AudioContext, channel: Channel) {
+    let self = this
+
+    this.tracks = []
+    this.ctx = ctx
+    this.channel = channel
+
+    DATA.map(v => {
+      loadBuffer(v.url, ctx as AudioContext, function (buffer: AudioBuffer) {
+        self.tracks.push({
+          'letter': v.letter,
+          'buffer': buffer
+        })
+      })
+    })
+    this.gainNode = ctx.createGain()
+    this.gainNode.gain.value = 100 / 120
+  }
+
+  onPlay(key: string) {
+    if (this.ctx && this.gainNode && this.channel) {
+      const audioBufferSourceNode = this.ctx.createBufferSource()
+      audioBufferSourceNode.buffer = this.tracks.find(v => v.letter === key)?.buffer as AudioBuffer
+      audioBufferSourceNode
+        .connect(this.gainNode)
+        .connect(this.channel.gainNode as GainNode)
+      audioBufferSourceNode.start()
+    }
+  }
+}
+
 export const loadBuffer = (url: string, ctx: AudioContext, fn: any) => {
   let request = new XMLHttpRequest()
   request.open('GET', url, true)

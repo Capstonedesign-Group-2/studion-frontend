@@ -185,12 +185,13 @@ const Room = () => {
 		}
 
 		dc.onmessage = (e) => {
-			const { type, key } = JSON.parse(e.data) as DcData
+			const { type, key, socketId } = JSON.parse(e.data) as DcData
 			console.log('received dc data :', type, key);
 			switch (type) {
 				case 'drum':
-					if (!drumInst.current) return
-					drumInst.current.onPlay(key)
+					// if (!drumInst.current) return
+					// drumInst.current.onPlay(key)
+					mixerRef.current?.channels[socketId]?.drum?.onPlay(key)
 					break
 				case 'onPiano':
 					if (!pianoInst.current) return
