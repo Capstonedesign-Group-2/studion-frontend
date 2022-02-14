@@ -20,10 +20,6 @@ export default class Mixer {
     this.masterAnalyser.connect(this.audioContext.destination)
   }
 
-  getAudioContext() {
-    return this.audioContext
-  }
-
   addNewChannel(newChannel: Channel) {
     // 노드 생성
     // const gainNode = this.audioContext.createGain()
@@ -68,7 +64,8 @@ export default class Mixer {
   }
 }
 
-export class Channel extends Mixer {
+export class Channel {
+  mixer: Mixer
   name: string
   socketId: string
   stream: MediaStream
@@ -77,40 +74,29 @@ export class Channel extends Mixer {
   pannerNode: StereoPannerNode
   drum: Drum
 
-  constructor(name: string, SocketId: string, stream: MediaStream) {
-    super()
+  constructor(name: string, SocketId: string, stream: MediaStream, mixer: Mixer) {
+    this.mixer = mixer
     this.name = name
     this.socketId = SocketId
     this.stream = stream
 
-    this.gainNode = super.getAudioContext().createGain()
-    this.muteNode = super.getAudioContext().createGain()
-    this.pannerNode = new StereoPannerNode(super.getAudioContext(), { pan: 0 })
-    this.drum = new Drum(this.audioContext, this)
+    this.gainNode = this.mixer.audioContext.createGain()
+    this.muteNode = this.mixer.audioContext.createGain()
+    this.pannerNode = new StereoPannerNode(this.mixer.audioContext, { pan: 0 })
+    this.drum = new Drum(this.mixer.audioContext, this)
     this.setConnection()
-    super.addNewChannel(this)
+    this.mixer.addNewChannel(this)
   }
-
-  // setNodes(gainNode: GainNode, muteNode: GainNode, pannerNode: StereoPannerNode) {
-  //   this.gainNode = gainNode
-  //   this.muteNode = muteNode
-  //   this.pannerNode = pannerNode
-  // }
 
   setConnection() {
     // 오디오 소스 생성
-    let source = this.audioContext.createMediaStreamSource(this.stream)
+    let source = this.mixer.audioContext.createMediaStreamSource(this.stream)
 
     // 소스 연결
-    // if (this.masterGainNode && newChannel.gainNode && newChannel.muteNode && newChannel.pannerNode) {
     source.connect(this.gainNode)
     this.gainNode.connect(this.muteNode)
     this.muteNode.connect(this.pannerNode)
-    this.pannerNode.connect(this.masterGainNode)
-
-    // } else {
-    //   console.error('not Nodes or masterGainNode')
-    // }
+    this.pannerNode.connect(this.mixer.masterGainNode)
   }
 
   setGain(value: number) {

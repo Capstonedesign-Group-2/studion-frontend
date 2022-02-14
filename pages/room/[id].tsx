@@ -14,7 +14,6 @@ import http from "../../http"
 import Mixer, { Channel } from "../../components/room/player/mixer/Mixer"
 import roomSlice from "../../redux/slices/room"
 import { DcData } from "../../types"
-import DrumComponent from "../../components/room/inst/drum"
 import PianoComponent from "../../components/room/inst/piano"
 
 const pc_config = {
@@ -79,7 +78,7 @@ const Room = () => {
 				// console.log('set local channel', mixerRef.current);
 
 				// mixerRef.current.addNewChannel(new Channel(userData?.name, Socket.socket.id, localStreamRef.current))
-				new Channel(userData?.name, Socket.socket.id, localStreamRef.current)
+				new Channel(userData?.name, Socket.socket.id, localStreamRef.current, mixerRef.current)
 				dispatch(roomSlice.actions.addUser({ id: Socket.socket.id, name: userData?.name }))
 
 				getAudios()
@@ -141,7 +140,8 @@ const Room = () => {
 			pc.ontrack = (e) => {
 				// console.log('add new channel', mixerRef.current);
 				// mixerRef.current?.addNewChannel(new Channel(name, socketId, e.streams[0]))
-				new Channel(name, socketId, e.streams[0])
+				if (!mixerRef.current) return
+				new Channel(name, socketId, e.streams[0], mixerRef.current)
 				dispatch(roomSlice.actions.addUser({ id: socketId, name }))
 			}
 
