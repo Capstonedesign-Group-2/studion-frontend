@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import InstBtn from "./InstBtn"
-import DrumComponent, { PlayDrumHandle } from "./drum"
+import DrumComponent from "./drum"
 import PianoComponent, { PlayPianoHandle } from "./piano"
 import { DcData } from "../../../types"
 import Mixer from "../player/mixer/Mixer"
@@ -16,12 +16,11 @@ const Instlist = [
 
 interface Props {
   sendDataToAllUsers: (data: DcData) => void
-  drumInst: React.RefObject<PlayDrumHandle>
   pianoInst: React.RefObject<PlayPianoHandle>
   mixerRef: React.MutableRefObject<Mixer | undefined>
 }
 
-const KeyInstSection = ({ sendDataToAllUsers, drumInst, pianoInst, mixerRef }: Props) => {
+const KeyInstSection = ({ sendDataToAllUsers, pianoInst, mixerRef }: Props) => {
   const [selectedInst, setSelectedInst] = useState<string>('')
 
   return (
@@ -38,7 +37,6 @@ const KeyInstSection = ({ sendDataToAllUsers, drumInst, pianoInst, mixerRef }: P
         <DrumComponent
           selectedInst={selectedInst}
           sendDataToAllUsers={sendDataToAllUsers}
-          ref={drumInst}
           mixerRef={mixerRef}
         />
       </div>

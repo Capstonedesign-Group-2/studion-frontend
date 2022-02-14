@@ -43,7 +43,6 @@ const Room = () => {
 	const [audios, setAudios] = useState<MediaDeviceInfo[]>([])
 
 	// playInst
-	const drumInst = useRef<React.ElementRef<typeof DrumComponent>>(null)
 	const pianoInst = useRef<React.ElementRef<typeof PianoComponent>>(null)
 
 	const getLocalStream = useCallback(async (deviceId: string | null) => {
@@ -390,7 +389,6 @@ const Room = () => {
 			>
 				<RoomContainer
 					sendDataToAllUsers={sendDataToAllUsers}
-					drumInst={drumInst}
 					pianoInst={pianoInst}
 					mixerRef={mixerRef}
 				/>

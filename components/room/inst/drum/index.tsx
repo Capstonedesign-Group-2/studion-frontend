@@ -1,4 +1,4 @@
-import { forwardRef, ForwardRefRenderFunction, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Box from '@mui/material/Box'
 
 import { VolumeSlider } from '../../player/mixer/VolumeSlider'
@@ -7,25 +7,20 @@ import { DcData } from "../../../../types"
 import Mixer from "../../player/mixer/Mixer"
 import socket from "../../../../socket"
 
-export interface PlayDrumHandle {
-  onPlay: (key: string) => void
-}
-
 interface Props {
   selectedInst: string
   sendDataToAllUsers: (data: DcData) => void
   mixerRef: React.MutableRefObject<Mixer | undefined>
 }
 
-const DrumComponent: ForwardRefRenderFunction<PlayDrumHandle, Props> = ({ selectedInst, sendDataToAllUsers, mixerRef }, ref) => {
+const DrumComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) => {
   const [playing, setPlaying] = useState<string[]>([])
-  const gainNode = useRef<GainNode>()
 
   const handleVolumeChange = useCallback((event: Event, newValue: number | number[]) => {
-    if (typeof newValue === 'number' && gainNode.current) {
-      gainNode.current.gain.value = newValue / 120
+    if (typeof newValue === 'number') {
+      mixerRef.current?.channels[socket.socket.id]?.drum?.setGain(newValue / 120)
     }
-  }, [])
+  }, [mixerRef])
 
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
     const key = e.key.toUpperCase()
@@ -90,4 +85,4 @@ const DrumComponent: ForwardRefRenderFunction<PlayDrumHandle, Props> = ({ select
 }
 DrumComponent.displayName = "DrumComponent";
 
-export default forwardRef(DrumComponent)
+export default DrumComponent

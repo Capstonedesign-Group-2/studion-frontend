@@ -38,6 +38,10 @@ export class Drum {
       audioBufferSourceNode.start()
     }
   }
+
+  setGain(value: number) {
+    this.gainNode.gain.value = value
+  }
 }
 
 export const loadBuffer = (url: string, ctx: AudioContext, fn: any) => {
