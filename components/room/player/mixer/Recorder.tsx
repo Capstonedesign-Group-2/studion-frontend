@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
-import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 
 import Mixer from "./Mixer"
@@ -36,7 +35,7 @@ const Recorder = ({ mixerRef }: Props) => {
   }
 
   const onRecording = async () => {
-    if (!recorderRef.current) return
+    if (!recorderRef.current || isRecording) return
     setIsPlaying(true)
     setIsRecording(true)
     startTimer()
@@ -87,7 +86,7 @@ const Recorder = ({ mixerRef }: Props) => {
   return (
     <div className="bg-gray-600 h-full flex flex-col overflow-hidden gap-4 py-12 px-8">
       <h3 className="text-gray-300 font-bold text-xl">
-        🎙 Studion Recorder
+        🎙️ Studion Recorder
       </h3>
       <div className=" font-mono text-3xl bg-gray-900 text-studion-100 rounded-lg py-4 px-3">
         {(clock / 1000).toFixed(1)}s
@@ -123,20 +122,25 @@ const Recorder = ({ mixerRef }: Props) => {
           onClick={onRecording}
         >
           <div className="flex justify-center items-center bg-gray-400 border-b-4 border-gray-500 rounded-sm h-11">
-            <div className='bg-red-700 h-4 w-4 rounded-full'></div>
+            <div className='bg-red-700 h-4 w-4 rounded-full'
+              style={isRecording ? { backgroundColor: 'rgb(239 68 68)', borderColor: '#4B5563' } : {}}
+            ></div>
           </div>
         </button>
       </div>
-      <div className="flex-1 mt-4 flex flex-col gap-2 bg-gray-200 overflow-y-scroll">
-        {urls && urls.map((url) => (
-          <div className="inline" key={url}>
-            <AudioPlayer
-              className="rounded-md"
-              src={url}
-              showJumpControls={false}
-            />
-          </div>
-        ))}
+
+      <h3 className="text-gray-300 font-bold mt-4 text-xl">
+        🎧 Sound List
+      </h3>
+      <div className="flex flex-col gap-2 overflow-y-auto max-h-96">
+        {urls.length !== 0
+          ? urls.map((url, i) => (
+            <div key={url}>
+              <label className="text-gray-300 text-lg"># Track_{i}</label>
+              <audio src={url} controls className="w-full mt-1" />
+            </div>
+          ))
+          : <div>the list is empty</div>}
       </div>
     </div>
   )
