@@ -30,6 +30,7 @@ const Room = () => {
 	const dispatch = useDispatch()
 	const userData = useSelector((state: RootState) => state.user.data)
 	const users = useSelector<RootState, { id: string, name: string }[]>(state => state.room.users)
+	const isLoading = useSelector<RootState, boolean>(state => state.room.isLoading)
 	const [menu, setMenu] = useState<boolean>(true)
 
 	// webRTC
@@ -75,9 +76,6 @@ const Room = () => {
 			if (!deviceId) { // deviceId가 없을때 한번만 실행
 				if (!(mixerRef.current && Socket.socket && localStreamRef.current)) return
 
-				// console.log('set local channel', mixerRef.current);
-
-				// mixerRef.current.addNewChannel(new Channel(userData?.name, Socket.socket.id, localStreamRef.current))
 				new Channel(userData?.name, Socket.socket.id, localStreamRef.current, mixerRef.current)
 				dispatch(roomSlice.actions.addUser({ id: Socket.socket.id, name: userData?.name }))
 
@@ -138,8 +136,6 @@ const Room = () => {
 			}
 
 			pc.ontrack = (e) => {
-				// console.log('add new channel', mixerRef.current);
-				// mixerRef.current?.addNewChannel(new Channel(name, socketId, e.streams[0]))
 				if (!mixerRef.current) return
 				new Channel(name, socketId, e.streams[0], mixerRef.current)
 				dispatch(roomSlice.actions.addUser({ id: socketId, name }))
@@ -190,8 +186,6 @@ const Room = () => {
 			console.log('received dc data :', type, key);
 			switch (type) {
 				case 'drum':
-					// if (!drumInst.current) return
-					// drumInst.current.onPlay(key)
 					mixerRef.current?.channels[socketId]?.drum?.onPlay(key)
 					break
 				case 'onPiano':
@@ -256,6 +250,8 @@ const Room = () => {
 	}
 
 	useEffect(() => {
+		// 로딩
+		// dispatch(roomSlice.actions.setLoading(true))
 		// 합주실에 이미 있을경우 제거
 
 		// 합주실 입장
@@ -372,6 +368,9 @@ const Room = () => {
 				mixerRef.current?.deleteChannel(data.id)
 				dispatch(roomSlice.actions.deleteUser(data))
 			})
+
+			// 로딩 완료
+			dispatch(roomSlice.actions.setLoading(false))
 		}).catch((err) => {
 			console.error(err)
 		})
@@ -379,6 +378,12 @@ const Room = () => {
 		return () => whenUnmounte()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
+
+	if (isLoading) return (
+		<div>
+			loading ...
+		</div>
+	)
 
 	return (
 		<div className="bg-gray-50 min-w-screen min-h-screen">

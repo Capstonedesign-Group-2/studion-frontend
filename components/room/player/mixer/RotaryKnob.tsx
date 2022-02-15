@@ -56,10 +56,6 @@ const RotaryKnob = ({ label, channel }: Props) => {
     }
   }, [])
 
-  useEffect(() => {
-    console.log(knobRef.current?.getBoundingClientRect())
-  }, [knobRef])
-
   return (
     <div className="flex flex-col justify-center items-center">
       <p className='text-studion-100'>▾</p>

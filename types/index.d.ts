@@ -68,6 +68,7 @@ declare interface RoomsState {
   roomList: Array<Room>
   getRoomListError?: null | string
   users: { id: string, name: string }[]
+  isLoading: boolean
 }
 
 /**

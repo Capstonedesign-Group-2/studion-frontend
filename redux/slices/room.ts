@@ -7,6 +7,7 @@ const initialState = {
   roomList: [],
   channelList: [],
   users: [],
+  isLoading: true,
 
   getRoomListError: null,
 } as RoomsState;
@@ -20,7 +21,10 @@ const roomSlice = createSlice({
     },
     deleteUser(state, action) {
       state.users = state.users.filter(v => v.id !== action.payload.id)
-    }
+    },
+    setLoading(state, action) {
+      state.isLoading = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder

@@ -22,7 +22,7 @@ const MixerContainer = ({ mixerRef }: Props) => {
         <MasterTrack mixerRef={mixerRef} />
       </div>
       <div className="col-span-3 col-start-7 2xl:col-start-10">
-        <Recorder />
+        <Recorder mixerRef={mixerRef} />
       </div>
     </div>
   )

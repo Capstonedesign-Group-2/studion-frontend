@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from "react"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../../redux/slices"
+import Mixer from "./Mixer"
 
 const triangle = {
   width: '0px',
@@ -8,11 +11,19 @@ const triangle = {
   borderBottom: '8px solid transparent'
 }
 
-const Recorder = () => {
+interface Props {
+  mixerRef: React.MutableRefObject<Mixer | undefined>
+}
+
+const Recorder = ({ mixerRef }: Props) => {
+  const recorderRef = useRef<MediaRecorder>()
+  const audioChunksRef = useRef<Blob[]>([])
+
+  const isLoading = useSelector<RootState, boolean>(state => state.room.isLoading)
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
-  const dpmRef = useRef<Promise<MediaStream>>()
-  const recRef = useRef<MediaRecorder>()
-  const [downloadUrls, setDownloadUrls] = useState<string[]>([])
+  const [isRecording, setIsRecording] = useState<boolean>(false)
+
+  const [urls, setUrls] = useState<string[]>([])
   const [clock, setClock] = useState<number>(0)
   const clockRef = useRef<number>(0)
   const timerInterval = useRef<number>()
@@ -22,140 +33,51 @@ const Recorder = () => {
   }
 
   const onRecording = async () => {
+    if (!recorderRef.current) return
     setIsPlaying(true)
-    dpmRef.current?.then((stream) => {
-      recording(stream)
-      recRef.current?.start()
-      const now = Date.now()
-      setClock(0)
-      clockRef.current = 0
-      timerInterval.current = window.setInterval(() => {
-        clockRef.current = Date.now() - now
-        setClock(clockRef.current)
-      }, 50)
-    })
-  }
-
-  const recording = (stream: MediaStream) => {
-    recRef.current = new MediaRecorder(stream)
-    recRef.current.ondataavailable = (e) => {
-      let videoChunks: Blob[] = []
-      videoChunks.push(e.data)
-      if (recRef.current?.state === 'inactive') {
-        let blob = new Blob(videoChunks, { type: 'video/webm; codecs=vp9,opus' })
-        console.log(blob, URL.createObjectURL(blob))
-
-        let reader = new FileReader()
-        reader.readAsArrayBuffer(blob);
-        reader.onload = () => {
-          let length = parseInt((clockRef.current / 1000).toFixed(0))
-          console.log(length, clock)
-          let offlineAudioContext = new OfflineAudioContext(2, 44100 * length, 44100);
-          let soundSource = offlineAudioContext.createBufferSource();
-          let videoFileAsBuffer = reader.result; // arraybuffer
-          let audioContext = new AudioContext()
-
-          audioContext.decodeAudioData(videoFileAsBuffer as ArrayBuffer)
-            .then(function (decodedAudioData) {
-              let myBuffer = decodedAudioData;
-              soundSource.buffer = myBuffer;
-              soundSource.connect(offlineAudioContext.destination);
-              soundSource.start();
-
-              offlineAudioContext.startRendering().then(function (renderedBuffer) {
-                console.log(renderedBuffer); // outputs audiobuffer
-                makeDownload(renderedBuffer, offlineAudioContext.length)
-              }).catch(function (err) {
-                console.log('Rendering failed: ' + err);
-              });
-            });
-        }
-      }
-    }
-  }
-
-  const makeDownload = (abuffer: AudioBuffer, total_samples: number) => {
-    // Generate audio file and assign URL
-    var new_file = URL.createObjectURL(bufferToWave(abuffer, total_samples));
-
-    // Make it downloadable
-    setDownloadUrls((prev) => [...prev, new_file])
-  }
-
-  // Convert AudioBuffer to a Blob using WAVE representation
-  function bufferToWave(abuffer: AudioBuffer, len: number) {
-    var numOfChan = abuffer.numberOfChannels,
-      length = len * numOfChan * 2 + 44,
-      buffer = new ArrayBuffer(length),
-      view = new DataView(buffer),
-      channels = [], i, sample,
-      offset = 0,
-      pos = 0;
-
-    // write WAVE header
-    setUint32(0x46464952);                         // "RIFF"
-    setUint32(length - 8);                         // file length - 8
-    setUint32(0x45564157);                         // "WAVE"
-
-    setUint32(0x20746d66);                         // "fmt " chunk
-    setUint32(16);                                 // length = 16
-    setUint16(1);                                  // PCM (uncompressed)
-    setUint16(numOfChan);
-    setUint32(abuffer.sampleRate);
-    setUint32(abuffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
-    setUint16(numOfChan * 2);                      // block-align
-    setUint16(16);                                 // 16-bit (hardcoded in this demo)
-
-    setUint32(0x61746164);                         // "data" - chunk
-    setUint32(length - pos - 4);                   // chunk length
-
-    // write interleaved data
-    for (i = 0; i < abuffer.numberOfChannels; i++)
-      channels.push(abuffer.getChannelData(i));
-
-    while (pos < length) {
-      for (i = 0; i < numOfChan; i++) {             // interleave channels
-        sample = Math.max(-1, Math.min(1, channels[i][offset])); // clamp
-        sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0; // scale to 16-bit signed int
-        view.setInt16(pos, sample, true);          // write 16-bit sample
-        pos += 2;
-      }
-      offset++                                     // next source sample
-    }
-
-    // create Blob
-    return new Blob([buffer], { type: "audio/wav" });
-
-    function setUint16(data: number) {
-      view.setUint16(pos, data, true);
-      pos += 2;
-    }
-
-    function setUint32(data: number) {
-      view.setUint32(pos, data, true);
-      pos += 4;
-    }
+    setIsRecording(true)
+    startTimer()
+    recorderRef.current.start()
   }
 
   const onStop = () => {
+    if (isRecording && recorderRef.current) {
+      recorderRef.current.stop()
+    }
     setIsPlaying(false)
-    recRef.current?.stop()
-    clearInterval(timerInterval.current);
-    console.log(recRef.current?.stream.getAudioTracks())
-    console.log('stop recording', recRef.current, downloadUrls)
+    setIsRecording(false)
+    clearInterval(timerInterval.current)
+  }
+
+  const startTimer = () => {
+    const now = Date.now()
+    setClock(0)
+    clockRef.current = 0
+    timerInterval.current = window.setInterval(() => {
+      clockRef.current = Date.now() - now
+      setClock(clockRef.current)
+    }, 50)
   }
 
   useEffect(() => {
-    dpmRef.current = navigator.mediaDevices.getDisplayMedia({
-      video: { width: 640, height: 480 },
-      audio: {
-        echoCancellation: false,
-        autoGainControl: false,
-        noiseSuppression: false,
-      }
-    })
+    if (!isLoading) {
+      recorderRef.current = new MediaRecorder(mixerRef.current?.recorderNode.stream as MediaStream)
 
-    console.log(dpmRef.current)
+      recorderRef.current.ondataavailable = function (evt) {
+        audioChunksRef.current.push(evt.data)
+      }
+
+      recorderRef.current.onstop = function (evt) {
+        let blob = new Blob(audioChunksRef.current, { 'type': 'audio/wave; codecs=opus' })
+        setUrls((prev) => [...prev, URL.createObjectURL(blob)])
+      }
+    }
+  }, [isLoading, mixerRef])
+
+  useEffect(() => {
+    return () => {
+      if (timerInterval.current) clearInterval(timerInterval.current)
+    }
   }, [])
 
   return (
@@ -201,7 +123,7 @@ const Recorder = () => {
           </div>
         </button>
       </div>
-      {downloadUrls && downloadUrls.map((url) => (
+      {urls && urls.map((url) => (
         <div key={url}>
           <audio src={url} controls />
         </div>

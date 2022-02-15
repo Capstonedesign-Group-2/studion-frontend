@@ -6,6 +6,7 @@ export default class Mixer {
   masterGainNode: GainNode
   masterMuteNode: GainNode
   masterAnalyser: AnalyserNode
+  recorderNode: MediaStreamAudioDestinationNode
 
   constructor() {
     this.channels = {}
@@ -13,35 +14,16 @@ export default class Mixer {
     this.masterGainNode = this.audioContext.createGain()
     this.masterMuteNode = this.audioContext.createGain()
     this.masterAnalyser = this.audioContext.createAnalyser()
+    this.recorderNode = this.audioContext.createMediaStreamDestination()
 
     // 노드 연결
     this.masterGainNode.connect(this.masterMuteNode)
     this.masterMuteNode.connect(this.masterAnalyser)
+    this.masterAnalyser.connect(this.recorderNode) // 마지막 노드에 recorderNode 연결
     this.masterAnalyser.connect(this.audioContext.destination)
   }
 
   addNewChannel(newChannel: Channel) {
-    // 노드 생성
-    // const gainNode = this.audioContext.createGain()
-    // const muteNode = this.audioContext.createGain()
-    // const pannerNode = new StereoPannerNode(this.audioContext, { pan: 0 })
-    // newChannel.setNodes(gainNode, muteNode, pannerNode)
-
-    // 오디오 소스 생성
-    // let source = this.audioContext.createMediaStreamSource(newChannel.stream)
-
-    // 소스 연결
-    // if (this.masterGainNode && newChannel.gainNode && newChannel.muteNode && newChannel.pannerNode) {
-    //   source.connect(newChannel.gainNode)
-    //   newChannel.gainNode.connect(newChannel.muteNode)
-    //   newChannel.muteNode.connect(newChannel.pannerNode)
-    //   newChannel.pannerNode.connect(this.masterGainNode)
-
-    //   this.channels[newChannel.socketId] = newChannel
-    // } else {
-    //   console.error('not Nodes or masterGainNode')
-    // }
-
     this.channels[newChannel.socketId] = newChannel
   }
 
