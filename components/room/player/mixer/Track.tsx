@@ -51,7 +51,7 @@ const Track = ({ user, channel }: Props) => {
       {/* 플레이어 프로필 */}
       <div className='flex flex-col justify-center items-center'>
         <div className="flex w-10 h-10 justify-center items-center rounded-full bg-white border-2 border-studion-100">
-          <p>{user?.name.slice(0, 2).toUpperCase()}</p>
+          <p>{user.name && user.name.slice(0, 2).toUpperCase()}</p>
         </div>
         <p className="text-white">
           {user?.name}

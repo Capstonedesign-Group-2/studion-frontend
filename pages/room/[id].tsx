@@ -15,6 +15,7 @@ import Mixer, { Channel } from "../../components/room/player/mixer/Mixer"
 import roomSlice from "../../redux/slices/room"
 import { DcData } from "../../types"
 import PianoComponent from "../../components/room/inst/piano"
+import Loader from "../../components/common/Loader"
 
 const pc_config = {
 	iceServers: [
@@ -379,26 +380,29 @@ const Room = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
-	if (isLoading) return (
-		<div>
-			loading ...
-		</div>
-	)
-
 	return (
 		<div className="bg-gray-50 min-w-screen min-h-screen">
 			{/* 헤더 */}
 			<RoomHeader setMenu={setMenu} menu={menu} />
 
 			{/* 메인 */}
+
 			<div className="pt-12 xl:mr-96"
 				style={{ marginRight: menu ? '' : '0px' }}
 			>
-				<RoomContainer
-					sendDataToAllUsers={sendDataToAllUsers}
-					pianoInst={pianoInst}
-					mixerRef={mixerRef}
-				/>
+				{isLoading
+					? (
+						<div className="h-screen flex justify-center items-center">
+							<Loader />
+						</div>
+					)
+					: (
+						<RoomContainer
+							sendDataToAllUsers={sendDataToAllUsers}
+							pianoInst={pianoInst}
+							mixerRef={mixerRef}
+						/>
+					)}
 			</div>
 
 			{/* 메뉴 */}

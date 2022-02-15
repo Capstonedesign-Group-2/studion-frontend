@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
-import { RootState } from "../../../../redux/slices"
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
+
 import Mixer from "./Mixer"
+import { RootState } from "../../../../redux/slices"
 
 const triangle = {
   width: '0px',
@@ -37,6 +40,7 @@ const Recorder = ({ mixerRef }: Props) => {
     setIsPlaying(true)
     setIsRecording(true)
     startTimer()
+    audioChunksRef.current = []
     recorderRef.current.start()
   }
 
@@ -60,7 +64,7 @@ const Recorder = ({ mixerRef }: Props) => {
   }
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && mixerRef.current) {
       recorderRef.current = new MediaRecorder(mixerRef.current?.recorderNode.stream as MediaStream)
 
       recorderRef.current.ondataavailable = function (evt) {
@@ -81,7 +85,7 @@ const Recorder = ({ mixerRef }: Props) => {
   }, [])
 
   return (
-    <div className="bg-gray-600 h-full flex flex-col gap-4 py-12 px-8">
+    <div className="bg-gray-600 h-full flex flex-col overflow-hidden gap-4 py-12 px-8">
       <h3 className="text-gray-300 font-bold text-xl">
         🎙 Studion Recorder
       </h3>
@@ -123,11 +127,17 @@ const Recorder = ({ mixerRef }: Props) => {
           </div>
         </button>
       </div>
-      {urls && urls.map((url) => (
-        <div key={url}>
-          <audio src={url} controls />
-        </div>
-      ))}
+      <div className="flex-1 mt-4 flex flex-col gap-2 bg-gray-200 overflow-y-scroll">
+        {urls && urls.map((url) => (
+          <div className="inline" key={url}>
+            <AudioPlayer
+              className="rounded-md"
+              src={url}
+              showJumpControls={false}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
