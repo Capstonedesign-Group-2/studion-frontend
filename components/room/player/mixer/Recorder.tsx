@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
-import 'react-h5-audio-player/lib/styles.css';
 
 import Mixer from "./Mixer"
 import { RootState } from "../../../../redux/slices"
@@ -140,7 +139,7 @@ const Recorder = ({ mixerRef }: Props) => {
               <audio src={url} controls className="w-full mt-1" />
             </div>
           ))
-          : <div>the list is empty</div>}
+          : <div className="text-gray-300">the list is empty</div>}
       </div>
     </div>
   )
