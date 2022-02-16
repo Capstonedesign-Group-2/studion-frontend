@@ -26,7 +26,7 @@ const AudioEditor = ({ audioFile }: Props) => {
 
       const script = document.createElement("script");
 
-      script.src = "plugin/wavesurfer.regions.js";
+      script.src = "https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.min.js";
       script.async = true;
 
       document.body.appendChild(script);
@@ -36,21 +36,13 @@ const AudioEditor = ({ audioFile }: Props) => {
         waveColor: '#007E8E',
         progressColor: '#34D399',
         cursorColor: '#34D399',
+        plugins: [
+          WaveSurfer.regions.create({})
+        ]
       });
 
       wavesurferRef.current.on('ready', function () {
         wavesurferRef.current.enableDragSelection({})
-        wavesurferRef.current.addRegion({
-          start: 1,
-          end: 3,
-          color: 'hsla(100, 100%, 30%, 0.1)'
-        })
-        // const region = wavesurferRef.current.addRegion({
-        //   start: 1,
-        //   end: 3,
-        //   color: 'hsla(100, 100%, 30%, 0.1)'
-        // })
-        // console.log(region)
       });
 
       wavesurferRef.current.loadBlob(audioFile.blob)
