@@ -3,6 +3,8 @@ import { useSelector } from "react-redux"
 
 import Mixer from "./Mixer"
 import { RootState } from "../../../../redux/slices"
+import { Modal } from "../../../common/modals"
+import AudioEditor from "../../editor/AudioEditor"
 
 const triangle = {
   width: '0px',
@@ -10,6 +12,13 @@ const triangle = {
   borderLeft: '16px solid #4B5563',
   borderTop: '8px solid transparent',
   borderBottom: '8px solid transparent'
+}
+
+export interface AudioFile {
+  label: string,
+  url: string,
+  buffer: AudioBuffer,
+  blob: Blob
 }
 
 interface Props {
@@ -25,9 +34,11 @@ const Recorder = ({ mixerRef }: Props) => {
   const [isRecording, setIsRecording] = useState<boolean>(false)
 
   const [urls, setUrls] = useState<string[]>([])
+  const [audioFiles, setAudioFiles] = useState<AudioFile[]>([])
   const [clock, setClock] = useState<number>(0)
   const clockRef = useRef<number>(0)
   const timerInterval = useRef<number>()
+  const fileNumber = useRef<number>(0)
 
   const onPlay = () => {
     setIsPlaying(!isPlaying)
@@ -61,6 +72,15 @@ const Recorder = ({ mixerRef }: Props) => {
     }, 50)
   }
 
+  const onEditAudio = (audioFile: AudioFile) => {
+    Modal.fire({
+      title: 'Edit Audio',
+      showConfirmButton: false,
+      // backdrop: true,
+      html: <AudioEditor audioFile={audioFile}></AudioEditor>
+    })
+  }
+
   useEffect(() => {
     if (!isLoading && mixerRef.current) {
       recorderRef.current = new MediaRecorder(mixerRef.current?.recorderNode.stream as MediaStream)
@@ -69,9 +89,23 @@ const Recorder = ({ mixerRef }: Props) => {
         audioChunksRef.current.push(evt.data)
       }
 
-      recorderRef.current.onstop = function (evt) {
+      recorderRef.current.onstop = async function (evt) {
         let blob = new Blob(audioChunksRef.current, { 'type': 'audio/wave; codecs=opus' })
-        setUrls((prev) => [...prev, URL.createObjectURL(blob)])
+        // setUrls((prev) => [...prev, URL.createObjectURL(blob)])
+        try {
+          const arrayBuffer = await blob.arrayBuffer()
+          const audioBuffer = await mixerRef.current?.audioContext.decodeAudioData(arrayBuffer)
+          const audioFile = {
+            label: 'Track_' + fileNumber.current,
+            url: URL.createObjectURL(blob),
+            buffer: audioBuffer as AudioBuffer,
+            blob
+          }
+          setAudioFiles((prev) => [...prev, audioFile])
+          fileNumber.current += 1
+        } catch (err) {
+          console.error('Array buffer error', err)
+        }
       }
     }
   }, [isLoading, mixerRef])
@@ -132,11 +166,14 @@ const Recorder = ({ mixerRef }: Props) => {
         🎧 Sound List
       </h3>
       <div className="flex flex-col gap-2 overflow-y-auto max-h-96">
-        {urls.length !== 0
-          ? urls.map((url, i) => (
-            <div key={url}>
-              <label className="text-gray-300 text-lg"># Track_{i}</label>
-              <audio src={url} controls className="w-full mt-1" />
+        {audioFiles.length !== 0
+          ? audioFiles.map((audioFile) => (
+            <div key={audioFile.label}>
+              <div className="flex justify-between text-gray-300">
+                <label className="text-lg"># {audioFile.label}</label>
+                <button onClick={() => onEditAudio(audioFile)}>edit 🛠</button>
+              </div>
+              <audio src={audioFile.url} controls className="w-full mt-1" />
             </div>
           ))
           : <div className="text-gray-300">the list is empty</div>}
