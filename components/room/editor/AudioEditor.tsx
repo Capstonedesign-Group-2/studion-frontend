@@ -11,19 +11,28 @@ const AudioEditor = ({ audioFile }: Props) => {
   const regionRef = useRef<any>()
   const [timeSet, setTimeSet] = useState<{ start: number, end: number }>({ start: 0, end: 0 })
 
+  const onSpace = () => {
+    if (wavesurferRef.current.isPlaying()) {
+      wavesurferRef.current.pause()
+      setTimeSet((prev) => ({
+        start: wavesurferRef.current.getCurrentTime(),
+        end: prev.end
+      }))
+    } else {
+      wavesurferRef.current.play(timeSet.start, timeSet.end)
+    }
+  }
+
   const onKeyPress = (e: KeyboardEvent) => {
-    console.log(e.code)
     if (!wavesurferRef.current) return
     switch (e.code) {
       case 'Space': // 재생 or 정지
-        // wavesurferRef.current.playPause()
-        wavesurferRef.current.play(timeSet.start, timeSet.end)
+        onSpace()
         break
     }
   }
 
   useEffect(() => {
-    if (!waveformRef.current) return
     const initWaveSurfer = async () => {
       const WaveSurfer = await require('wavesurfer.js')
       const Region = await require('wavesurfer.js/dist/plugin/wavesurfer.regions.min.js')
@@ -43,14 +52,21 @@ const AudioEditor = ({ audioFile }: Props) => {
             ]
           })
         ]
-      });
+      })
 
-      wavesurferRef.current.on('ready', function () {
+      wavesurferRef.current.on('ready', () => {
         regionRef.current = wavesurferRef.current.regions.list['region']
         regionRef.current.onResize(wavesurferRef.current.getDuration(), 'start')
         setTimeSet({
           start: 0,
           end: wavesurferRef.current.getDuration()
+        })
+
+        wavesurferRef.current.on('seek', () => {
+          setTimeSet({
+            start: wavesurferRef.current.getCurrentTime(),
+            end: regionRef.current.end
+          })
         })
 
         wavesurferRef.current.on('region-updated', () => {
@@ -59,7 +75,16 @@ const AudioEditor = ({ audioFile }: Props) => {
             end: regionRef.current.end
           })
         })
-      });
+
+        // 재생영역을 벗어났을 때
+        wavesurferRef.current.on('region-out', () => {
+          setTimeSet({
+            start: regionRef.current.start,
+            end: regionRef.current.end
+          })
+        })
+      })
+
 
       wavesurferRef.current.loadBlob(audioFile.blob)
     }
