@@ -11,12 +11,12 @@ const JoinSection = () => {
     <section className={styles.joinSection}>
       <article>
         <h1 style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)' }}>
-          Online Band.<br/>
-          Play your moment.
+          Online Band.<br />
+          Play your moment. test jenkins
         </h1>
         <div className={styles.joinDiv}>
           <p>
-            自分だけのバンドを作って合奏してみよう！<br/>
+            自分だけのバンドを作って合奏してみよう！<br />
             いつでもどこでも一緒に演奏して楽しみましょう。
           </p>
           {/* 시작 버튼 */}
