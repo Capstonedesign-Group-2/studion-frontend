@@ -85,7 +85,6 @@ const AudioEditor = ({ audioFile }: Props) => {
         })
       })
 
-
       wavesurferRef.current.loadBlob(audioFile.blob)
     }
     initWaveSurfer()
