@@ -12,7 +12,7 @@ const JoinSection = () => {
       <article>
         <h1 style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)' }}>
           Online Band.<br />
-          Play your moment. test jen
+          Play your moment. test jenkins2
         </h1>
         <div className={styles.joinDiv}>
           <p>
