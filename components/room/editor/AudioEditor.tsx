@@ -1,5 +1,6 @@
 import { AudioFile } from "../player/mixer/Recorder"
 import { useEffect, useRef, useState } from "react"
+import Loader from "../../common/Loader"
 
 interface Props {
   audioFile: AudioFile
@@ -63,10 +64,17 @@ const AudioEditor = ({ audioFile }: Props) => {
         })
 
         wavesurferRef.current.on('seek', () => {
-          setTimeSet({
-            start: wavesurferRef.current.getCurrentTime(),
-            end: regionRef.current.end
-          })
+          if (wavesurferRef.current.getCurrentTime() > regionRef.current.end) {
+            setTimeSet({
+              start: wavesurferRef.current.getCurrentTime(),
+              end: wavesurferRef.current.end
+            })
+          } else {
+            setTimeSet({
+              start: wavesurferRef.current.getCurrentTime(),
+              end: regionRef.current.end
+            })
+          }
         })
 
         wavesurferRef.current.on('region-updated', () => {
@@ -104,10 +112,27 @@ const AudioEditor = ({ audioFile }: Props) => {
 
   return (
     <div>
-      <div ref={waveformRef}></div>
-      <div>
-        <p>start: {timeSet.start}</p>
-        <p>end: {timeSet.end}</p>
+      <div className='shadow-lg border-[1px] border-gray-200 rounded'
+        ref={waveformRef}
+      ></div>
+      <div className='flex gap-4 items-center mt-4'>
+        <div className="flex gap-2">
+          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded'>
+            ▶️
+          </div>
+          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded'>
+            🔁
+          </div>
+          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded'>
+            <a href="">⏏️</a>
+          </div>
+          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded'>
+            🗑️
+          </div>
+        </div>
+        <p className="text-gray-400">
+          {(regionRef.current?.end - regionRef.current?.start).toFixed(1)}s / {wavesurferRef.current?.getDuration().toFixed(1)}s
+        </p>
       </div>
     </div>
   )

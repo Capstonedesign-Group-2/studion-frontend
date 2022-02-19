@@ -74,9 +74,8 @@ const Recorder = ({ mixerRef }: Props) => {
 
   const onEditAudio = (audioFile: AudioFile) => {
     Modal.fire({
-      title: 'Edit Audio',
+      title: 'オーディオ編集',
       showConfirmButton: false,
-      // backdrop: true,
       html: <AudioEditor audioFile={audioFile}></AudioEditor>
     })
   }
@@ -91,7 +90,6 @@ const Recorder = ({ mixerRef }: Props) => {
 
       recorderRef.current.onstop = async function (evt) {
         let blob = new Blob(audioChunksRef.current, { 'type': 'audio/wave; codecs=opus' })
-        // setUrls((prev) => [...prev, URL.createObjectURL(blob)])
         try {
           const arrayBuffer = await blob.arrayBuffer()
           const audioBuffer = await mixerRef.current?.audioContext.decodeAudioData(arrayBuffer)
@@ -119,7 +117,7 @@ const Recorder = ({ mixerRef }: Props) => {
   return (
     <div className="bg-gray-600 h-full flex flex-col overflow-hidden gap-4 py-12 px-8">
       <h3 className="text-gray-300 font-bold text-xl">
-        🎙️ Studion Recorder
+        🎙️ Recorder
       </h3>
       <div className=" font-mono text-3xl bg-gray-900 text-studion-100 rounded-lg py-4 px-3">
         {(clock / 1000).toFixed(1)}s
@@ -130,7 +128,7 @@ const Recorder = ({ mixerRef }: Props) => {
         <button
           onClick={onStop}
         >
-          <div className="flex justify-center items-center bg-gray-400 border-b-4 border-gray-500 rounded-sm h-11">
+          <div className="flex justify-center items-center bg-gray-400 border-b-4 border-gray-500 rounded-sm h-11 active:border-studion-100 duration-75">
             <div className='bg-gray-600 w-4 h-4 rounded-sm'></div>
           </div>
         </button>
@@ -139,14 +137,16 @@ const Recorder = ({ mixerRef }: Props) => {
         <button
           onClick={onPlay}
         >
-          <div className="flex justify-center items-center bg-gray-400 border-b-4 border-gray-500 rounded-sm h-11">
+          <div className="flex justify-center items-center bg-gray-400 border-b-4 border-studion-100 rounded-sm h-11"
+            style={isPlaying ? {} : { borderColor: 'rgb(107 114 128)' }}
+          >
             {isPlaying
               ? (
                 <div className="flex gap-1">
                   {[1, 2].map(v => <div key={v} className="h-4 w-[6px] bg-gray-600"></div>)}
                 </div>
               )
-              : <div className="" style={triangle}></div>}
+              : <div style={triangle}></div>}
           </div>
         </button>
 
@@ -154,9 +154,11 @@ const Recorder = ({ mixerRef }: Props) => {
         <button
           onClick={onRecording}
         >
-          <div className="flex justify-center items-center bg-gray-400 border-b-4 border-gray-500 rounded-sm h-11">
+          <div className="flex justify-center items-center bg-gray-400 border-b-4 border-studion-100 rounded-sm h-11"
+            style={isRecording ? {} : { borderColor: 'rgb(107 114 128)' }}
+          >
             <div className='bg-red-700 h-4 w-4 rounded-full'
-              style={isRecording ? { backgroundColor: 'rgb(239 68 68)', borderColor: '#4B5563' } : {}}
+              style={isRecording ? { backgroundColor: 'rgb(239 68 68)' } : {}}
             ></div>
           </div>
         </button>
@@ -173,10 +175,10 @@ const Recorder = ({ mixerRef }: Props) => {
                 <label className="text-lg"># {audioFile.label}</label>
                 <button onClick={() => onEditAudio(audioFile)}>edit 🛠</button>
               </div>
-              <audio src={audioFile.url} controls className="w-full mt-1" />
+              <audio src={audioFile.url} controls className="w-full mt-1 rounded" />
             </div>
           ))
-          : <div className="text-gray-300">the list is empty</div>}
+          : <div className="text-gray-300">音源がありません。</div>}
       </div>
     </div>
   )

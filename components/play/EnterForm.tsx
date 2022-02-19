@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Router from 'next/router'
 import { useCallback, useState } from 'react'
 import * as yup from 'yup'
@@ -19,7 +20,7 @@ const EnterForm = ({ room }: { room: Room }) => {
 
   const onEnterRoom = useCallback(async () => {
     if (room.users.length >= room.max) {
-      setErrorMsg('인원이 가득 찼습니다.')
+      setErrorMsg('人数がいっぱいになりました。')
       return
     }
 
@@ -54,18 +55,27 @@ const EnterForm = ({ room }: { room: Room }) => {
       }
       <div className={styles.showRoom}>
         <p>参加者：{room.users.length}名</p>
-        <p className="flex gap-4 justify-center">
-          {room.users.map(user => (
-            <span key={user.id}>{user.user.name}</span>
+        <div className="flex gap-4 justify-center">
+          {room.users.length !== 0 && room.users.map(userInRoom => (
+            userInRoom.user.image
+              ? <Image className='w-8 h-8 rounded-full' src={userInRoom.user.image} alt="profile image" />
+              : (
+                <div className='flex items-center justify-center rounded-full text-white text-sm bg-studion-400 w-8 h-8'>
+                  {userInRoom.user.name.slice(0, 2).toUpperCase()}
+                </div>
+              )
           ))}
-        </p>
-        <p className="text-left break-all">
-          {room.content}
-        </p>
+        </div>
+        <div className='flex flex-col items-start w-full'>
+          <label htmlFor="roomInfo" className="text-sm">ルーム情報</label>
+          <p id="roomInfo" className="text-left break-all w-full">
+            {room.content ? room.content : 'ルーム情報がありません。'}
+          </p>
+        </div>
         {room.password && (
           <div className="flex flex-col items-start w-full">
-            <label htmlFor="password" className="text-sm">비밀번호</label>
-            <input onChange={onPassword} className="w-full" id="password" type="password" placeholder="Password" />
+            <label htmlFor="password" className="text-sm">パスワード</label>
+            <input onChange={onPassword} className="w-full" id="password" type="password" placeholder="パスワード" />
           </div>
         )}
         <button onClick={onEnterRoom}>入場</button>

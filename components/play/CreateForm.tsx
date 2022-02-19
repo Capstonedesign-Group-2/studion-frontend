@@ -87,35 +87,42 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
       <form className={styles.createForm}
         onSubmit={onSubmit}
       >
-        <input type="text" name="title" placeholder="Room Name" value={title} onChange={onChange} />
-        <div className="flex gap-2">
-          <input className="flex-1" disabled={!lock} type="password" name="password" placeholder="Password" value={password as string} onChange={onChange} />
-          <button style={{ color: `${lock ? '#206276' : ''}` }} type="button" onClick={() => setLock(!lock)}>Lock</button>
+        <input type="text" name="title" placeholder="ルーム名" value={title} onChange={onChange} />
+        <div className="flex gap-2 items-center">
+          <input className="flex-1" disabled={!lock} type="password" name="password" placeholder="パスワード" value={password as string} onChange={onChange} />
+          <button className="text-2xl" type="button" onClick={() => setLock(!lock)}>{lock ? '🔒' : '🔓'}</button>
         </div>
-        <Box className="px-6">
-          <span>Max user {form.max}</span>
-          <Slider
-            name='max'
-            onChange={handleChange}
-            value={form.max}
-            valueLabelDisplay="auto"
-            step={1} min={1} max={5}
-            sx={{
-              color: '#206276',
-              '& .MuiSlider-valueLabel': {
-                backgroundColor: '#206276',
-              },
-              '& .MuiSlider-thumb': {
-                backgroundColor: '#fff',
-              },
-            }}
-          />
+        <Box>
+          <div className="text-gray-400">スタジオの最大人数</div>
+          <div className="flex gap-4 items-center">
+            <div className="px-6 py-1 rounded border-[1px] border-gray-300">
+              {form.max}
+            </div>
+            <div className="flex items-center w-full px-6">
+              <Slider
+                name='max'
+                onChange={handleChange}
+                value={form.max}
+                valueLabelDisplay="auto"
+                step={1} min={1} max={5}
+                sx={{
+                  color: '#206276',
+                  '& .MuiSlider-valueLabel': {
+                    backgroundColor: '#206276',
+                  },
+                  '& .MuiSlider-thumb': {
+                    backgroundColor: '#fff',
+                  },
+                }}
+              />
+            </div>
+          </div>
         </Box>
-        <textarea name="roomInfo" placeholder="Room Info" value={roomInfo as string} onChange={onChange} rows={5}></textarea>
+        <textarea name="roomInfo" placeholder="ルーム情報" value={roomInfo as string} onChange={onChange} rows={5}></textarea>
         <div>
-          <button className="mt-2 px-4 py-2 border border-transparent leading-5 rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 active:bg-studion-500 transition ease-in-out duration-150"
+          <button className="mt-2 px-6 py-2 border border-transparent leading-5 rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 active:bg-studion-500 transition ease-in-out duration-150"
             type="submit"
-          >Create</button>
+          >作成</button>
         </div>
       </form>
     </div>

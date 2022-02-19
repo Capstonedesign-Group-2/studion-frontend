@@ -15,7 +15,6 @@ const InfoSection = () => {
         <h2>Online Studio</h2>
         <h5>スタジオン</h5>
       </article>
-
       <Swiper
         className={styles.slider}
         slidesPerView={1}
@@ -35,7 +34,7 @@ const InfoSection = () => {
               </div>
             </div>
             <div className={styles.infoContainer}>
-              <h3>키보드를 이용한 합주</h3>
+              <h3>キーボードを使った合奏</h3>
               <div className={styles.instList}>
                 <span></span>
                 <span></span>
@@ -43,13 +42,13 @@ const InfoSection = () => {
                 <span></span>
               </div>
               <ul>
-                <li>악기 없이 키보드를 이용하여 간단하게 합주</li>
-                <li>히히</li>
-                <li>다양한 악기를 골라 연주</li>
+                <li>楽器なしにキーボードで簡単に演奏</li>
+                <li>今すぐできる</li>
+                <li>様々なバーチャル楽器を選べる</li>
               </ul>
               <div className='flex justify-end'>
                 <div className={styles.details}>
-                  <a>자세히 보기 →</a>
+                  <a className='px-2'>詳細を見る →</a>
                 </div>
               </div>
             </div>
@@ -66,15 +65,14 @@ const InfoSection = () => {
               </div>
             </div>
             <div className={styles.infoContainer}>
-              <h3>자신만의 악기로 연주</h3>
+              <h3>自分だけの楽器で合奏</h3>
               <ul>
-                <li>자신의 장비로 보다 높은 퀄리디의 합주</li>
-                <li>전문적인 밴드 연주</li>
-                <li></li>
+                <li>自分の楽器でさらに良いクオリティで演奏</li>
+                <li>専門的なバンド</li>
               </ul>
               <div className='flex justify-end'>
                 <div className={styles.details}>
-                  <a>자세히 보기 →</a>
+                  <a className='px-2'>詳細を見る →</a>
                 </div>
               </div>
             </div>
