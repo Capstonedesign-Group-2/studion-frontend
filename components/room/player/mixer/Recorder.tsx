@@ -17,7 +17,6 @@ const triangle = {
 export interface AudioFile {
   label: string,
   url: string,
-  buffer: AudioBuffer,
   blob: Blob
 }
 
@@ -33,7 +32,6 @@ const Recorder = ({ mixerRef }: Props) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [isRecording, setIsRecording] = useState<boolean>(false)
 
-  const [urls, setUrls] = useState<string[]>([])
   const [audioFiles, setAudioFiles] = useState<AudioFile[]>([])
   const [clock, setClock] = useState<number>(0)
   const clockRef = useRef<number>(0)
@@ -76,7 +74,7 @@ const Recorder = ({ mixerRef }: Props) => {
     Modal.fire({
       title: 'オーディオ編集',
       showConfirmButton: false,
-      html: <AudioEditor audioFile={audioFile}></AudioEditor>
+      html: <AudioEditor audioFile={audioFile} setAudioFiles={setAudioFiles}></AudioEditor>
     })
   }
 
@@ -84,19 +82,16 @@ const Recorder = ({ mixerRef }: Props) => {
     if (!isLoading && mixerRef.current) {
       recorderRef.current = new MediaRecorder(mixerRef.current?.recorderNode.stream as MediaStream)
 
-      recorderRef.current.ondataavailable = function (evt) {
+      recorderRef.current.ondataavailable = (evt) => {
         audioChunksRef.current.push(evt.data)
       }
 
-      recorderRef.current.onstop = async function (evt) {
-        let blob = new Blob(audioChunksRef.current, { 'type': 'audio/wave; codecs=opus' })
+      recorderRef.current.onstop = async () => {
+        let blob = new Blob(audioChunksRef.current, { 'type': 'audio/mp3; codecs=opus' })
         try {
-          const arrayBuffer = await blob.arrayBuffer()
-          const audioBuffer = await mixerRef.current?.audioContext.decodeAudioData(arrayBuffer)
           const audioFile = {
             label: 'Track_' + fileNumber.current,
             url: URL.createObjectURL(blob),
-            buffer: audioBuffer as AudioBuffer,
             blob
           }
           setAudioFiles((prev) => [...prev, audioFile])

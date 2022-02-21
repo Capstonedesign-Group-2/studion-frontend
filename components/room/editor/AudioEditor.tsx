@@ -1,18 +1,23 @@
-import { AudioFile } from "../player/mixer/Recorder"
 import { useEffect, useRef, useState } from "react"
-import Loader from "../../common/Loader"
+import audioMaker from 'audiomaker'
+
+import { AudioFile } from "../player/mixer/Recorder"
+import { Modal } from "../../common/modals"
 
 interface Props {
   audioFile: AudioFile
+  setAudioFiles: React.Dispatch<React.SetStateAction<AudioFile[]>>
 }
 
-const AudioEditor = ({ audioFile }: Props) => {
+const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
   const waveformRef = useRef<HTMLDivElement>(null)
   const wavesurferRef = useRef<any>()
   const regionRef = useRef<any>()
+  const audioMakerRef = useRef<any>()
   const [timeSet, setTimeSet] = useState<{ start: number, end: number }>({ start: 0, end: 0 })
+  const [isPlaying, setIsPlaying] = useState<boolean>(false)
 
-  const onSpace = () => {
+  const onPlay = () => {
     if (wavesurferRef.current.isPlaying()) {
       wavesurferRef.current.pause()
       setTimeSet((prev) => ({
@@ -24,11 +29,32 @@ const AudioEditor = ({ audioFile }: Props) => {
     }
   }
 
+  const onReplay = () => {
+    wavesurferRef.current.play(regionRef.current.start, regionRef.current.end)
+  }
+
+  const onDownload = () => {
+    if (!audioMakerRef.current) return
+    audioMakerRef.current.trim(audioFile.blob, regionRef.current.start, regionRef.current.end).then((blob: Blob) => {
+      const path = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = path
+      link.download = audioFile.label
+      link.click()
+      link.remove() // IE 미지원
+    });
+  }
+
+  const onDelete = () => {
+    setAudioFiles((prev) => prev.filter(v => v !== audioFile))
+    Modal.close()
+  }
+
   const onKeyPress = (e: KeyboardEvent) => {
     if (!wavesurferRef.current) return
     switch (e.code) {
       case 'Space': // 재생 or 정지
-        onSpace()
+        onPlay()
         break
     }
   }
@@ -91,11 +117,24 @@ const AudioEditor = ({ audioFile }: Props) => {
             end: regionRef.current.end
           })
         })
+
+        wavesurferRef.current.on('play', () => {
+          setIsPlaying(true)
+        })
+
+        wavesurferRef.current.on('pause', () => {
+          setIsPlaying(false)
+        })
+
+        wavesurferRef.current.on('finish', () => {
+          setIsPlaying(false)
+        })
       })
 
       wavesurferRef.current.loadBlob(audioFile.blob)
     }
     initWaveSurfer()
+    audioMakerRef.current = new audioMaker()
 
     return () => {
       if (!wavesurferRef.current) return
@@ -117,16 +156,24 @@ const AudioEditor = ({ audioFile }: Props) => {
       ></div>
       <div className='flex gap-4 items-center mt-4'>
         <div className="flex gap-2">
-          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded'>
-            ▶️
+          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
+            onClick={onPlay}
+          >
+            {isPlaying ? '⏸' : '▶️'}
           </div>
-          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded'>
+          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
+            onClick={onReplay}
+          >
             🔁
           </div>
-          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded'>
-            <a href="">⏏️</a>
+          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
+            onClick={onDownload}
+          >
+            ⏏️
           </div>
-          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded'>
+          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
+            onClick={onDelete}
+          >
             🗑️
           </div>
         </div>
