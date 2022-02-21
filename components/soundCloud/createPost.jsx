@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Modal } from "../common/modals";
 import http from "../../http/index";
-const createPost = () => {
+const CreatePost = () => {
     // const [image, setImage] = useState([]);
     // const [audio, setAudio] = useState([])
     const [post, setPost] = useState({
@@ -12,11 +12,11 @@ const createPost = () => {
     })
 
     const onImageChange = (e) => {
-        if(e.target.files.length) {
+        if (e.target.files.length) {
             let value = e.target.files[0];
             setPost({
                 ...post,
-                image : value,
+                image: value,
             });
         }
         else {
@@ -24,7 +24,7 @@ const createPost = () => {
         }
     }
     const onAudioChange = (e) => {
-        if(e.target.files.length) {
+        if (e.target.files.length) {
             let value = e.target.files[0];
             console.log(value);
             setPost({
@@ -42,39 +42,39 @@ const createPost = () => {
     const onPosting = () => {
         let formData = new FormData();
         let config = {
-            header: {'content-type': 'multipart/form-data'}
+            header: { 'content-type': 'multipart/form-data' }
         }
         formData.append("user_id", post.user_id)
         formData.append("content", post.content)
-        if(post.image.name) {
+        if (post.image.name) {
             formData.append("image", post.image)
         }
-        if(post.audio.name) {
+        if (post.audio.name) {
             formData.append("audio", post.audio)
         }
         http.post('/posts/create', formData, config)
-        .then(res => {
-            // dispatch(getPostList())
-            console.log(res);
-            Toast.fire({
-                icon: 'success',
-                title: 'Save successfully'
+            .then(res => {
+                // dispatch(getPostList())
+                console.log(res);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Save successfully'
+                })
             })
-        })
-        .catch(err => {
-            console.log('ERROR');
-        })
+            .catch(err => {
+                console.log('ERROR');
+            })
     }
     useEffect(() => {
         console.log(post.image)
-        if(post.image.name) {
+        if (post.image.name) {
             let imgEl = document.querySelector(".img_box");
             var reader = new FileReader();
             reader.readAsDataURL(post.image);
             reader.onload = (e) => (imgEl.src = e.target.result);
         }
         console.log(post.audio)
-        if(post.audio.name) {
+        if (post.audio.name) {
             // let audioEl = document.querySelector(".audio_box");
             // console.log(audioEl);
             // var reader = new FileReader();
@@ -82,10 +82,10 @@ const createPost = () => {
             // reader.onload = (e) => (audioEl.src = e.target.result);
         }
 
-    },[post])
+    }, [post])
     // const preview = () => {
     //     if(post.image) {
-            
+
     //     }
     // }
     return (
@@ -99,7 +99,7 @@ const createPost = () => {
                 <div className="relative w-full h-full max-w-lg mx-auto lg:mx-0 lg:max-w-xl bg-studion-500">
                     {/* 사진 */}
                     <div className="flex border-studion-200 border-2 h-full items-center justify-center">
-                        <input type="file" name="" id="inputImg" accept="img/*" className="hidden" onChange={onImageChange}/>
+                        <input type="file" name="" id="inputImg" accept="img/*" className="hidden" onChange={onImageChange} />
                         {/* { image.map((img) => <div className="img_box"></div>)
                             } */}
                         <div className="border-2 border-black">
@@ -114,7 +114,7 @@ const createPost = () => {
                                 <source className="audio_box" type="audio/mp3"/>
                             </audio> */}
                         </div>
-                        
+
                     </div>
                     {/* 버튼 */}
                     <div className="absolute bottom-5">
@@ -146,4 +146,4 @@ const createPost = () => {
     )
 }
 
-export default createPost;
+export default CreatePost;
