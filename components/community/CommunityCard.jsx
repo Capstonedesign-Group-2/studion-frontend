@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from "../../styles/community/community.module.scss";
 import CommentModal from "./CommentModal"
 import Dropdown from "./Dropdown"
@@ -9,8 +9,12 @@ const CommunityCard = (props) => {
     const { id, user_id, Audio, content, flag, image, user, comments } = props.post;
     const { onChange, onCreate} = props;
     
-    const [showMenu, setShowMenu] = useState(false);
+    // 좋아요
     const [like, setLike] = useState(false);
+    const onLikeClick = () => {
+        setLike(!like);
+    }
+
     const onShowModal = () => {
         Modal.fire({
             html: <CommentModal post={props.post} onCreate={onCreate} onChange={onChange}/>,
@@ -19,33 +23,44 @@ const CommunityCard = (props) => {
             width: '1024px'
         })
     }
-    const onClickShowMenu = (e) => {
-        setShowMenu(showMenu = !showMenu);
+
+    // 드롭다운 메뉴
+    const ref = useRef();
+    const [showMenu, setShowMenu] = useState(false);
+    const checkIfClickedOutside = ({ target }) => {
+        if(showMenu && !ref.current.contains(target)) {
+            setShowMenu(false);
+        }
     }
-    const onLikeClick = () => {
-        setLike(!like);
-    }
+    useEffect(() => {
+        window.addEventListener("click", checkIfClickedOutside)
+
+        return () => {
+            window.removeEventListener("click", checkIfClickedOutside)
+        }
+    }, [showMenu])
 
     return (
-        <div className={ styles.communityCard }>
+        <div className={ styles.communityCard }> 
             {/* 이미지 */}{/* 아이디 */}
             <header>
                 <div className={ styles.cardUser }>
                     <img src={ user.image } alt=""/>
                     <span>{ user.name }</span>
-                    <svg aria-label="옵션 더 보기" onClick={onClickShowMenu} className="right-0" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24">
-                        <circle cx="12" cy="12" r="1.5"></circle>
-                        <circle cx="6" cy="12" r="1.5"></circle>
-                        <circle cx="18" cy="12" r="1.5"></circle>
-                    </svg>
+                    <button onClick={() => setShowMenu(showMenu => !showMenu)}>
+                        <svg aria-label="옵션 더 보기" className="right-0" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24">
+                            <circle cx="12" cy="12" r="1.5"></circle>
+                            <circle cx="6" cy="12" r="1.5"></circle>
+                            <circle cx="18" cy="12" r="1.5"></circle>
+                        </svg>
+                    </button>
                     {
-                        showMenu 
-                        ? (
-                            <div className={ styles.dropDown }>
-                                <Dropdown image={image} Audio={Audio} user={user} content={content}/>
+                        showMenu &&
+                        (
+                            <div ref={ref} className={ styles.dropDown }>
+                                <Dropdown post_id={id} image={image} user={user} content={content}/>
                             </div>
                         )
-                        : null
                     }
                 </div>
             </header>
@@ -59,13 +74,13 @@ const CommunityCard = (props) => {
                         : null
                     }
                     {/* 오디오 */}
-                    <div>
+                    {/* <div>
                     {
                         Audio.audioPath 
                         ? <audio src={ Audio.audioPath } controls>hello</audio>
                         : null
                     }
-                    </div>
+                    </div> */}
                     {/* 글 */}
                     <article>
                         { content }

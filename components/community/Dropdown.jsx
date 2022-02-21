@@ -1,11 +1,15 @@
 import EditCardModal from './EditCardModal'
 import { Modal } from '../common/modals'
 import styles from "../../styles/community/community.module.scss";
-
-const Dropdown = ({image, Audio, user, content}) => {
+import http from '../../http/index';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPostList } from '../../redux/actions/post';
+const Dropdown = ({image, Audio, user, content, post_id}) => {
+    const userData = useSelector(state => state.user.data)
+    const dispatch = useDispatch();
     const onEditModal = () => {
         Modal.fire({
-            html: <EditCardModal image={image} user={user} content={content}/>,
+            html: <EditCardModal post_id={post_id} image={image} user={user} content={content}/>,
             showConfirmButton: false,
             customClass: styles.createSwal,
             width: '1024px',
@@ -34,22 +38,29 @@ const Dropdown = ({image, Audio, user, content}) => {
             confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
             if (result.isConfirmed) {
-                Modal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-                )
+                const data = {
+                    user_id: userData?.id
+                }
+                http.delete('/posts/destory/' + post_id, { data })
+                .then(res => {
+                    dispatch(getPostList());
+                    console.log(res);
+                    Modal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                        )
+                })
+                .catch(err => {
+                    console.log(err)
+                })
             }
         })
     }
     return (
-        <div className="border-2 grid justify-items-center">
-            <div>
-                <button onClick={onEditModal}>수정</button>
-            </div>
-            <div>
-                <button onClick={onDeleteModal}>삭제</button>
-            </div>
+        <div className={styles.editDeleteModal}>
+            <button onClick={onEditModal}>수정</button>            
+            <button onClick={onDeleteModal}>삭제</button>
         </div>
     )
 }
