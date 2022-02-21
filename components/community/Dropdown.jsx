@@ -1,8 +1,12 @@
 import EditCardModal from './EditCardModal'
 import { Modal } from '../common/modals'
 import styles from "../../styles/community/community.module.scss";
-
+import http from '../../http/index';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPostList } from '../../redux/actions/post';
 const Dropdown = ({image, Audio, user, content, post_id}) => {
+    const userData = useSelector(state => state.user.data)
+    const dispatch = useDispatch();
     const onEditModal = () => {
         Modal.fire({
             html: <EditCardModal post_id={post_id} image={image} user={user} content={content}/>,
@@ -34,11 +38,22 @@ const Dropdown = ({image, Audio, user, content, post_id}) => {
             confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
             if (result.isConfirmed) {
-                Modal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-                )
+                const data = {
+                    user_id: userData?.id
+                }
+                http.delete('/posts/destory/' + post_id, { data })
+                .then(res => {
+                    dispatch(getPostList());
+                    console.log(res);
+                    Modal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                        )
+                })
+                .catch(err => {
+                    console.log(err)
+                })
             }
         })
     }

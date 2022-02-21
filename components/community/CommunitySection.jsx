@@ -2,8 +2,10 @@ import styles from "../../styles/community/community.module.scss"
 import CommunityCard from "./CommunityCard";
 import { useState, useRef } from "react";
 import { useCallback } from "react";
+import { useSelector } from "react-redux";
 const CommunitySection = (props) => {
     const { posts } = props;
+    const postList = useSelector(state => state.post.postList)
     const [input, setInput] = useState({
         content: ''
     });
@@ -36,8 +38,8 @@ const CommunitySection = (props) => {
     const topRef = useRef()
     return (
         <div className={ styles.communitySection }>
-            {
-                posts.map(post => (
+            {postList && 
+                postList.map(post => (
                     <CommunityCard post={post} key={post.id} onChange={onChange} onCreate={onCreate}/>
                 )) 
             }

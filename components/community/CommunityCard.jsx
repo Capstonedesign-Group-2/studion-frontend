@@ -58,7 +58,7 @@ const CommunityCard = (props) => {
                         showMenu &&
                         (
                             <div ref={ref} className={ styles.dropDown }>
-                                <Dropdown post_id={id} image={image} Audio={Audio} user={user} content={content}/>
+                                <Dropdown post_id={id} image={image} user={user} content={content}/>
                             </div>
                         )
                     }
@@ -74,13 +74,13 @@ const CommunityCard = (props) => {
                         : null
                     }
                     {/* 오디오 */}
-                    <div>
+                    {/* <div>
                     {
                         Audio.audioPath 
                         ? <audio src={ Audio.audioPath } controls>hello</audio>
                         : null
                     }
-                    </div>
+                    </div> */}
                     {/* 글 */}
                     <article>
                         { content }

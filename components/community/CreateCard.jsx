@@ -4,7 +4,10 @@ import { useSelector } from 'react-redux';
 import wrapper from '../../redux/store';
 import http from "../../http/index";
 import { Modal, Toast } from '../common/modals';
+import { useDispatch } from 'react-redux';
+import { getPostList } from '../../redux/actions/post';
 const CreateCard = (props) => {
+    const dispatch = useDispatch()
     const userData = useSelector(state => state.user.data);
     // const { name, image } = props.user;
     const [imageTarget, setImageTarget] = useState({})
@@ -55,6 +58,7 @@ const CreateCard = (props) => {
         // console.log(post.image)
         http.post('/posts/create', formData, config)
         .then(res => {
+            dispatch(getPostList())
             console.log(res);
             Toast.fire({
                 icon: 'success',

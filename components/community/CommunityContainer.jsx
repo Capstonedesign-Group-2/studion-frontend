@@ -4,10 +4,12 @@ import CreateCard from "./CreateCard";
 import { Modal } from '../common/modals';
 import { useState, useRef } from 'react';
 import styles from "../../styles/community/community.module.scss";
+import http from "../../http/index";
 // import { useSelector } from 'react-redux';
 // import { RootState } from '../../redux/slices'
 const CommunityContainer = () => {
     // const userData = useSelector((state: RootState ) => state.user.data)
+    http
     const onShowModal = () => {
         Modal.fire({
             html: <CreateCard user={user}/>,

@@ -3,6 +3,7 @@ import { HYDRATE } from "next-redux-wrapper"
 
 import roomSlice from "./room"
 import userSlice from './user'
+import postSlice from './post'
 
 const rootReducer = (state: any, action: any) => {
   if (action.type === HYDRATE) {
@@ -14,6 +15,7 @@ const rootReducer = (state: any, action: any) => {
   return combineReducers({
     user: userSlice.reducer,
     room: roomSlice.reducer,
+    post: postSlice.reducer,
   })(state, action)
 }
 
