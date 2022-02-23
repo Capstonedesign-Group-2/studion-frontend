@@ -8,6 +8,7 @@ const initialState = {
   channelList: [],
   users: [],
   isLoading: true,
+  roomData: null,
 
   getRoomListError: null,
 } as RoomsState;
@@ -25,6 +26,9 @@ const roomSlice = createSlice({
     setLoading(state, action) {
       state.isLoading = action.payload
     },
+    setRoomData(state, action) {
+      state.roomData = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder

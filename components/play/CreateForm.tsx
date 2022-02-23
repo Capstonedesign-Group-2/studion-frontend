@@ -1,7 +1,7 @@
 import { Slider } from "@mui/material"
 import Box from '@mui/material/Box'
 import Router from "next/router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import * as yup from 'yup'
 

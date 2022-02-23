@@ -3,7 +3,7 @@ import { Channel } from "../components/room/player/mixer/Channel";
 /**
  * redux/slice/user
  */
-declare interface User {
+declare interface IUser {
   id: number
   name: string
   email: string
@@ -14,7 +14,7 @@ declare interface User {
 
 declare interface UsersState {
   accessToken: string | null
-  data: User | null
+  data: IUser | null
 
   isLoggingIn: boolean
   loginError?: string | null
@@ -50,11 +50,11 @@ declare interface UserInRoom {
   room_id: string
   chat_room_id: string | null
   flag: string
-  user: User
+  user: IUser
 }
 
-declare interface Room {
-  id: number
+declare interface IRoom {
+  id: number | null
   title: string
   password: string
   creater: number
@@ -65,10 +65,12 @@ declare interface Room {
 }
 
 declare interface RoomsState {
-  roomList: Array<Room>
+  roomList: Array<IRoom>
   getRoomListError?: null | string
   users: { id: string, name: string }[]
   isLoading: boolean
+
+  roomData: IRoom | null
 }
 
 /**
@@ -86,5 +88,5 @@ declare interface DcData {
 declare interface IChatItem {
   id: number
   content: string
-  user: User
+  user: IUser
 }

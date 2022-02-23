@@ -16,6 +16,7 @@ import roomSlice from "../../redux/slices/room"
 import { DcData } from "../../types"
 import PianoComponent from "../../components/room/inst/piano"
 import Loader from "../../components/common/Loader"
+import { IUser, IRoom } from '../../types'
 
 const pc_config = {
 	iceServers: [
@@ -29,7 +30,8 @@ const ROOM_ID = 1
 
 const Room = () => {
 	const dispatch = useDispatch()
-	const userData = useSelector((state: RootState) => state.user.data)
+	const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
+	const userData = useSelector<RootState, IUser>(state => state.user.data)
 	const users = useSelector<RootState, { id: string, name: string }[]>(state => state.room.users)
 	const isLoading = useSelector<RootState, boolean>(state => state.room.isLoading)
 	const [menu, setMenu] = useState<boolean>(true)
@@ -82,10 +84,10 @@ const Room = () => {
 
 				getAudios()
 
+				if (!userData) return
 				const joinData = {
-					name: userData?.name,
-					user_id: userData?.id,
-					room: ROOM_ID.toString(),
+					room: roomData as IRoom,
+					user: userData as IUser
 				}
 
 				Socket.joinRoom(joinData)
@@ -252,129 +254,122 @@ const Room = () => {
 
 	useEffect(() => {
 		// 로딩
-		// dispatch(roomSlice.actions.setLoading(true))
+		dispatch(roomSlice.actions.setLoading(true))
 		// 합주실에 이미 있을경우 제거
 
 		// 합주실 입장
-		http.post(`/rooms/enter/${ROOM_ID}`, {
-			user_id: userData?.id,
-			password: "123"
-		}).then(() => {
-			Socket.emitUpdateRoomList()
-			// console.log(`/rooms/enter/${ROOM_ID}`, res)
+		Socket.emitUpdateRoomList()
+		// console.log(`/rooms/enter/${ROOM_ID}`, res)
 
-			// 믹서 세팅
-			mixerRef.current = new Mixer()
-			// console.log('new mixer', mixerRef.current);
+		// 믹서 세팅
+		mixerRef.current = new Mixer()
+		// console.log('new mixer', mixerRef.current);
 
-			// 유저 스트림
-			getLocalStream(null)
+		// 유저 스트림
+		getLocalStream(null)
 
-			Socket.socket.on('all_users', (allUsers: Array<{ id: string; name: string, user_id: number }>) => {
-				// console.log('on all_users', allUsers, Socket.socket.id)
-				allUsers.forEach(async (user) => {
-					if (!localStreamRef.current) return
+		Socket.socket.on('all_users', (allUsers: Array<{ id: string; name: string, user_id: number }>) => {
+			// console.log('on all_users', allUsers, Socket.socket.id)
+			allUsers.forEach(async (user) => {
+				if (!localStreamRef.current) return
 
-					// 처음 접속시 현재 접속된 피어들 연결
-					const pc = createPeerConnection(user.id, user.name)
-					if (!(pc && Socket.socket)) return
-					pcsRef.current = { ...pcsRef.current, [user.id]: pc }
+				// 처음 접속시 현재 접속된 피어들 연결
+				const pc = createPeerConnection(user.id, user.name)
+				if (!(pc && Socket.socket)) return
+				pcsRef.current = { ...pcsRef.current, [user.id]: pc }
 
-					// 데이터 채널 연결
-					const dc = openDataChannel(pc)
-					dcsRef.current = { ...dcsRef.current, [user.id]: dc as RTCDataChannel }
+				// 데이터 채널 연결
+				const dc = openDataChannel(pc)
+				dcsRef.current = { ...dcsRef.current, [user.id]: dc as RTCDataChannel }
 
-					// 오퍼 전송
-					try {
-						const localSdp = await pc.createOffer({
-							offerToReceiveAudio: true,
-							offerToReceiveVideo: false,
-						})
-						// console.log('create offer success')
-						await pc.setLocalDescription(new RTCSessionDescription(localSdp))
-						// console.log('test', user.id, user.name, Socket.socket.id)
-						Socket.socket.emit('offer', {
-							sdp: localSdp,
-							offerSendID: Socket.socket.id,
-							offerSendName: userData?.name,
-							offerReceiveID: user.id,
-						})
-					} catch (e) {
-						console.error(e)
-					}
-				});
+				// 오퍼 전송
+				try {
+					const localSdp = await pc.createOffer({
+						offerToReceiveAudio: true,
+						offerToReceiveVideo: false,
+					})
+					// console.log('create offer success')
+					await pc.setLocalDescription(new RTCSessionDescription(localSdp))
+					// console.log('test', user.id, user.name, Socket.socket.id)
+					Socket.socket.emit('offer', {
+						sdp: localSdp,
+						offerSendID: Socket.socket.id,
+						offerSendName: userData?.name,
+						offerReceiveID: user.id,
+					})
+				} catch (e) {
+					console.error(e)
+				}
 			});
+		});
 
-			Socket.socket.on(
-				'getOffer',
-				async (data: {
-					sdp: RTCSessionDescription
-					offerSendID: string
-					offerSendName: string
-				}) => {
-					const { sdp, offerSendID, offerSendName } = data
-					// console.log('get offer')
-					// 새로운 피어 들어왔을 시 연결
-					if (!localStreamRef.current) return
-					const pc = createPeerConnection(offerSendID, offerSendName)
-					if (!(pc && Socket.socket)) return
-					pcsRef.current = { ...pcsRef.current, [offerSendID]: pc }
-					try {
-						await pc.setRemoteDescription(new RTCSessionDescription(sdp))
-						// console.log('answer set remote description success')
-						const localSdp = await pc.createAnswer({
-							offerToReceiveVideo: true,
-							offerToReceiveAudio: false,
-						});
-						await pc.setLocalDescription(new RTCSessionDescription(localSdp))
-						Socket.socket.emit('answer', {
-							sdp: localSdp,
-							answerSendID: Socket.socket.id,
-							answerReceiveID: offerSendID,
-						})
-					} catch (e) {
-						console.error(e)
-					}
-				},
-			);
+		Socket.socket.on(
+			'getOffer',
+			async (data: {
+				sdp: RTCSessionDescription
+				offerSendID: string
+				offerSendName: string
+			}) => {
+				const { sdp, offerSendID, offerSendName } = data
+				// console.log('get offer')
+				// 새로운 피어 들어왔을 시 연결
+				if (!localStreamRef.current) return
+				const pc = createPeerConnection(offerSendID, offerSendName)
+				if (!(pc && Socket.socket)) return
+				pcsRef.current = { ...pcsRef.current, [offerSendID]: pc }
+				try {
+					await pc.setRemoteDescription(new RTCSessionDescription(sdp))
+					// console.log('answer set remote description success')
+					const localSdp = await pc.createAnswer({
+						offerToReceiveVideo: true,
+						offerToReceiveAudio: false,
+					});
+					await pc.setLocalDescription(new RTCSessionDescription(localSdp))
+					Socket.socket.emit('answer', {
+						sdp: localSdp,
+						answerSendID: Socket.socket.id,
+						answerReceiveID: offerSendID,
+					})
+				} catch (e) {
+					console.error(e)
+				}
+			},
+		);
 
-			Socket.socket.on(
-				'getAnswer',
-				(data: { sdp: RTCSessionDescription; answerSendID: string }) => {
-					const { sdp, answerSendID } = data
-					// console.log('get answer')
-					const pc: RTCPeerConnection = pcsRef.current[answerSendID]
-					if (!pc) return
-					pc.setRemoteDescription(new RTCSessionDescription(sdp))
-				},
-			);
+		Socket.socket.on(
+			'getAnswer',
+			(data: { sdp: RTCSessionDescription; answerSendID: string }) => {
+				const { sdp, answerSendID } = data
+				// console.log('get answer')
+				const pc: RTCPeerConnection = pcsRef.current[answerSendID]
+				if (!pc) return
+				pc.setRemoteDescription(new RTCSessionDescription(sdp))
+			},
+		);
 
-			Socket.socket.on(
-				'getCandidate',
-				async (data: { candidate: RTCIceCandidateInit; candidateSendID: string }) => {
-					// console.log('get candidate')
-					const pc: RTCPeerConnection = pcsRef.current[data.candidateSendID]
-					if (!pc) return
-					await pc.addIceCandidate(new RTCIceCandidate(data.candidate))
-					// console.log('candidate add success')
-				},
-			);
+		Socket.socket.on(
+			'getCandidate',
+			async (data: { candidate: RTCIceCandidateInit; candidateSendID: string }) => {
+				// console.log('get candidate')
+				const pc: RTCPeerConnection = pcsRef.current[data.candidateSendID]
+				if (!pc) return
+				await pc.addIceCandidate(new RTCIceCandidate(data.candidate))
+				// console.log('candidate add success')
+			},
+		);
 
-			Socket.socket.on('user_exit', (data: { id: string }) => {
-				if (!pcsRef.current[data.id]) return
-				pcsRef.current[data.id].close()
-				delete pcsRef.current[data.id]
-				dcsRef.current[data.id].close()
-				delete dcsRef.current[data.id]
-				mixerRef.current?.deleteChannel(data.id)
-				dispatch(roomSlice.actions.deleteUser(data))
-			})
-
-			// 로딩 완료
-			dispatch(roomSlice.actions.setLoading(false))
-		}).catch((err) => {
-			console.error(err)
+		Socket.socket.on('user_exit', (data: { id: string }) => {
+			if (!pcsRef.current[data.id]) return
+			pcsRef.current[data.id].close()
+			delete pcsRef.current[data.id]
+			dcsRef.current[data.id].close()
+			delete dcsRef.current[data.id]
+			mixerRef.current?.deleteChannel(data.id)
+			dispatch(roomSlice.actions.deleteUser(data))
 		})
+
+		// 로딩 완료
+		dispatch(roomSlice.actions.setLoading(false))
 
 		return () => whenUnmounte()
 		// eslint-disable-next-line react-hooks/exhaustive-deps

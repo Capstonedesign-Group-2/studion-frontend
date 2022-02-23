@@ -3,7 +3,7 @@ import axios from 'axios'
 import cookie from 'react-cookies'
 
 import http from '../../http'
-import { LoginData, SignUpData, User } from '../../types'
+import { LoginData, SignUpData, IUser } from '../../types'
 
 export const delay = (time: number, value: any) => new Promise((resolve, reject) => {
   setTimeout(() => {
@@ -16,11 +16,11 @@ export const logIn = createAsyncThunk<string, LoginData>(
   async (data, thunkAPI) => {
     console.log('Action data', data)
     const response = await http.post('/users/login', data)
-    const accessToken = response.data.access_token
-    cookie.save('accessToken', accessToken, {
+    const { access_token } = response.data
+    cookie.save('accessToken', access_token, {
       path: '/',
     })
-    return accessToken as string
+    return access_token as string
   }
 )
 
@@ -37,15 +37,15 @@ export const signUp = createAsyncThunk<string, SignUpData>(
   async (data, thunkAPI) => {
     console.log('Action data', data)
     const response = await http.post('/users/register', data)
-    const accessToken = response.data.access_token
-    cookie.save('accessToken', accessToken, {
+    const { access_token } = response.data
+    cookie.save('accessToken', access_token, {
       path: '/',
     })
-    return accessToken as string
+    return access_token as string
   }
 )
 
-export const getUser = createAsyncThunk<User, { accessToken?: string }>(
+export const getUser = createAsyncThunk<IUser, { accessToken?: string }>(
   'user/getInfo',
   async (data, thunkAPI) => {
     if (data.accessToken) { // SSR

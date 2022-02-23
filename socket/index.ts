@@ -1,12 +1,11 @@
 import { Dispatch } from '@reduxjs/toolkit'
 import io from 'socket.io-client'
 import { getRoomList } from '../redux/actions/room'
-import { User } from '../types'
+import { IRoom, IUser } from '../types'
 
 export interface JoinData {
-  name: string
-  room: string
-  user_id: number
+  room: IRoom,
+  user: IUser
 }
 
 export interface ExitData {
@@ -59,7 +58,7 @@ class Socket {
 
   // 합주실 채팅
   onNewMessage(dispatch: Dispatch<any>) {
-    this.socket.on('new_message_on', (data: { user: User, content: string }) => {
+    this.socket.on('new_message_on', (data: { user: IUser, content: string }) => {
       // 
     })
   }
