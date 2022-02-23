@@ -19,19 +19,19 @@
         }
     }
 }
-.disk2 {
+.playDisk {
   @apply z-0 h-full aspect-square;
     position: absolute;
     border-radius: 50%;
     left: 35%;
     // background-color: black;
     background: linear-gradient(120deg, #000, #333333, #000);
-    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
+    // box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
     transition: left 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation: rotateAni 2s infinite;
     // transition-delay: 0s;
 
-    .disk_inner2 {
+    .playDisk_inner {
       @apply w-2/5 aspect-square bg-studion-300 border-studion-100 border-dashed border-2;
       position: absolute;
       top: 50%;
@@ -59,7 +59,7 @@
     left: 35%;
     // background-color: black;
     background: linear-gradient(120deg, #000, #333333, #000);
-    box-shadow: 4px 14px 40px rgba(0, 0, 0, 0.3);
+    // box-shadow: 4px 14px 40px rgba(0, 0, 0, 0.3);
     transition: left 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     
     // transition-delay: 0s;
@@ -95,37 +95,30 @@
   }
 }
 
-.tonearm {
+.tonearm2 {
   @apply fill-white transition-all ease-linear;
   transform: rotate(-30deg);
   transform-origin: 82% 22.8%;
   color: white;
-  
-  &:hover{
-    // transform-origin: 74% 50%;
-    .playerDisk {
-      animation: rotateAni 10s ease infinite;
-    }
-  }
 }
-.tonearm2 {
+.tonearm1 {
   @apply transition-all ease-linear;
   transform: rotate(-10deg);
   transform-origin: 82% 22.8%;
 }
 
-.playerDisk {
+.stopDisk {
   @apply h-full aspect-square;
   position: absolute;
   border-radius: 50%;
   background-color: black;
   background: linear-gradient(120deg, #000, #3b3b3b, #000);
-  box-shadow: 4px 14px 40px rgba(0, 0, 0, 0.3);
+  // box-shadow: 4px 14px 40px rgba(0, 0, 0, 0.3);
   transition: left 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   // animation: rotateAni 10s ease infinite;
   transition-delay: 0s;
 
-  .playerDisk_inner {
+  .stopDisk_inner {
     @apply w-2/5 aspect-square bg-studion-300;
     position: absolute;
     top: 50%;
@@ -160,11 +153,37 @@
   @apply lg:bottom-10 justify-items-center flex mt-8 w-full;
   svg, div {
     @apply w-20 h-20 font-black transition-all ease-linear hover:scale-110 mx-auto;
-    color: black;
+    color: white;
   }
   .leftSvgButton {
     @apply w-20 h-20 font-black rotate-180 transition-all ease-linear hover:scale-110 mx-auto;
-    color: black;
+    color: white;
     // transform: rotate(180deg);
   }
+}
+.commentContainer {
+  @apply overflow-auto mt-4;
+  height: 400px;
+}
+// .commentContainer::-webkit-scrollbar {
+//   display: none;
+// }
+.commentContainer::-webkit-scrollbar {
+  width: 10px;
+}
+.commentContainer::-webkit-scrollbar-thumb {
+  background: linear-gradient(to right ,rgb(170, 170, 170, 0.1),10%, white,90%, rgb(170, 170, 170, 0.1));
+  // box-shadow: inset 0px 0px 3px white;
+  border: none;
+  border-radius: 10px;
+  // background-clip: padding-box;
+  // border: 2px solid transparent;
+}
+.commentContainer::-webkit-scrollbar-track {
+  background: rgb(202, 202, 202);
+  border-radius: 10px;
+  // box-shadow: inset 0px 0px 5px white;
+}
+.createPostAudio {
+  @apply w-full;
 }

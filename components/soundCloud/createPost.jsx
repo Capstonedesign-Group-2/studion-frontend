@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
-import { Modal } from "../common/modals";
+import { Modal, Toast } from "../common/modals";
+import { useSelector, useDispatch } from 'react-redux';
+import wrapper from '../../redux/store';
 import http from "../../http/index";
-const createPost = () => {
+import { getPostList } from "../../redux/actions/post";
+
+const CreatePost = () => {
+    const dispatch = useDispatch();
+    const userData = useSelector(state => state.user.data);
     // const [image, setImage] = useState([]);
     // const [audio, setAudio] = useState([])
+    
     const [post, setPost] = useState({
-        user_id: '',
+        user_id: userData.id,
         content: '',
         image: {},
         audio: {},
     })
-
     const onImageChange = (e) => {
         if(e.target.files.length) {
             let value = e.target.files[0];
@@ -26,7 +32,7 @@ const createPost = () => {
     const onAudioChange = (e) => {
         if(e.target.files.length) {
             let value = e.target.files[0];
-            console.log(value);
+            
             setPost({
                 ...post,
                 audio: value
@@ -35,6 +41,15 @@ const createPost = () => {
         else {
             setPost(audio = {});
         }
+    }
+    const onContentChange = (e) => {
+        const { value } = e.target;
+        // console.log(value.replace(/(?:\r\n|\r|\n)/g, '<br />'));
+        setPost({
+            ...post,
+            content: value
+        })
+        
     }
     const onClickCancel = () => {
         Modal.close()
@@ -54,7 +69,7 @@ const createPost = () => {
         }
         http.post('/posts/create', formData, config)
         .then(res => {
-            // dispatch(getPostList())
+            dispatch(getPostList())
             console.log(res);
             Toast.fire({
                 icon: 'success',
@@ -62,34 +77,27 @@ const createPost = () => {
             })
         })
         .catch(err => {
-            console.log('ERROR');
+            console.log(err);
         })
     }
     useEffect(() => {
-        console.log(post.image)
         if(post.image.name) {
             let imgEl = document.querySelector(".img_box");
             var reader = new FileReader();
             reader.readAsDataURL(post.image);
             reader.onload = (e) => (imgEl.src = e.target.result);
         }
-        console.log(post.audio)
         if(post.audio.name) {
-            // let audioEl = document.querySelector(".audio_box");
-            // console.log(audioEl);
-            // var reader = new FileReader();
-            // reader.readAsDataURL(post.audio);
-            // reader.onload = (e) => (audioEl.src = e.target.result);
+            let audioEl = document.querySelector(".audio_box");
+            var reader = new FileReader();
+            reader.readAsDataURL(post.audio);
+            reader.onload = (e) => (audioEl.src = e.target.result);
         }
 
-    },[post])
-    // const preview = () => {
-    //     if(post.image) {
-            
-    //     }
-    // }
+    },[post.image, post.audio])
+    
     return (
-        <div className="max-w-screen-xl mx-auto border-black border-2 h-full">
+        <div className="max-w-screen-xl mx-auto h-full">
             <div className="absolute top-2 right-2 hover:scale-125" onClick={onClickCancel}>
                 <svg className="w-10 h-10" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -97,23 +105,29 @@ const createPost = () => {
             </div>
             <div className="mx-auto lg:flex h-full">
                 <div className="relative w-full h-full max-w-lg mx-auto lg:mx-0 lg:max-w-xl bg-studion-500">
-                    {/* 사진 */}
-                    <div className="flex border-studion-200 border-2 h-full items-center justify-center">
+                    <div className="flex flex-col justify-items-center border-studion-200 border-2 h-full items-center justify-center">
+                        {/* 사진 */}
                         <input type="file" name="" id="inputImg" accept="img/*" className="hidden" onChange={onImageChange}/>
-                        {/* { image.map((img) => <div className="img_box"></div>)
-                            } */}
-                        <div className="border-2 border-black">
-                            <img className="img_box"></img>
-                        </div>
-                    </div>
-                    {/* 음악 */}
-                    <div>
+                        {post.image.name
+                        ?
+                            <div className="border-2 border-black">
+                                <img className="img_box"></img>
+                            </div>
+                        :   null
+                        }
+                        
+                        {/* 오디오 */}
                         <input type="file" id="inputAudio" accept="audio/*" className="hidden" onChange={onAudioChange} />
-                        <div>
-                            {/* <audio controls>
-                                <source className="audio_box" type="audio/mp3"/>
-                            </audio> */}
-                        </div>
+                        
+                            {post.audio.name
+                            ?
+                                <div className="w-full">
+                                    <audio controls className="audio_box" style={{ width:"100%", padding:'5px', borderRadius:'0px'}}>
+                                        {/* <source className="audio_box" type="audio/mp3"/> */}
+                                    </audio>
+                                </div>
+                            :   null
+                            }
                         
                     </div>
                     {/* 버튼 */}
@@ -127,18 +141,18 @@ const createPost = () => {
                     </div>
                 </div>
                 {/* 컨탠츠 */}
-                <div className="">
-                    <div className="flex items-center border-2 border-studion-200">
+                <div className="w-full max-w-md pl-2">
+                    <div className="flex items-center mt-3">
                         <div className="rounded-full w-10 h-10 border-2 border-black" />
-                        <span className="ml-2">user_id</span>
+                        <span className="ml-2">{userData.name}</span>
                     </div>
-                    <div>
-                        <textarea name="" id="" cols="30" rows="10" className="border-2 border-black">
+                    <div className="mt-4 w-full px-3">
+                        <textarea onChange={onContentChange} id=""  rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 border-black w-full decoration-none">
 
                         </textarea>
-                    </div>
-                    <div className="hover:bg-gray-500" onClick={onPosting}>
-                        제출
+                        <div className="hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>
+                            제출
+                        </div>
                     </div>
                 </div>
             </div>
@@ -146,4 +160,4 @@ const createPost = () => {
     )
 }
 
-export default createPost;
+export default wrapper.withRedux(CreatePost);

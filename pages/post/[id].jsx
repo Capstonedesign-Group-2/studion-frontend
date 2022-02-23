@@ -1,6 +1,6 @@
 import AppLayout from "../../components/common/AppLayout"
 import { stayLoggedIn } from '../../http/stay'
-import ShowContainer from '../../components/soundCloud/showContainer'
+import SoundCloudContainer from '../../components/soundCloud/soundCloudContainer'
 // import { getPostList } from "../redux/actions/post"
 import wrapper from '../../redux/store'
 
@@ -8,7 +8,7 @@ const Show = () => {
   return (
     <div>
       <AppLayout>
-        <ShowContainer />
+        {/* <SoundCloudContainer /> */}
       </AppLayout>
     </div>
   )

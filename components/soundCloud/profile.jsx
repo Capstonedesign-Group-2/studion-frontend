@@ -11,6 +11,7 @@ const Profile = () => {
         Modal.fire({
             html: <CreatePost />,
             showConfirmButton: false,
+            
             customClass: styles.post,
         })
     }
