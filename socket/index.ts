@@ -1,11 +1,10 @@
 import { Dispatch } from '@reduxjs/toolkit'
 import io from 'socket.io-client'
-import { getRoomList } from '../redux/actions/room'
 import { IRoom, IUser } from '../types'
 
 export interface JoinData {
-  room: IRoom,
-  user: IUser
+  user: IUser,
+  room_id: string
 }
 
 export interface ExitData {
@@ -29,7 +28,7 @@ class Socket {
   onUpdateRoomList(dispatch: Dispatch<any>) {
     this.socket.on('update_room_list_on', () => {
       console.log('[on] update room list !!')
-      dispatch(getRoomList())
+      // dispatch(getRoomList())
     })
   }
 
@@ -43,6 +42,11 @@ class Socket {
     this.socket.removeAllListeners()
   }
 
+  // 합주실 생성
+  createRoom(data: IRoom) {
+    this.socket.emit('create_room', data)
+  }
+
   // 합주실 입장
   joinRoom(data: JoinData) {
     this.socket.emit('join_room', data)
@@ -52,9 +56,6 @@ class Socket {
   exitRoom() {
     this.socket.emit('exit_room')
   }
-
-  // WebRTC Peer Connection
-
 
   // 합주실 채팅
   onNewMessage(dispatch: Dispatch<any>) {

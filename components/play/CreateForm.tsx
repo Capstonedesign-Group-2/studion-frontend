@@ -8,7 +8,9 @@ import * as yup from 'yup'
 import http from "../../http"
 import { RootState } from "../../redux/slices"
 import wrapper from "../../redux/store"
+import Socket from "../../socket"
 import styles from '../../styles/play/play.module.scss'
+import { IRoom } from "../../types"
 import { createRoomValidation } from "../../validations"
 import ErrorMessage from "../common/ErrorMssage"
 
@@ -54,20 +56,23 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
     try {
       await createRoomValidation.validate(form)
 
-      const payload = {
+      const createRoomData = {
+        id: null,
         title: form.title,
+        password: form.password,
         creater: userData?.id,
         content: form.roomInfo,
         max: form.max,
         locked: lock ? (form.password ? 1 : 0) : 0,
-        password: form.password
-      }
+        users: []
+      } as IRoom
 
       // 합주실 생성
-      const res = await http.post('/rooms/create', payload)
-      console.log(res.data)
-      const roomId = res.data.room.id
-      Router.push(`/room/${roomId}`)
+      // const res = await http.post('/rooms/create', payload)
+      // console.log(res.data)
+      // const roomId = res.data.room.id
+      // Router.push(`/room/${roomId}`)
+      Socket.createRoom(createRoomData)
 
       Modal.close()
     } catch (err) {
@@ -78,6 +83,13 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
       return
     }
   }
+
+  useEffect(() => {
+    // 합주실 생성 완료시 on_create_room으로 합주실 정보 들어옴
+    Socket.socket.on('create_room_on', (data: IRoom) => {
+      Router.push(`/room/${data.id}`)
+    })
+  }, [])
 
   return (
     <div>

@@ -17,6 +17,7 @@ import { DcData } from "../../types"
 import PianoComponent from "../../components/room/inst/piano"
 import Loader from "../../components/common/Loader"
 import { IUser, IRoom } from '../../types'
+import { useRouter } from "next/router"
 
 const pc_config = {
 	iceServers: [
@@ -30,6 +31,7 @@ const ROOM_ID = 1
 
 const Room = () => {
 	const dispatch = useDispatch()
+	const router = useRouter()
 	const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
 	const userData = useSelector<RootState, IUser>(state => state.user.data)
 	const users = useSelector<RootState, { id: string, name: string }[]>(state => state.room.users)
@@ -86,8 +88,8 @@ const Room = () => {
 
 				if (!userData) return
 				const joinData = {
-					room: roomData as IRoom,
-					user: userData as IUser
+					user: userData,
+					room_id: router.query.id as string
 				}
 
 				Socket.joinRoom(joinData)
@@ -255,11 +257,6 @@ const Room = () => {
 	useEffect(() => {
 		// 로딩
 		dispatch(roomSlice.actions.setLoading(true))
-		// 합주실에 이미 있을경우 제거
-
-		// 합주실 입장
-		Socket.emitUpdateRoomList()
-		// console.log(`/rooms/enter/${ROOM_ID}`, res)
 
 		// 믹서 세팅
 		mixerRef.current = new Mixer()

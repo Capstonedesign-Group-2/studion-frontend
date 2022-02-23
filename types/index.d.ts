@@ -60,7 +60,7 @@ declare interface IRoom {
   creater: number
   content: string
   max: number
-  locked: string
+  locked: number
   users: UserInRoom[]
 }
 
