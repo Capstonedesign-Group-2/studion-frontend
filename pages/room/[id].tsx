@@ -10,7 +10,6 @@ import wrapper from "../../redux/store"
 import { stayLoggedIn } from "../../http/stay"
 import { RootState } from "../../redux/slices"
 import Socket from "../../socket"
-import http from "../../http"
 import Mixer, { Channel } from "../../components/room/player/mixer/Mixer"
 import roomSlice from "../../redux/slices/room"
 import { DcData } from "../../types"
@@ -354,6 +353,8 @@ const Room = () => {
 			mixerRef.current?.deleteChannel(data.id)
 			dispatch(roomSlice.actions.deleteUser(data))
 		})
+
+		Socket.onNewMessage(dispatch)
 
 		// 로딩 완료
 		dispatch(roomSlice.actions.setLoading(false))

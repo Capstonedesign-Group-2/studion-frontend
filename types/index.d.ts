@@ -86,7 +86,6 @@ declare interface DcData {
  * components/room/menu/Chat*
  */
 declare interface IChatItem {
-  id: number
-  content: string
   user: IUser
+  msg: string
 }

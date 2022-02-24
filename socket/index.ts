@@ -58,10 +58,15 @@ class Socket {
     this.socket.emit('exit_room')
   }
 
-  // 합주실 채팅
+  // 합주실 채팅 보내기
+  emitNewMessage(data: { user: IUser, msg: string }) {
+    this.socket.emit('send_msg', data)
+  }
+
+  // 합주실 채팅 받기
   onNewMessage(dispatch: Dispatch<any>) {
-    this.socket.on('new_message_on', (data: { user: IUser, content: string }) => {
-      // 
+    this.socket.on('send_msg_on', (data: { user: IUser, msg: string }) => {
+      console.log(data)
     })
   }
 

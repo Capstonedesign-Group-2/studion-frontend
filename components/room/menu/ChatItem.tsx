@@ -11,7 +11,7 @@ const ChatItem = ({ chatItem }: { chatItem: IChatItem }) => {
   if (chatItem.user.id === userData?.id) {
     return (
       <div className="bg-studion-500 ml-8 text-white p-2 break-all self-end rounded-t-md rounded-bl-md shadow">
-        {chatItem.content}
+        {chatItem.msg}
       </div>
     )
   }
@@ -32,7 +32,7 @@ const ChatItem = ({ chatItem }: { chatItem: IChatItem }) => {
           {chatItem.user.name}
         </span>
         <div className="bg-white mr-8 text-gray-700 p-2 break-all self-start rounded-b-md rounded-tr-md shadow">
-          {chatItem.content}
+          {chatItem.msg}
         </div>
       </div>
     </div>

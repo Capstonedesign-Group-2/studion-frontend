@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useState } from "react"
 import { useSelector } from "react-redux"
+
 import { RootState } from "../../../redux/slices"
 import { IChatItem } from "../../../types"
+import Socket from '../../../socket'
 
 interface Props {
   setChatList: React.Dispatch<React.SetStateAction<IChatItem[]>>
@@ -19,12 +21,12 @@ const ChatForm = ({ setChatList }: Props) => {
     e.preventDefault()
     if (!newChat.trim()) return
 
-    const newChatItem = {
-      id: new Date().getTime(),
-      content: newChat,
-      user: userData
-    } as IChatItem
-    setChatList((prev) => [...prev, newChatItem])
+    const data = {
+      user: userData,
+      msg: newChat
+    }
+    Socket.emitNewMessage(data)
+    setChatList((prev) => [...prev, data])
     setNewChat('')
   }, [newChat, userData])
 
