@@ -1,5 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit'
 import io from 'socket.io-client'
+import roomSlice from '../redux/slices/room'
 import { IRoom, IUser } from '../types'
 
 export interface JoinData {
@@ -26,9 +27,9 @@ class Socket {
 
   // 합주실 리스트가 업데이트 되었음을 감지 (새로운 방, 없어진 방, 인원수, ...)
   onUpdateRoomList(dispatch: Dispatch<any>) {
-    this.socket.on('update_room_list_on', () => {
-      console.log('[on] update room list !!')
-      // dispatch(getRoomList())
+    this.socket.on('update_room_list_on', (data: { rooms: IRoom[] }) => {
+      console.log('[on] update room list:', data.rooms)
+      dispatch(roomSlice.actions.setRoomList(data.rooms))
     })
   }
 

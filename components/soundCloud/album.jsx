@@ -8,13 +8,13 @@ const Album = ({ post }) => {
         Modal.fire({
             html: <Post />,
             showConfirmButton: false,
-            
+
             customClass: styles.post,
             // width: '1024px'
         })
     }
     return (
-        <div className="w-full aspect-[5/4]" onClick={openModal}>            
+        <div className="w-full aspect-[5/4]" onClick={openModal}>
             <div className={styles.album}>
                 <div className={styles.disk}>
                     <div className={styles.disk_inner}></div>

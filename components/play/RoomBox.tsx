@@ -1,10 +1,10 @@
 import React, { useCallback } from "react"
-import { Room } from "../../types"
+import { IRoom } from "../../types"
 
 import { Modal } from "../common/modals"
 import EnterForm from "./EnterForm"
 
-const RoomBox = ({ room }: { room: Room }) => {
+const RoomBox = ({ room }: { room: IRoom }) => {
 
   const onShowRoom = useCallback(() => {
     Modal.fire({
@@ -18,7 +18,7 @@ const RoomBox = ({ room }: { room: Room }) => {
     <div className="flex flex-col relative rounded-lg items-center group hover:cursor-pointer"
       onClick={onShowRoom}
     >
-      {room.locked === '1' &&
+      {room.locked === 1 &&
         <span className="absolute top-3 left-3 inline-flex items-center px-3 py-0.5 z-10 rounded-full text-sm font-medium leading-5 bg-white text-studion-600 shadow">
           Locked
         </span>

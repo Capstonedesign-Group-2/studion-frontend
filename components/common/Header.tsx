@@ -29,7 +29,7 @@ const Header = () => {
             <div className={styles.link}>
               <Link href="/play"><a>バンドルーム</a></Link>
               <a href="">録音リレー</a>
-              <Link href="/community"><a href="">コミュニティ</a></Link>
+              <Link href="/soundcloud"><a href="">コミュニティ</a></Link>
             </div>
           }
 
