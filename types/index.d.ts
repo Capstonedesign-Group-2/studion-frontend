@@ -44,14 +44,14 @@ declare interface SignUpData extends LoginData {
 /**
  * redux/slice/room
  */
-declare interface UserInRoom {
-  id: number
-  user_id: string
-  room_id: string
-  chat_room_id: string | null
-  flag: string
-  user: IUser
-}
+// declare interface UserInRoom {
+//   id: number
+//   user_id: string
+//   room_id: string
+//   chat_room_id: string | null
+//   flag: string
+//   user: IUser
+// }
 
 declare interface IRoom {
   id: number | null
@@ -61,7 +61,7 @@ declare interface IRoom {
   content: string
   max: number
   locked: number
-  users: UserInRoom[]
+  users: IUser[]
 }
 
 declare interface RoomsState {

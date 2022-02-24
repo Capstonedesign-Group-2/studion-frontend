@@ -225,17 +225,7 @@ const Room = () => {
 
 	// useEffect return
 	const whenUnmounte = () => {
-		// console.log('useEffect return exit room')
-
 		// 합주실 나가기
-		http.delete(`/rooms/exit/${ROOM_ID}`, {
-			data: { user_id: userData?.id }
-		}).then((res) => {
-			console.log(`rooms/exit/${ROOM_ID}`, res)
-			Socket.emitUpdateRoomList()
-		}).catch((err) => {
-			console.error(err)
-		})
 
 		// 연결 끊기
 		users.forEach((user) => {
@@ -378,7 +368,6 @@ const Room = () => {
 			<RoomHeader setMenu={setMenu} menu={menu} />
 
 			{/* 메인 */}
-
 			<div className="pt-12 xl:mr-96"
 				style={{ marginRight: menu ? '' : '0px' }}
 			>

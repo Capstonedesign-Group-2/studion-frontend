@@ -26,6 +26,9 @@ const roomSlice = createSlice({
     },
     setRoomData(state, action) {
       state.roomData = action.payload
+    },
+    setRoomList(state, action) {
+      state.roomList = action.payload
     }
   },
   extraReducers: (builder) => {
