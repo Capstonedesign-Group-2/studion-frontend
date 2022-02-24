@@ -44,15 +44,6 @@ declare interface SignUpData extends LoginData {
 /**
  * redux/slice/room
  */
-// declare interface UserInRoom {
-//   id: number
-//   user_id: string
-//   room_id: string
-//   chat_room_id: string | null
-//   flag: string
-//   user: IUser
-// }
-
 declare interface IRoom {
   id: number | null
   title: string
@@ -69,8 +60,11 @@ declare interface RoomsState {
   getRoomListError?: null | string
   users: { id: string, name: string }[]
   isLoading: boolean
-
   roomData: IRoom | null
+  messageList: {
+    user: IUser,
+    msg: string
+  }[]
 }
 
 /**
@@ -85,7 +79,7 @@ declare interface DcData {
 /**
  * components/room/menu/Chat*
  */
-declare interface IChatItem {
+declare interface IMessage {
   user: IUser
   msg: string
 }

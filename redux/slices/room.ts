@@ -8,7 +8,7 @@ const initialState = {
   users: [],
   isLoading: true,
   roomData: null,
-  chatList: [],
+  messageList: [],
 } as RoomsState;
 
 const roomSlice = createSlice({
@@ -29,6 +29,9 @@ const roomSlice = createSlice({
     },
     setRoomList(state, action) {
       state.roomList = action.payload
+    },
+    addNewMessage(state, action) {
+      state.messageList.push(action.payload)
     }
   },
 });

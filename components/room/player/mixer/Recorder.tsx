@@ -6,14 +6,6 @@ import { RootState } from "../../../../redux/slices"
 import { Modal } from "../../../common/modals"
 import AudioEditor from "../../editor/AudioEditor"
 
-const triangle = {
-  width: '0px',
-  height: '0px',
-  borderLeft: '16px solid #4B5563',
-  borderTop: '8px solid transparent',
-  borderBottom: '8px solid transparent'
-}
-
 export interface AudioFile {
   label: string,
   url: string,
@@ -29,7 +21,6 @@ const Recorder = ({ mixerRef }: Props) => {
   const audioChunksRef = useRef<Blob[]>([])
 
   const isLoading = useSelector<RootState, boolean>(state => state.room.isLoading)
-  const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [isRecording, setIsRecording] = useState<boolean>(false)
 
   const [audioFiles, setAudioFiles] = useState<AudioFile[]>([])
@@ -38,13 +29,8 @@ const Recorder = ({ mixerRef }: Props) => {
   const timerInterval = useRef<number>()
   const fileNumber = useRef<number>(0)
 
-  const onPlay = () => {
-    setIsPlaying(!isPlaying)
-  }
-
   const onRecording = async () => {
     if (!recorderRef.current || isRecording) return
-    setIsPlaying(true)
     setIsRecording(true)
     startTimer()
     audioChunksRef.current = []
@@ -55,7 +41,6 @@ const Recorder = ({ mixerRef }: Props) => {
     if (isRecording && recorderRef.current) {
       recorderRef.current.stop()
     }
-    setIsPlaying(false)
     setIsRecording(false)
     clearInterval(timerInterval.current)
   }
@@ -117,7 +102,7 @@ const Recorder = ({ mixerRef }: Props) => {
       <div className=" font-mono text-3xl bg-gray-900 text-studion-100 rounded-lg py-4 px-3">
         {(clock / 1000).toFixed(1)}s
       </div>
-      <div className="w-full grid grid-cols-3 gap-2">
+      <div className="w-full grid grid-cols-2 gap-2">
 
         {/* 중지 버튼 */}
         <button
@@ -125,23 +110,6 @@ const Recorder = ({ mixerRef }: Props) => {
         >
           <div className="flex justify-center items-center bg-gray-400 border-b-4 border-gray-500 rounded-sm h-11 active:border-studion-100 duration-75">
             <div className='bg-gray-600 w-4 h-4 rounded-sm'></div>
-          </div>
-        </button>
-
-        {/* 재생, 정지 버튼 */}
-        <button
-          onClick={onPlay}
-        >
-          <div className="flex justify-center items-center bg-gray-400 border-b-4 border-studion-100 rounded-sm h-11"
-            style={isPlaying ? {} : { borderColor: 'rgb(107 114 128)' }}
-          >
-            {isPlaying
-              ? (
-                <div className="flex gap-1">
-                  {[1, 2].map(v => <div key={v} className="h-4 w-[6px] bg-gray-600"></div>)}
-                </div>
-              )
-              : <div style={triangle}></div>}
           </div>
         </button>
 
@@ -173,7 +141,7 @@ const Recorder = ({ mixerRef }: Props) => {
               <audio src={audioFile.url} controls className="w-full mt-1 rounded" />
             </div>
           ))
-          : <div className="text-gray-300">音源がありません。</div>}
+          : <div className="text-gray-300 text-center">録音してください！</div>}
       </div>
     </div>
   )

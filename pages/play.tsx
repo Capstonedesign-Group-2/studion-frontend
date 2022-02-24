@@ -12,6 +12,7 @@ const Play = () => {
 
   useEffect(() => {
     Socket.onUpdateRoomList(dispatch)
+    Socket.emitUpdateRoomList()
 
     return (() => {
       Socket.removeAllListeners()

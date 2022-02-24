@@ -1,7 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit'
 import io from 'socket.io-client'
 import roomSlice from '../redux/slices/room'
-import { IRoom, IUser } from '../types'
+import { IMessage, IRoom, IUser } from '../types'
 
 export interface JoinData {
   user: IUser,
@@ -28,14 +28,13 @@ class Socket {
   // 합주실 리스트가 업데이트 되었음을 감지 (새로운 방, 없어진 방, 인원수, ...)
   onUpdateRoomList(dispatch: Dispatch<any>) {
     this.socket.on('update_room_list_on', (data: { rooms: IRoom[] }) => {
-      console.log('[on] update room list:', data.rooms)
-      dispatch(roomSlice.actions.setRoomList(data.rooms))
+      console.log(data)
+      dispatch(roomSlice.actions.setRoomList(data?.rooms))
     })
   }
 
   // 합주실 리스트가 업데이트 되었음을 알림
   emitUpdateRoomList() {
-    console.log('[emit] updated room list !!')
     this.socket.emit('update_room_list')
   }
 
@@ -59,14 +58,14 @@ class Socket {
   }
 
   // 합주실 채팅 보내기
-  emitNewMessage(data: { user: IUser, msg: string }) {
+  emitNewMessage(data: IMessage) {
     this.socket.emit('send_msg', data)
   }
 
   // 합주실 채팅 받기
   onNewMessage(dispatch: Dispatch<any>) {
-    this.socket.on('send_msg_on', (data: { user: IUser, msg: string }) => {
-      console.log(data)
+    this.socket.on('send_msg_on', (data: IMessage) => {
+      dispatch(roomSlice.actions.addNewMessage(data))
     })
   }
 
@@ -75,11 +74,6 @@ class Socket {
     this.socket.on('update_room_info_on', () => {
       // 합주실 정보 불러오기
     })
-  }
-
-  // 합주실 정보 업데이트 알림
-  emitUpdateRoomInfo() {
-    this.socket.emit('update_room_info')
   }
 
   // 소켓 에러 처리

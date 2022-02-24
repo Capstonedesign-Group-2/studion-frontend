@@ -27,10 +27,10 @@ const RoomInfoSection = () => {
           new Room
         </div>
         {true && ( // 방장만 정보 바꾸기
-          <button className="text-sm text-studion-400"
+          <button className="text-xl"
             onClick={onEditBtn}
           >
-            Edit
+            ⚙️
           </button>
         )}
       </div>

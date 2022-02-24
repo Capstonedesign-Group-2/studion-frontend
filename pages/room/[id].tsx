@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useRouter } from "next/router"
 
 import ChatSection from "../../components/room/menu/ChatSection"
 import MyInfoSection from "../../components/room/menu/MyInfoSection"
@@ -12,11 +13,9 @@ import { RootState } from "../../redux/slices"
 import Socket from "../../socket"
 import Mixer, { Channel } from "../../components/room/player/mixer/Mixer"
 import roomSlice from "../../redux/slices/room"
-import { DcData } from "../../types"
 import PianoComponent from "../../components/room/inst/piano"
 import Loader from "../../components/common/Loader"
-import { IUser, IRoom } from '../../types'
-import { useRouter } from "next/router"
+import { IUser, DcData } from '../../types'
 
 const pc_config = {
 	iceServers: [
@@ -26,12 +25,9 @@ const pc_config = {
 	],
 }
 
-const ROOM_ID = 1
-
 const Room = () => {
 	const dispatch = useDispatch()
 	const router = useRouter()
-	const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
 	const userData = useSelector<RootState, IUser>(state => state.user.data)
 	const users = useSelector<RootState, { id: string, name: string }[]>(state => state.room.users)
 	const isLoading = useSelector<RootState, boolean>(state => state.room.isLoading)
@@ -247,6 +243,8 @@ const Room = () => {
 		// 로딩
 		dispatch(roomSlice.actions.setLoading(true))
 
+		// 합주실 정보 불러오기
+
 		// 믹서 세팅
 		mixerRef.current = new Mixer()
 		// console.log('new mixer', mixerRef.current);
@@ -394,7 +392,9 @@ const Room = () => {
 					<div className="w-full py-7 md:px-4">
 						<RoomInfoSection />
 					</div>
-					<ChatSection />
+					<div className="w-full md:px-4">
+						<ChatSection />
+					</div>
 				</div>
 			)}
 		</div>

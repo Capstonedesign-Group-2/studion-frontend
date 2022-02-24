@@ -1,15 +1,13 @@
 import React, { useCallback, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 import { RootState } from "../../../redux/slices"
-import { IChatItem } from "../../../types"
+import { IMessage } from "../../../types"
 import Socket from '../../../socket'
+import roomSlice from "../../../redux/slices/room"
 
-interface Props {
-  setChatList: React.Dispatch<React.SetStateAction<IChatItem[]>>
-}
-
-const ChatForm = ({ setChatList }: Props) => {
+const ChatForm = () => {
+  const dispatch = useDispatch()
   const userData = useSelector((state: RootState) => state.user.data)
   const [newChat, setNewChat] = useState<string>('')
 
@@ -24,27 +22,28 @@ const ChatForm = ({ setChatList }: Props) => {
     const data = {
       user: userData,
       msg: newChat
-    }
+    } as IMessage
+
+    dispatch(roomSlice.actions.addNewMessage(data))
     Socket.emitNewMessage(data)
-    setChatList((prev) => [...prev, data])
     setNewChat('')
   }, [newChat, userData])
 
   return (
-    <form className="relative bg-white"
+    <form className="flex bg-white justify-between items-center py-2 gap-2 px-4"
       onSubmit={onSendChat}
     >
-      <input className="pl-4 pr-16 py-2 focus:outline-none w-full"
+      <input className="focus:outline-none w-full"
         type="text"
         name="message"
         placeholder="enter message"
         value={newChat}
         onChange={onChangeInput}
       />
-      <button className="absolute right-0 bottom-0 text-gray-700 hover:text-studion-500 m-1 px-3 py-1 duration-150 outline-none"
+      <button className="text-xl outline-none"
         type="submit"
       >
-        Send
+        📨
       </button>
     </form>
   )
