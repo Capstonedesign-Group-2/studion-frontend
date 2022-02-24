@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import * as yup from 'yup'
 
-import http from "../../http"
 import { RootState } from "../../redux/slices"
 import wrapper from "../../redux/store"
 import Socket from "../../socket"
