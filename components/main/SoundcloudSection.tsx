@@ -9,19 +9,16 @@ const SoundcloudSection = () => {
           Sound Cloud
         </h2>
         <h5 className="text-xl">
-          音源ランキング
+          トップ音源
         </h5>
       </div>
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-3 max-w-lg mx-auto gap-3 md:gap-0 md:flex mb-10 text-white font-bold justify-center items-center md:space-x-8">
-          <span className="text-studion-500 md:px-6 w-full px-1 justify-center flex py-1 md:text-base text-sm cursor-pointer rounded-full">
-            일간
-          </span>
+        <div className="grid grid-cols-2 max-w-lg mx-auto gap-3 md:gap-0 md:flex mb-10 text-white font-bold justify-center items-center md:space-x-8">
           <span className="bg-studion-300 md:px-6 w-full px-1 justify-center flex py-1 md:text-base text-sm cursor-pointer rounded-full">
-            주간
+            週間
           </span>
           <span className="text-studion-500 md:px-6 w-full px-1 justify-center flex py-1 md:text-base text-sm cursor-pointer rounded-full">
-            월간
+            月間
           </span>
         </div>
       </div>
