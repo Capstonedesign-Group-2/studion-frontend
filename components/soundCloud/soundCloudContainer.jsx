@@ -1,5 +1,5 @@
-import Profile from "./profile"
-import RecodeList from "./recodeList"
+import Profile from "./Profile"
+import RecodeList from "./RecodeList"
 
 const SoundCloudContainer = () => {
     return (

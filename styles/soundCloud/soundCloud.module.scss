@@ -155,11 +155,11 @@
     @apply w-20 h-20 font-black transition-all ease-linear hover:scale-110 mx-auto;
     color: darkcyan;
   }
-  .leftSvgButton {
-    @apply cursor-pointer w-20 h-20 font-black rotate-180 transition-all ease-linear hover:scale-110 mx-auto;
-    color: darkcyan;
-    // transform: rotate(180deg);
-  }
+  // .leftSvgButton {
+  //   @apply cursor-pointer w-20 h-20 font-black rotate-180 transition-all ease-linear hover:scale-110 mx-auto;
+  //   color: darkcyan;
+  //   // transform: rotate(180deg);
+  // }
 }
 .commentContainer {
   @apply overflow-auto mt-4;
@@ -200,3 +200,12 @@
 //     @apply w-7 h-7 rounded-full right-0 bg-white mx-1 absolute z-10;
 //   }
 // }
+
+.dropDown {
+  @apply w-20 absolute right-0 top-10 border-gray-100 border-2 bg-white rounded-md;
+  animation: dropDown 0.5s;
+}
+@keyframes dropDown {
+  from {top: 0px;}
+  to {top: 40px;}
+}

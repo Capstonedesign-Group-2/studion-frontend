@@ -3,7 +3,7 @@ import styles from '../../styles/soundCloud/soundCloud.module.scss'
 import http from '../../http/index';
 import { useSelector } from 'react-redux';
 import wrapper from '../../redux/store';
-import Comment from './comment';
+import Comment from './Comment';
 
 const Article = ({post}) => {
     const [comment, setComment] = useState('');
@@ -89,7 +89,7 @@ const Article = ({post}) => {
                         {
                             dropDown &&
                             (
-                                <div ref={ref} className="w-20 absolute right-0 top-10 border-gray-100 border-2 bg-white rounded-md">
+                                <div ref={ref} className={styles.dropDown}>
                                     <div className="w-full border-2 flex-col flex">
                                         <button>수정</button>            
                                         <button>삭제</button>

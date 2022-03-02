@@ -1,5 +1,5 @@
-import Article from "./article"
-import Player from "./player";
+import Article from "./Article"
+import Player from "./Player";
 import { Modal } from "../common/modals";
 
 const PostContainer = ({post}) => {

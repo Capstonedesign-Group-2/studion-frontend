@@ -1,5 +1,5 @@
-import Album from "./album";
-import RecodePlayer from "./recodePlayer";
+import Album from "./Album";
+import RecodePlayer from "./RecodePlayer";
 import { useState } from "react";
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 const Player = ({audio, image}) => {

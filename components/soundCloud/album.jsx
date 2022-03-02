@@ -1,7 +1,7 @@
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import Link from "next/link"
 import { Modal } from "../common/modals";
-import PostContainer from "./postContainer"
+import PostContainer from "./PostContainer"
 
 const Album = ({ post }) => {
     const openModal = () => {       

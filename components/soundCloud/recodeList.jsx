@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import Album from "./album"
+import Album from "./Album"
 
 const RecodeList = () => {
     const postList = useSelector(state => state.post.postList)

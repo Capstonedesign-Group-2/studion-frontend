@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 import Image from "next/image"
 import { Modal } from "../common/modals"
-import CreatePost from "./createPost"
+import CreatePost from "./CreatePost"
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 // import Post from "./postContainer"
 
