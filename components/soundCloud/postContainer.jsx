@@ -2,32 +2,30 @@ import Article from "./article"
 import Player from "./player";
 import { Modal } from "../common/modals";
 
-const postContainer = ({post}) => {
+const PostContainer = ({post}) => {
     const closeModal = () => {
         Modal.close();
     }
     return (
-        <div className="max-w-screen-xl mx-auto border-green-200">
-            <div className="absolute top-2 right-2 hover:scale-125" onClick={closeModal}>
-                {/* 나가기 버튼 */}
+        <div className="max-w-screen-xl h-full w-full mx-auto">
+            {/* 나가기 버튼 */}
+            <div className="absolute cursor-pointer top-2 right-2 hover:scale-125" onClick={closeModal}>
                 <svg className="w-10 h-10" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
                 </svg>
             </div>
-            <div className="mx-auto lg:flex">
+            <div className="mx-auto h-full lg:flex">
                 {/* 뮤직플레이어/사진 */}
-                <div className="w-full max-w-lg mx-auto lg:mx-0 lg:max-w-xl bg-studion-500">
+                <div className="flex items-center h-full justify-center w-full max-screen-w-lg mx-auto lg:mx-0 lg:max-w-3xl ">
                     <Player audio={post.audios} image={post.images} />
                 </div>
                 {/* 컨텐츠, 코멘트 */}
                 <div className="max-w-lg mx-auto lg:max-w-md lg:pl-2 lg:mx-0 w-full">
-                    <div className="">
-                        <Article post={post}/>
-                    </div>
+                    <Article post={post}/>
                 </div>
             </div>
         </div>
     )
 }
 
-export default postContainer;
+export default PostContainer;

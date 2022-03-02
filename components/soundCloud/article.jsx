@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from '../../styles/soundCloud/soundCloud.module.scss'
 import http from '../../http/index';
 import { useSelector } from 'react-redux';
@@ -9,6 +9,8 @@ const Article = ({post}) => {
     const [comment, setComment] = useState('');
     const userData = useSelector(state => state.user.data);
     const [comments, setComments] = useState([])
+    const [dropDown, setDropDown] = useState(false);
+    const ref = useRef();
     const onCommentChange = (e) => {
         setComment(e.target.value)
     }
@@ -37,19 +39,34 @@ const Article = ({post}) => {
             console.log(err);
         })
     }
+    // const userClick = () => {
+    //     http.get(`/posts/show/${}`)
+    // }
     useEffect(() => {
         callComments();
         console.log('render')
     },[]);
 
+    // 바깥 클릭 시 드롭다운 사라짐
+    useEffect(() => {
+        window.addEventListener("click", checkIfClickedOutside)
+
+        return () => {
+            window.removeEventListener("click", checkIfClickedOutside)
+        }
+    }, [dropDown])
+    const checkIfClickedOutside = ({ target }) => {
+        if(dropDown && ref.current && !ref.current.contains(target)) {
+            setDropDown(false);
+        }
+    }
     return (
         <div>
             <div className="h-auto mt-4 w-full">
                 <div className=''>
                     {/* 글쓴이 정보 */}
-                    <div className='flex items-center text-lg font-semibold'>
+                    <div className='relative flex items-center text-lg font-semibold'>
                         {/* 사진 */}
-                        
                         {
                             !post.user.image
                             ? 
@@ -62,15 +79,33 @@ const Article = ({post}) => {
                                 </div>
                         }
                         {post.user.name}
+                        <div  onClick={() => setDropDown(!dropDown)} className='absolute right-3 hover:scale-125 transition-all'>
+                            <svg aria-label="옵션 더 보기"  color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24">
+                                <circle cx="12" cy="12" r="1.5"></circle>
+                                <circle cx="6" cy="12" r="1.5"></circle>
+                                <circle cx="18" cy="12" r="1.5"></circle>
+                            </svg>
+                        </div>
+                        {
+                            dropDown &&
+                            (
+                                <div ref={ref} className="w-20 absolute right-0 top-10 border-gray-100 border-2 bg-white rounded-md">
+                                    <div className="w-full border-2 flex-col flex">
+                                        <button>수정</button>            
+                                        <button>삭제</button>
+                                    </div>
+                                </div>
+                            )
+                        }
                     </div>
                     {/* 게시글 내용 */}
                     <div className='mt-2'>
-                        <div className='flex break-words overflow-auto whitespace-pre'>
+                        <div className={styles.postContent}>
                             {post.content}
                         </div>
                         {/* 참가한 사람 */}
-                        <div className='mt-2'>
-                            <div className='flex'>with</div>
+                        <div className='mt-2 text-left'>
+                            <div>with</div>
                             <div className='flex'>
                                 <BandMember />
                                 <BandMember />
@@ -91,7 +126,7 @@ const Article = ({post}) => {
                 </div>
                 <div className=' flex mt-6 h-10'>
                     <input type="text" onChange={onCommentChange} value={comment} placeholder='댓글 달기...'  className='w-11/12 h-full grow-1'/>
-                    <div onClick={onClickSubmit} className='w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-300 hover:bg-studion-400'>
+                    <div onClick={onClickSubmit} className='cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-300 hover:bg-studion-400'>
                         <div>
                             게시
                         </div>
@@ -104,7 +139,7 @@ const Article = ({post}) => {
 const BandMember = () => {
     return (
         <div>
-            <div className='rounded-full w-8 h-8 bg-black relative'>
+            <div className='rounded-full w-9 h-9 border-black border-2 mr-1'>
             </div>
         </div>
     )

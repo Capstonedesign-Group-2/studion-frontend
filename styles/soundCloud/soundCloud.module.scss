@@ -143,27 +143,27 @@
 
 
 .post {
-  width: 1080px !important;
-  height: 700px !important;
+  width: 1200px !important;
+  height: 90vh !important;
   text-align: start !important;
 }
 
 
 .playerButton {
-  @apply lg:bottom-10 justify-items-center flex mt-8 w-full;
+  @apply cursor-pointer lg:bottom-10 justify-items-center flex mt-8 w-full;
   svg, div {
     @apply w-20 h-20 font-black transition-all ease-linear hover:scale-110 mx-auto;
-    color: white;
+    color: darkcyan;
   }
   .leftSvgButton {
-    @apply w-20 h-20 font-black rotate-180 transition-all ease-linear hover:scale-110 mx-auto;
-    color: white;
+    @apply cursor-pointer w-20 h-20 font-black rotate-180 transition-all ease-linear hover:scale-110 mx-auto;
+    color: darkcyan;
     // transform: rotate(180deg);
   }
 }
 .commentContainer {
   @apply overflow-auto mt-4;
-  height: 400px;
+  height: 200px;
 }
 // .commentContainer::-webkit-scrollbar {
 //   display: none;
@@ -184,6 +184,19 @@
   border-radius: 10px;
   // box-shadow: inset 0px 0px 5px white;
 }
+.postContent {
+  @apply flex break-words h-40 overflow-auto whitespace-pre text-left
+}
+
 .createPostAudio {
   @apply w-full;
 }
+// .toggleBox {
+//   @apply flex relative items-center w-24 h-9 bg-black rounded-full ease-in-out;
+//   .toggleBtnLeft {
+//     @apply w-7 h-7 rounded-full bg-white mx-1 left-0 absolute z-10;
+//   }
+//   .toggleBtnRight {
+//     @apply w-7 h-7 rounded-full right-0 bg-white mx-1 absolute z-10;
+//   }
+// }

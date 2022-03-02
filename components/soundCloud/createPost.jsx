@@ -98,47 +98,47 @@ const CreatePost = () => {
     
     return (
         <div className="max-w-screen-xl mx-auto h-full">
-            <div className="absolute top-2 right-2 hover:scale-125" onClick={onClickCancel}>
+            {/* 나가기 버튼 */}
+            <div className="absolute cursor-pointer top-2 right-2 hover:scale-125" onClick={onClickCancel}>
                 <svg className="w-10 h-10" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
                 </svg>
             </div>
+            {/*  */}
             <div className="mx-auto lg:flex h-full">
-                <div className="relative w-full h-full max-w-lg mx-auto lg:mx-0 lg:max-w-xl bg-studion-500">
-                    <div className="flex flex-col justify-items-center border-studion-200 border-2 h-full items-center justify-center">
-                        {/* 사진 */}
-                        <input type="file" name="" id="inputImg" accept="img/*" className="hidden" onChange={onImageChange}/>
-                        {post.image.name
-                        ?
-                            <div className="border-2 border-black">
-                                <img className="img_box"></img>
-                            </div>
-                        :   null
-                        }
-                        
-                        {/* 오디오 */}
-                        <input type="file" id="inputAudio" accept="audio/*" className="hidden" onChange={onAudioChange} />
-                        
-                            {post.audio.name
-                            ?
-                                <div className="w-full">
-                                    <audio controls className="audio_box" style={{ width:"100%", padding:'5px', borderRadius:'0px'}}>
-                                        {/* <source className="audio_box" type="audio/mp3"/> */}
-                                    </audio>
-                                </div>
-                            :   null
-                            }
-                        
-                    </div>
-                    {/* 버튼 */}
-                    <div className="absolute bottom-5">
-                        <label htmlFor="inputImg" className="bg-studion-200 rounded-md hover:bg-studion-300" >
-                            이미지 추가
-                        </label>
-                        <label htmlFor="inputAudio" className="bg-studion-200 rounded-md hover:bg-studion-300">
-                            오디오 추가
-                        </label>
-                    </div>
+                {/* 음악, 사진 */}
+                <div className="flex flex-col items-center h-full justify-center w-full max-screen-w-lg mx-auto lg:mx-0 lg:max-w-3xl ">
+                    {/* 사진 */}
+                    <input type="file" name="" id="inputImg" accept="img/*" className="hidden" onChange={onImageChange}/>
+                    {post.image.name
+                    ?
+                        <div className="border-2 border-black">
+                            <img className="img_box object-contain"></img>
+                        </div>
+                    :   null
+                    }
+                    
+                    {/* 오디오 */}
+                    <input type="file" id="inputAudio" accept="audio/*" className="hidden" onChange={onAudioChange} />
+                    {post.audio.name
+                    ?
+                        <div className="w-full">
+                            <audio controls className="audio_box" style={{ width:"100%", padding:'5px', borderRadius:'0px'}}>
+                                {/* <source className="audio_box" type="audio/mp3"/> */}
+                            </audio>
+                        </div>
+                    :   null
+                    }
+                    
+                </div>
+                {/* 버튼 */}
+                <div className="absolute bottom-5">
+                    <label htmlFor="inputImg" className="bg-studion-200 rounded-md hover:bg-studion-300" >
+                        이미지 추가
+                    </label>
+                    <label htmlFor="inputAudio" className="bg-studion-200 rounded-md hover:bg-studion-300">
+                        오디오 추가
+                    </label>
                 </div>
                 {/* 컨탠츠 */}
                 <div className="w-full max-w-md pl-2">
@@ -150,7 +150,7 @@ const CreatePost = () => {
                         <textarea onChange={onContentChange} id=""  rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 border-black w-full decoration-none">
 
                         </textarea>
-                        <div className="hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>
+                        <div className="cursor-pointer hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>
                             제출
                         </div>
                     </div>

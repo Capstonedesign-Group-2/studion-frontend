@@ -1,12 +1,12 @@
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import Link from "next/link"
 import { Modal } from "../common/modals";
-import Post from "./postContainer"
+import PostContainer from "./postContainer"
 
 const Album = ({ post }) => {
     const openModal = () => {       
         Modal.fire({
-            html: <Post post={post} />,
+            html: <PostContainer post={post} />,
             showConfirmButton: false,
             
             customClass: styles.post,
@@ -14,7 +14,7 @@ const Album = ({ post }) => {
         })
     }
     return (
-        <div className="w-full aspect-[5/4]" onClick={openModal}>            
+        <div className="w-full aspect-[5/4] cursor-pointer" onClick={openModal}>            
             <div className={styles.album}>
                 <div className={styles.disk}>
                     <div className={styles.disk_inner}></div>
