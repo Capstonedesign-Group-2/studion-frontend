@@ -1,9 +1,14 @@
+import Image from "next/image"
 import { useCallback, useState } from "react"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../redux/slices"
+import { IRoom } from "../../../types"
 
 import { Modal } from "../../common/modals"
 import RoomEditForm from "./RoomEditFrom"
 
 const RoomInfoSection = () => {
+  const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
   const [showInfo, setShowInfo] = useState<boolean>(false)
 
   const onEditBtn = useCallback(() => {
@@ -24,7 +29,7 @@ const RoomInfoSection = () => {
           >
             ▽
           </button>
-          new Room
+          {roomData && roomData.title}
         </div>
         {true && ( // 방장만 정보 바꾸기
           <button className="text-xl"
@@ -38,13 +43,21 @@ const RoomInfoSection = () => {
       {showInfo && (
         <div className="flex flex-col gap-4 py-4 bg-gray-100">
           {/* 인원 리스트 */}
-          <span className="px-6 self-center text-md font-medium text-gray-900">
-            dong / joon / ppang
-          </span>
+          <div className="flex gap-4 justify-center">
+            {roomData?.users.length !== 0 && roomData.users.map(user => (
+              user.image
+                ? <Image className='w-8 h-8 rounded-full' src={user.image} alt="profile image" />
+                : (
+                  <div className='flex items-center justify-center rounded-full text-white text-sm bg-studion-400 w-8 h-8'>
+                    {user.name.slice(0, 2).toUpperCase()}
+                  </div>
+                )
+            ))}
+          </div>
 
           {/* 방 설명 */}
           <span className="px-6 text-md font-medium text-gray-900">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis natus cum beatae porro facere nemo labore quis ea. Expedita eaque, pariatur explicabo quam harum ut tempore fugiat tenetur error soluta.
+            {roomData && roomData.content}
           </span>
         </div>
       )}

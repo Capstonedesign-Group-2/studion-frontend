@@ -1,4 +1,7 @@
 import Link from "next/link"
+import { useSelector } from "react-redux"
+import { RootState } from "../../redux/slices"
+import { IRoom } from "../../types"
 
 interface Props {
   menu: boolean
@@ -6,6 +9,8 @@ interface Props {
 }
 
 const RoomHeader = ({ setMenu, menu }: Props) => {
+  const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
+
   return (
     <header className="bg-studion-600 z-20 fixed w-full h-14 py-2 shadow-md px-4 xl:pl-16 flex justify-between items-center">
       <Link href="/play">
@@ -16,7 +21,7 @@ const RoomHeader = ({ setMenu, menu }: Props) => {
         </a>
       </Link>
       <div className="text-gray-100 text-2xl">
-        New Room
+        {roomData && roomData.title}
       </div>
       <button onClick={() => setMenu(!menu)} className="bg-gray-100 rounded-full px-4">
         Menu

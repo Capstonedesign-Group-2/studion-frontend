@@ -88,6 +88,7 @@ const Room = () => {
 				}
 
 				Socket.joinRoom(joinData)
+				Socket.emitUpdateRoomInfo({ id: parseInt(router.query.id as string) })
 			}
 		} catch (e) {
 			console.error(`getUserMedia error: ${e}`)
@@ -251,7 +252,6 @@ const Room = () => {
 
 		// 유저 스트림
 		getLocalStream(null)
-
 		Socket.onNewMessage(dispatch)
 		Socket.onUpdateRoomInfo(dispatch)
 
@@ -354,8 +354,6 @@ const Room = () => {
 			mixerRef.current?.deleteChannel(data.id)
 			dispatch(roomSlice.actions.deleteUser(data))
 		})
-
-		Socket.emitUpdateRoomInfo({ id: parseInt(router.query.id as string) })
 
 		// 로딩 완료
 		dispatch(roomSlice.actions.setLoading(false))

@@ -4,23 +4,25 @@ import * as yup from 'yup'
 import { Box } from "@mui/system"
 import { Slider } from "@mui/material"
 
-import http from "../../../http"
 import { RootState } from "../../../redux/slices"
 import wrapper from "../../../redux/store"
 import { createRoomValidation } from "../../../validations"
 import ErrorMessage from "../../common/ErrorMssage"
 import { Modal } from "../../common/modals"
 import styles from "../../../styles/play/play.module.scss"
+import { IRoom, IUser } from "../../../types"
+import Socket from "../../../socket"
 
 const RoomEditForm = () => {
-  const userData = useSelector((state: RootState) => state.user.data)
+  const userData = useSelector<RootState, IUser>(state => state.user.data)
+  const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
   const [errorMsg, setErrorMsg] = useState('')
-  const [lock, setLock] = useState(false)
+  const [lock, setLock] = useState(roomData?.locked === 0 ? false : true)
   const [form, setForm] = useState({
-    title: '',
-    password: '',
-    roomInfo: '',
-    max: 4,
+    title: roomData?.title,
+    password: roomData?.password,
+    roomInfo: roomData?.content,
+    max: roomData?.max,
   })
   const { title, password, roomInfo } = form
 
@@ -54,10 +56,10 @@ const RoomEditForm = () => {
         max: form.max,
         locked: lock ? (form.password ? 1 : 0) : 0,
         password: form.password
-      }
+      } as IRoom
 
-      const res = await http.post('/rooms/create', payload)
-      console.log(res.data)
+      console.log(payload)
+      // Socket.emitUpdateRoomInfo(payload)
 
       Modal.close()
     } catch (err) {
