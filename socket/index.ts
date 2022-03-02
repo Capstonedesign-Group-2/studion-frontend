@@ -35,6 +35,7 @@ class Socket {
 
   // 합주실 리스트가 업데이트 되었음을 알림
   emitUpdateRoomList() {
+    console.log('update_room_list')
     this.socket.emit('update_room_list')
   }
 
@@ -71,9 +72,15 @@ class Socket {
 
   // 합주실 정보 업데이트 감지 (방제, 설명, 인원수, ...)
   onUpdateRoomInfo(dispatch: Dispatch<any>) {
-    this.socket.on('update_room_info_on', () => {
-      // 합주실 정보 불러오기
+    console.log('update_room_info_on')
+    this.socket.on('update_room_info_on', (data: IRoom) => {
+      console.log(data)
     })
+  }
+
+  emitUpdateRoomInfo(data: { id: number }) {
+    console.log('update_room_info')
+    this.socket.emit('update_room_info', data)
   }
 
   // 소켓 에러 처리

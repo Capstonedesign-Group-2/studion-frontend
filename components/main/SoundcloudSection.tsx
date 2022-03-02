@@ -13,14 +13,14 @@ const SoundcloudSection = () => {
         </h5>
       </div>
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-3 max-w-lg mx-auto gap-3 md:gap-0 md:flex mb-10 text-white font-bold justify-center md:space-x-8">
-          <span className="text-studion-500 md:px-6 w-full px-1 justify-center flex py-px pt-1 md:text-base text-sm cursor-pointer rounded-full">
+        <div className="grid grid-cols-3 max-w-lg mx-auto gap-3 md:gap-0 md:flex mb-10 text-white font-bold justify-center items-center md:space-x-8">
+          <span className="text-studion-500 md:px-6 w-full px-1 justify-center flex py-1 md:text-base text-sm cursor-pointer rounded-full">
             일간
           </span>
-          <span className="bg-studion-300 md:px-6 w-full px-1 justify-center flex py-px pt-1 md:text-base text-sm cursor-pointer rounded-full">
+          <span className="bg-studion-300 md:px-6 w-full px-1 justify-center flex py-1 md:text-base text-sm cursor-pointer rounded-full">
             주간
           </span>
-          <span className="text-studion-500 md:px-6 w-full px-1 justify-center flex py-px pt-1 md:text-base text-sm cursor-pointer rounded-full">
+          <span className="text-studion-500 md:px-6 w-full px-1 justify-center flex py-1 md:text-base text-sm cursor-pointer rounded-full">
             월간
           </span>
         </div>
@@ -28,7 +28,7 @@ const SoundcloudSection = () => {
       <div className='px-4 sm:px-6 lg:px-8'>
         <div className="lg:mx-auto grid grid-cols-1 lg:grid-cols-3 place-items-center gap-12 lg:gap-10 lg:max-w-screen-xl">
           {[1, 2, 3].map(post => (
-            <div className='w-96 -translate-x-[12%] lg:translate-x-0 lg:w-full lg:pr-[25%]'>
+            <div className='w-96 -translate-x-[12%] lg:translate-x-0 lg:w-full lg:pr-[25%]' key={post}>
               <Album post={post} />
             </div>
           ))}

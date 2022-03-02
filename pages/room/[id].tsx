@@ -252,6 +252,9 @@ const Room = () => {
 		// 유저 스트림
 		getLocalStream(null)
 
+		Socket.onNewMessage(dispatch)
+		Socket.onUpdateRoomInfo(dispatch)
+
 		Socket.socket.on('all_users', (allUsers: Array<{ id: string; name: string, user_id: number }>) => {
 			// console.log('on all_users', allUsers, Socket.socket.id)
 			allUsers.forEach(async (user) => {
@@ -352,7 +355,7 @@ const Room = () => {
 			dispatch(roomSlice.actions.deleteUser(data))
 		})
 
-		Socket.onNewMessage(dispatch)
+		Socket.emitUpdateRoomInfo({ id: parseInt(router.query.id as string) })
 
 		// 로딩 완료
 		dispatch(roomSlice.actions.setLoading(false))
