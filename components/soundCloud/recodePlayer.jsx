@@ -8,8 +8,8 @@ const RecodePlayer = ({audio, toggle}) => {
     const [click, setClick] = useState(false);
     const wavesurferRef = useRef()
     const waveformRef = useRef()
-    const audioRef = useRef()
     const timeRef = useRef()
+    const allTimeRef = useRef()
 
     const onPlay = () => {
         {
@@ -35,25 +35,25 @@ const RecodePlayer = ({audio, toggle}) => {
 
         wavesurferRef.current.on('ready', () => {
             console.log('ready')
+            var allTime = wavesurferRef.current.getDuration()
+            time(allTimeRef, allTime)
         })
         wavesurferRef.current.on('audioprocess', function () {
             // document.querySelector(".msg").innerText = 'Audio Process ' + ;
             var now = wavesurferRef.current.getCurrentTime()
-            var allTime = wavesurferRef.current.getDuration()
-
             // 0:00 / 0:00
-            Time(timeRef, now);
-            function Time (ref, now) {
-                let minute = 0;
-                let second = now.toFixed(0).padStart(2, 0);
-                minute = (second / 60).toFixed(0).padStart(2, 0)
-                if (second >= 60) {
-                    second = second - 60
-                }
-                return ref.current.innerText = `${minute} : ${second}`
-            }
+            time(timeRef, now);
         });
         
+    }
+    const time = (ref, time) => {
+        let total = Math.floor(time);
+        let second = String(total).padStart(2,0)
+        let minute = String(Math.floor(total / 60)).padStart(2, 0);
+        if (total !== 0 && total % 60 >= 0) {
+            second = String(total - (minute * 60)).padStart(2, 0)
+        }
+        return ref.current.innerText = `${minute} : ${second}`
     }
     useEffect(() => {
         
@@ -69,7 +69,7 @@ const RecodePlayer = ({audio, toggle}) => {
     return (
         <div className="relative w-full">
             <div className="w-full aspect-[5/4] lg:aspect-[5/4] p-2 z-10">
-                <audio ref={audioRef} id="audio" src={audio[0].link} style={{ display:'none' }}></audio>
+                <audio id="audio" src={audio[0].link} style={{ display:'none' }}></audio>
                 {/* 디스크 */}
                 <div className="flex h-full w-full relative">
                     <div className="relative ml-4">
@@ -111,6 +111,10 @@ const RecodePlayer = ({audio, toggle}) => {
                 <div ref={waveformRef} className="bg-gray-300 w-full">
                 </div>
                 <div ref={timeRef} className="absolute left-0">
+                    00 : 00
+                </div>
+                <div ref={allTimeRef} className="absolute right-0">
+                    00 : 00
                 </div>
             </div>
         </div>
