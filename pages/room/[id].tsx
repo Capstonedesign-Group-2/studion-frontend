@@ -185,14 +185,12 @@ const Room = () => {
 				case 'drum':
 					mixerRef.current?.channels[socketId]?.drum?.onPlay(key)
 					break
-				// case 'onPiano':
-				// 	if (!pianoInst.current) return
-				// 	pianoInst.current.onPlay(key)
-				// 	break
-				// case 'offPiano':
-				// 	if (!pianoInst.current) return
-				// 	pianoInst.current.offPlay(key)
-				// 	break
+				case 'onPiano':
+					mixerRef.current?.channels[socketId]?.piano?.onKey(key)
+					break
+				case 'offPiano':
+					mixerRef.current?.channels[socketId]?.piano?.offKey(key)
+					break
 			}
 		}
 

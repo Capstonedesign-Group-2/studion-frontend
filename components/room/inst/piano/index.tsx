@@ -1,4 +1,4 @@
-import { forwardRef, MutableRefObject, useCallback, useState } from 'react'
+import { forwardRef, MutableRefObject, useCallback } from 'react'
 import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano'
 import "react-piano/dist/styles.css"
 import Box from '@mui/material/Box'
@@ -7,10 +7,6 @@ import { VolumeSlider } from '../../player/mixer/VolumeSlider'
 import { DcData } from '../../../../types'
 import Mixer from '../../player/mixer/Mixer'
 import Socket from '../../../../socket'
-
-interface PlayingNote {
-  midiNumber: string
-}
 
 interface Props {
   selectedInst: string
@@ -26,26 +22,26 @@ const PianoComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) =
     lastNote: lastNote,
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   });
-  const [playingNotes, setPlayingNotes] = useState<PlayingNote[]>([])
-  const [volume, setVolume] = useState<number>(100)
 
   const handleVolumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
-      setVolume(newValue);
+      mixerRef.current?.channels[Socket.socket.id]?.piano?.setGain(newValue / 120)
     }
-  }, [])
+  }, [mixerRef])
 
   const onPlayNote = useCallback((midiNumber: string) => {
-    // const playingNote = pianoRef.current?.start(midiNumber, 0, { gain: volume / 120, release: 1 })
-    // setPlayingNotes(prev => prev?.concat({ midiNumber, playingNote }))
-    // sendDataToAllUsers(dcData)
+    const dcData = {
+      type: 'onPiano',
+      key: midiNumber,
+      socketId: Socket.socket.id
+    } as DcData
+    sendDataToAllUsers(dcData)
     mixerRef.current?.channels[Socket.socket.id]?.piano?.onKey(midiNumber)
-    console.log(midiNumber)
-  }, [volume])
+  }, [mixerRef, sendDataToAllUsers])
 
   const onStopNote = useCallback((midiNumber: string) => {
     // setPlayingNotes(prev => prev?.filter(v => v.midiNumber !== midiNumber))
-  }, [playingNotes])
+  }, [])
 
   return (
     <div className='flex justify-center mt-12 mb-24'>
@@ -80,7 +76,7 @@ const PianoComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) =
             <VolumeSlider
               valueLabelDisplay="auto"
               aria-label="volume slider"
-              value={volume}
+              defaultValue={100}
               max={120}
               orientation="vertical"
               onChange={handleVolumeChange}
