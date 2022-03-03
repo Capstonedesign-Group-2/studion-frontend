@@ -1,10 +1,10 @@
 import { useDispatch } from "react-redux"
+import { useEffect } from "react"
 
 import AppLayout from "../components/common/AppLayout"
 import PlayContainer from "../components/play/PlayContainer"
 import { stayLoggedIn } from "../http/stay"
 import wrapper from "../redux/store"
-import { useEffect, useState } from "react"
 import Socket from '../socket'
 import roomSlice from "../redux/slices/room"
 import { IRoom } from "../types"

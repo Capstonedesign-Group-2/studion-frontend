@@ -22,7 +22,6 @@ const Footer = () => {
                 <h4>NAVIGATION</h4>
                 <ul>
                   <li><Link href="/play"><a>バンドルーム</a></Link></li>
-                  <li><a>録音リレー</a></li>
                   <li><Link href="/soundcloud"><a>コミュニティ</a></Link></li>
                 </ul>
               </article>
