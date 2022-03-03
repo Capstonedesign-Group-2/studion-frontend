@@ -16,7 +16,7 @@ const PostContainer = ({post}) => {
             </div>
             <div className="mx-auto h-full lg:flex">
                 {/* 뮤직플레이어/사진 */}
-                <div className="flex items-center h-full justify-center w-full max-screen-w-lg mx-auto lg:mx-0 lg:max-w-3xl ">
+                <div className="flex items-center justify-center w-full max-screen-w-lg ">
                     <Player audio={post.audios} image={post.images} />
                 </div>
                 {/* 컨텐츠, 코멘트 */}

@@ -1,16 +1,17 @@
 import { Modal } from '../common/modals'
-// import styles from "../../styles/community/community.module.scss";
+import styles from "../../styles/soundCloud/soundCloud.module.scss";
 import http from '../../http/index';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { getPostList } from '../../redux/actions/post';
-const Dropdown = () => {
-    // const userData = useSelector(state => state.user.data)
-    // const dispatch = useDispatch();
+import { useDispatch, useSelector } from 'react-redux';
+import { getPostList } from '../../redux/actions/post';
+import EditCard from './EditCard';
+const Dropdown = ({post}) => {
+    const userData = useSelector(state => state.user.data)
+    const dispatch = useDispatch();
     const onEditModal = () => {
         Modal.fire({
-            html: <div></div>,
+            html: <EditCard pevPost={post}/>,
             showConfirmButton: false,
-            customClass: styles.createSwal,
+            customClass: styles.post,
             width: '1024px',
             showClass: {
                 popup: 'animate__animated animate__fadeInDown'
@@ -38,9 +39,11 @@ const Dropdown = () => {
             }).then((result) => {
             if (result.isConfirmed) {
                 const data = {
-                    user_id: userData?.id
+                    user_id: userData.id
                 }
-                http.delete('/posts/destory/' + post_id, { data })
+                http.delete(`/posts/destory/${post.id}`, {
+                    data : data
+                })
                 .then(res => {
                     dispatch(getPostList());
                     console.log(res);
@@ -57,7 +60,7 @@ const Dropdown = () => {
         })
     }
     return (
-        <div className={styles.editDeleteModal}>
+        <div className={styles.dropDown}>
             <button onClick={onEditModal}>수정</button>            
             <button onClick={onDeleteModal}>삭제</button>
         </div>

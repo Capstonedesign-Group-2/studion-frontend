@@ -8,11 +8,11 @@ const Player = ({audio, image}) => {
         setToggle(!toggle)
     }
     return (
-        <div className="flex h-full items-center justify-center relative w-full">
+        <div className="flex h-full max-w-xl items-center justify-center relative w-full">
             {
                 (audio.length !== 0 && !toggle)
                 &&
-                <div className="h-full w-full">
+                <div className="w-full">
                     <RecodePlayer audio={audio} />
                 </div> 
             }

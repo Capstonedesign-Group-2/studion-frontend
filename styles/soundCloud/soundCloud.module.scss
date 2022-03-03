@@ -202,10 +202,16 @@
 // }
 
 .dropDown {
-  @apply w-20 absolute right-0 top-10 border-gray-100 border-2 bg-white rounded-md;
+  @apply w-24 absolute right-0 top-5 bg-white rounded-md;
   animation: dropDown 0.5s;
+  div {
+    @apply flex flex-col border-2;
+  }
+  button:hover {
+    @apply bg-gray-100;
+  }
 }
 @keyframes dropDown {
   from {top: 0px;}
-  to {top: 40px;}
+  to {top: 20px;}
 }

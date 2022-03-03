@@ -4,6 +4,7 @@ import http from '../../http/index';
 import { useSelector } from 'react-redux';
 import wrapper from '../../redux/store';
 import Comment from './Comment';
+import Dropdown from './DropDown';
 
 const Article = ({post}) => {
     const [comment, setComment] = useState('');
@@ -90,10 +91,7 @@ const Article = ({post}) => {
                             dropDown &&
                             (
                                 <div ref={ref} className={styles.dropDown}>
-                                    <div className="w-full border-2 flex-col flex">
-                                        <button>수정</button>            
-                                        <button>삭제</button>
-                                    </div>
+                                    <Dropdown post={post}/>
                                 </div>
                             )
                         }
