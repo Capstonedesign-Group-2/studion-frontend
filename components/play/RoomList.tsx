@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "../../redux/slices"
 import { IRoom } from "../../types"
@@ -18,4 +19,4 @@ const RoomList = () => {
   )
 }
 
-export default RoomList
+export default memo(RoomList)

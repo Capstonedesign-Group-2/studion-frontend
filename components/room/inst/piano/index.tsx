@@ -1,28 +1,24 @@
-import { forwardRef, ForwardRefRenderFunction, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, MutableRefObject, useCallback, useState } from 'react'
 import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano'
-import Soundfont from 'soundfont-player'
 import "react-piano/dist/styles.css"
 import Box from '@mui/material/Box'
 
 import { VolumeSlider } from '../../player/mixer/VolumeSlider'
 import { DcData } from '../../../../types'
+import Mixer from '../../player/mixer/Mixer'
+import Socket from '../../../../socket'
 
 interface PlayingNote {
   midiNumber: string
-  playingNote: Soundfont.Player | undefined
-}
-
-export interface PlayPianoHandle {
-  onPlay: (key: string) => void
-  offPlay: (key: string) => void
 }
 
 interface Props {
   selectedInst: string
   sendDataToAllUsers: (data: DcData) => void
+  mixerRef: MutableRefObject<Mixer | undefined>
 }
 
-const PianoComponent: ForwardRefRenderFunction<PlayPianoHandle, Props> = ({ selectedInst, sendDataToAllUsers }, ref) => {
+const PianoComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) => {
   const firstNote = MidiNumbers.fromNote('c3')
   const lastNote = MidiNumbers.fromNote('f4')
   const keyboardShortcuts = KeyboardShortcuts.create({
@@ -30,8 +26,6 @@ const PianoComponent: ForwardRefRenderFunction<PlayPianoHandle, Props> = ({ sele
     lastNote: lastNote,
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   });
-  const audioCtxRef = useRef<AudioContext>()
-  const pianoRef = useRef<Soundfont.Player>()
   const [playingNotes, setPlayingNotes] = useState<PlayingNote[]>([])
   const [volume, setVolume] = useState<number>(100)
 
@@ -42,29 +36,16 @@ const PianoComponent: ForwardRefRenderFunction<PlayPianoHandle, Props> = ({ sele
   }, [])
 
   const onPlayNote = useCallback((midiNumber: string) => {
-    // console.log('play on piano:', midiNumber);
-    const playingNote = pianoRef.current?.start(midiNumber, 0, { gain: volume / 120, release: 1 })
-    setPlayingNotes(prev => prev?.concat({ midiNumber, playingNote }))
+    // const playingNote = pianoRef.current?.start(midiNumber, 0, { gain: volume / 120, release: 1 })
+    // setPlayingNotes(prev => prev?.concat({ midiNumber, playingNote }))
+    // sendDataToAllUsers(dcData)
+    mixerRef.current?.channels[Socket.socket.id]?.piano?.onKey(midiNumber)
+    console.log(midiNumber)
   }, [volume])
 
   const onStopNote = useCallback((midiNumber: string) => {
-    // console.log('play off piano:', midiNumber);
-    playingNotes?.find(v => v.midiNumber === midiNumber)?.playingNote?.stop()
-    setPlayingNotes(prev => prev?.filter(v => v.midiNumber !== midiNumber))
+    // setPlayingNotes(prev => prev?.filter(v => v.midiNumber !== midiNumber))
   }, [playingNotes])
-
-  useImperativeHandle(ref, () => ({
-    onPlay: (midiNumber: string) => onPlayNote(midiNumber),
-    offPlay: (midiNumber: string) => onStopNote(midiNumber)
-  }));
-
-  useEffect(() => {
-    audioCtxRef.current = new AudioContext()
-    Soundfont.instrument(audioCtxRef.current, 'acoustic_grand_piano')
-      .then((grandPiano) => {
-        pianoRef.current = grandPiano
-      })
-  }, [])
 
   return (
     <div className='flex justify-center mt-12 mb-24'>

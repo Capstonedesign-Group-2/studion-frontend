@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { memo, useCallback } from "react"
 import { IRoom } from "../../types"
 
 import { Modal } from "../common/modals"
@@ -47,4 +47,4 @@ const RoomBox = ({ room }: { room: IRoom }) => {
   )
 }
 
-export default RoomBox
+export default memo(RoomBox)

@@ -13,7 +13,6 @@ import { RootState } from "../../redux/slices"
 import Socket from "../../socket"
 import Mixer, { Channel } from "../../components/room/player/mixer/Mixer"
 import roomSlice from "../../redux/slices/room"
-import PianoComponent from "../../components/room/inst/piano"
 import Loader from "../../components/common/Loader"
 import { IUser, DcData } from '../../types'
 
@@ -41,9 +40,6 @@ const Room = () => {
 	const mixerRef = useRef<Mixer>()
 	const localStreamRef = useRef<MediaStream>()
 	const [audios, setAudios] = useState<MediaDeviceInfo[]>([])
-
-	// playInst
-	const pianoInst = useRef<React.ElementRef<typeof PianoComponent>>(null)
 
 	const getLocalStream = useCallback(async (deviceId: string | null) => {
 		const initialConstrains = {
@@ -88,7 +84,7 @@ const Room = () => {
 				}
 
 				Socket.joinRoom(joinData)
-				Socket.emitUpdateRoomInfo({ id: parseInt(router.query.id as string) })
+				Socket.emitGetRoomInfo({ id: parseInt(router.query.id as string) })
 			}
 		} catch (e) {
 			console.error(`getUserMedia error: ${e}`)
@@ -189,14 +185,14 @@ const Room = () => {
 				case 'drum':
 					mixerRef.current?.channels[socketId]?.drum?.onPlay(key)
 					break
-				case 'onPiano':
-					if (!pianoInst.current) return
-					pianoInst.current.onPlay(key)
-					break
-				case 'offPiano':
-					if (!pianoInst.current) return
-					pianoInst.current.offPlay(key)
-					break
+				// case 'onPiano':
+				// 	if (!pianoInst.current) return
+				// 	pianoInst.current.onPlay(key)
+				// 	break
+				// case 'offPiano':
+				// 	if (!pianoInst.current) return
+				// 	pianoInst.current.offPlay(key)
+				// 	break
 			}
 		}
 
@@ -380,7 +376,6 @@ const Room = () => {
 					: (
 						<RoomContainer
 							sendDataToAllUsers={sendDataToAllUsers}
-							pianoInst={pianoInst}
 							mixerRef={mixerRef}
 						/>
 					)}

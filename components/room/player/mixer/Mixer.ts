@@ -1,4 +1,5 @@
 import { Drum } from "../../inst/drum/drum"
+import Piano from "../../inst/piano/piano"
 
 export default class Mixer {
   channels: { [SocketId: string]: Channel }
@@ -55,6 +56,7 @@ export class Channel {
   muteNode: GainNode
   pannerNode: StereoPannerNode
   drum: Drum
+  piano: Piano
 
   constructor(name: string, SocketId: string, stream: MediaStream, mixer: Mixer) {
     this.mixer = mixer
@@ -66,6 +68,7 @@ export class Channel {
     this.muteNode = this.mixer.audioContext.createGain()
     this.pannerNode = new StereoPannerNode(this.mixer.audioContext, { pan: 0 })
     this.drum = new Drum(this.mixer.audioContext, this)
+    this.piano = new Piano(this.mixer.audioContext, this)
     this.setConnection()
     this.mixer.addNewChannel(this)
   }

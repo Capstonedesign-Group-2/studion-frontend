@@ -41,17 +41,28 @@ const RoomEditForm = () => {
     })
   }, [form])
 
+  const onLock = useCallback(() => {
+    setLock(!lock)
+    setForm({
+      ...form,
+      password: ''
+    })
+  }, [form, lock])
+
   const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setErrorMsg('')
+
+    if (!roomData || !userData) return
 
     // 유효성 검사
     try {
       await createRoomValidation.validate(form)
 
       const payload = {
+        id: roomData.id,
         title: form.title,
-        creater: userData?.id,
+        creater: roomData.creater,
         content: form.roomInfo,
         max: form.max,
         locked: lock ? (form.password ? 1 : 0) : 0,
@@ -59,7 +70,7 @@ const RoomEditForm = () => {
       } as IRoom
 
       console.log(payload)
-      // Socket.emitUpdateRoomInfo(payload)
+      Socket.emitUpdateRoomInfo(payload)
 
       Modal.close()
     } catch (err) {
@@ -82,7 +93,7 @@ const RoomEditForm = () => {
         <input type="text" name="title" placeholder="ルーム名" value={title} onChange={onChange} />
         <div className="flex gap-2 items-center">
           <input className="flex-1" disabled={!lock} type="password" name="password" placeholder="パスワード" value={password as string} onChange={onChange} />
-          <button className="text-2xl" type="button" onClick={() => setLock(!lock)}>{lock ? '🔒' : '🔓'}</button>
+          <button className="text-2xl" type="button" onClick={onLock}>{lock ? '🔒' : '🔓'}</button>
         </div>
         <Box>
           <div className="text-gray-400">スタジオの最大人数</div>

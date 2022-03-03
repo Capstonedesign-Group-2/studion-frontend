@@ -58,9 +58,9 @@ const EnterForm = ({ room }: { room: IRoom }) => {
         <div className="flex gap-4 justify-center">
           {room.users.length !== 0 && room.users.map(user => (
             user.image
-              ? <Image className='w-8 h-8 rounded-full' src={user.image} alt="profile image" />
+              ? <Image key={user.id} className='w-8 h-8 rounded-full' src={user.image} alt="profile image" />
               : (
-                <div className='flex items-center justify-center rounded-full text-white text-sm bg-studion-400 w-8 h-8'>
+                <div key={user.id} className='flex items-center justify-center rounded-full text-white text-sm bg-studion-400 w-8 h-8'>
                   {user.name.slice(0, 2).toUpperCase()}
                 </div>
               )

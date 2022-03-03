@@ -1,7 +1,7 @@
 import { Slider } from "@mui/material"
 import Box from '@mui/material/Box'
 import Router from "next/router"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import * as yup from 'yup'
 
@@ -32,22 +32,30 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
   })
   const { title, password, roomInfo } = form
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setForm({
       ...form,
       [name]: value
     })
-  }
+  }, [form])
 
-  const handleChange = (event: Event, newValue: number | number[]) => {
+  const handleChange = useCallback((event: Event, newValue: number | number[]) => {
     setForm({
       ...form,
       ['max']: newValue as number
     })
-  };
+  }, [form])
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onLock = useCallback(() => {
+    setLock(!lock)
+    setForm({
+      ...form,
+      password: ''
+    })
+  }, [form, lock])
+
+  const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setErrorMsg('')
 
@@ -81,7 +89,7 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
       }
       return
     }
-  }
+  }, [Modal, form, lock, userData?.id])
 
   useEffect(() => {
     // 합주실 생성 완료시 on_create_room으로 합주실 정보 들어옴
@@ -101,7 +109,7 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
         <input type="text" name="title" placeholder="ルーム名" value={title} onChange={onChange} />
         <div className="flex gap-2 items-center">
           <input className="flex-1" disabled={!lock} type="password" name="password" placeholder="パスワード" value={password as string} onChange={onChange} />
-          <button className="text-2xl" type="button" onClick={() => setLock(!lock)}>{lock ? '🔒' : '🔓'}</button>
+          <button className="text-2xl" type="button" onClick={onLock}>{lock ? '🔒' : '🔓'}</button>
         </div>
         <Box>
           <div className="text-gray-400">スタジオの最大人数</div>

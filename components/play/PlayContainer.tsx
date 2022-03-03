@@ -1,5 +1,6 @@
 import UserProfileBox from "./UserProfileBox"
 import RoomList from './RoomList'
+import { memo } from "react"
 
 const PlayContainer = () => {
   return (
@@ -10,8 +11,8 @@ const PlayContainer = () => {
             <h2 className="text-2xl font-medium mb-8">
               ルームリスト
             </h2>
-            <UserProfileBox/>
-            <RoomList/>
+            <UserProfileBox />
+            <RoomList />
           </div>
         </div>
       </div>
@@ -19,4 +20,4 @@ const PlayContainer = () => {
   )
 }
 
-export default PlayContainer
+export default memo(PlayContainer)

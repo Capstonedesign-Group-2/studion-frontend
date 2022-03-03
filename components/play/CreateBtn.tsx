@@ -1,8 +1,9 @@
+import { memo, useCallback } from "react"
 import { Modal } from "../common/modals"
 import CreateForm from "./CreateForm"
 
 const CreateBtn = () => {
-  const onCreateRoom = () => {
+  const onCreateRoom = useCallback(() => {
     Modal.fire({
       title: <p>新しいルームを作る</p>,
       html: (
@@ -10,7 +11,7 @@ const CreateBtn = () => {
       ),
       showConfirmButton: false,
     })
-  }
+  }, [])
 
   return (
     <button className="mt-16 inline-block justify-center items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 active:bg-studion-500 transition ease-in-out duration-150"
@@ -21,4 +22,4 @@ const CreateBtn = () => {
   )
 }
 
-export default CreateBtn
+export default memo(CreateBtn)

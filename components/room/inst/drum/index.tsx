@@ -5,7 +5,7 @@ import { VolumeSlider } from '../../player/mixer/VolumeSlider'
 import { DATA, playingStyle } from './drum'
 import { DcData } from "../../../../types"
 import Mixer from "../../player/mixer/Mixer"
-import socket from "../../../../socket"
+import Socket from "../../../../socket"
 
 interface Props {
   selectedInst: string
@@ -18,19 +18,19 @@ const DrumComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) =>
 
   const handleVolumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
-      mixerRef.current?.channels[socket.socket.id]?.drum?.setGain(newValue / 120)
+      mixerRef.current?.channels[Socket.socket.id]?.drum?.setGain(newValue / 120)
     }
   }, [mixerRef])
 
-  const handleKeyPress = useCallback((e: KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const key = e.key.toUpperCase()
     const dcData = {
       type: 'drum',
       key,
-      socketId: socket.socket.id
+      socketId: Socket.socket.id
     }
     sendDataToAllUsers(dcData)
-    mixerRef.current?.channels[socket.socket.id]?.drum?.onPlay(key)
+    mixerRef.current?.channels[Socket.socket.id]?.drum?.onPlay(key)
     setPlaying((prev) => [...prev, key])
     setTimeout(() => {
       setPlaying((prev) => prev.filter(v => v !== key))
@@ -40,13 +40,13 @@ const DrumComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) =>
   useEffect(() => {
     // 사용자가 드럼을 선택했을때만 키 입력 리슨
     if (selectedInst === 'drum') {
-      document.addEventListener('keydown', handleKeyPress)
+      document.addEventListener('keydown', handleKeyDown)
     }
 
     return () => {
-      document.removeEventListener('keydown', handleKeyPress)
+      document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [selectedInst, handleKeyPress])
+  }, [selectedInst, handleKeyDown])
 
   return (
     <div className="flex justify-center mt-12 mb-24">

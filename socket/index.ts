@@ -78,15 +78,13 @@ class Socket {
   }
 
   // 합주실 정보 불러오기
-  emitUpdateRoomInfo(data: { id: number }) {
-    this.socket.emit('update_room_info', data)
+  emitGetRoomInfo(data: { id: number }) {
+    this.socket.emit('get_room_info', data)
   }
 
-  // 소켓 에러 처리
-  onError() {
-    this.socket.on('error', () => {
-      console.log('소켓 에러')
-    })
+  // 합주실 정보 업데이트
+  emitUpdateRoomInfo(data: IRoom) {
+    this.socket.emit('update_room_info', data)
   }
 }
 
