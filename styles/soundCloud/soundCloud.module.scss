@@ -163,7 +163,7 @@
 }
 .commentContainer {
   @apply overflow-auto mt-4;
-  height: 200px;
+  height: 400px;
 }
 // .commentContainer::-webkit-scrollbar {
 //   display: none;
@@ -191,15 +191,12 @@
 .createPostAudio {
   @apply w-full;
 }
-// .toggleBox {
-//   @apply flex relative items-center w-24 h-9 bg-black rounded-full ease-in-out;
-//   .toggleBtnLeft {
-//     @apply w-7 h-7 rounded-full bg-white mx-1 left-0 absolute z-10;
-//   }
-//   .toggleBtnRight {
-//     @apply w-7 h-7 rounded-full right-0 bg-white mx-1 absolute z-10;
-//   }
-// }
+.toggleBox {
+  @apply flex absolute top-0 right-0 items-center w-20 h-9 bg-black rounded-full ease-in-out;
+  .toggleBtn {
+    @apply w-7 h-7 rounded-full bg-white mx-1 left-0 absolute z-10 duration-100 ease-in-out;
+  }
+}
 
 .dropDown {
   @apply w-24 absolute right-0 top-5 bg-white rounded-md;

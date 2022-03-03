@@ -12,6 +12,7 @@ const RecodePlayer = ({audio, toggle}) => {
     const allTimeRef = useRef()
 
     const onPlay = () => {
+        setClick(!click);
         {
             !click
             ?
@@ -19,7 +20,6 @@ const RecodePlayer = ({audio, toggle}) => {
             :
                 wavesurferRef.current.pause()
         }
-        setClick(!click);
     }
     const initWaveSurfer = async () => {
         const WaveSurfer = await require('wavesurfer.js')
@@ -37,6 +37,17 @@ const RecodePlayer = ({audio, toggle}) => {
             console.log('ready')
             var allTime = wavesurferRef.current.getDuration()
             time(allTimeRef, allTime)
+        })
+        wavesurferRef.current.on('play', () => {
+
+            }
+        )
+        wavesurferRef.current.on('pause', () => {
+
+        })
+        wavesurferRef.current.on('finish', () => {
+            console.log('finish')
+                setClick(false)
         })
         wavesurferRef.current.on('audioprocess', function () {
             // document.querySelector(".msg").innerText = 'Audio Process ' + ;
@@ -56,7 +67,6 @@ const RecodePlayer = ({audio, toggle}) => {
         return ref.current.innerText = `${minute} : ${second}`
     }
     useEffect(() => {
-        
         initWaveSurfer()
         
 
@@ -65,6 +75,9 @@ const RecodePlayer = ({audio, toggle}) => {
           wavesurferRef.current.destroy()
         }
     }, [])
+    useEffect(() => {
+        console.log(click)
+    }, [click])
 
     return (
         <div className="relative w-full">
@@ -108,7 +121,7 @@ const RecodePlayer = ({audio, toggle}) => {
                 </div>
             </div> 
             <div className="relative w-full">
-                <div ref={waveformRef} className="bg-gray-300 w-full">
+                <div ref={waveformRef} className="w-full">
                 </div>
                 <div ref={timeRef} className="absolute left-0">
                     00 : 00
