@@ -8,7 +8,7 @@ const Album = ({ post }) => {
         Modal.fire({
             html: <PostContainer post={post} />,
             showConfirmButton: false,
-            
+            scrollbarPadding: false,
             customClass: styles.post,
             // width: '1024px'
         })
@@ -25,7 +25,7 @@ const Album = ({ post }) => {
                         ?
                             <img className="object-contain h-full w-full" src={post.images[0].link} alt="" />
                         :
-                            <div className="h-full w-full flex items-center pl-2 text-white text-2xl whitespace-pre-line">
+                            <div className="h-full w-full flex items-center pl-2 text-white text-2xl truncate whitespace-pre-line break-all">
                                 {post.content}
                             </div>
                     }

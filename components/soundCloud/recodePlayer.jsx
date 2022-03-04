@@ -1,6 +1,7 @@
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import tonearm from "../../public/images/tonearm.svg"
 import Image from "next/image"
+import Loader from '../common/Loader'
 import { useState, useRef } from "react"
 import { useEffect } from "react"
 
@@ -10,6 +11,7 @@ const RecodePlayer = ({audio, toggle}) => {
     const waveformRef = useRef()
     const timeRef = useRef()
     const allTimeRef = useRef()
+    // const [isLoaded, setLoaded] = useState(false)
 
     const onPlay = () => {
         setClick(!click);
@@ -28,14 +30,17 @@ const RecodePlayer = ({audio, toggle}) => {
             waveColor: '#007E8E',
             progressColor: '#34D399',
             cursorColor: '#34D399',
-            fillParent: true,
+            // fillParent: true,
         })
 
         wavesurferRef.current.load(audio[0].link);
 
         wavesurferRef.current.on('ready', () => {
             console.log('ready')
+            // setLoaded(true)
+
             var allTime = wavesurferRef.current.getDuration()
+            // console.log(allTime)
             time(allTimeRef, allTime)
         })
         wavesurferRef.current.on('play', () => {
@@ -81,11 +86,11 @@ const RecodePlayer = ({audio, toggle}) => {
 
     return (
         <div className="relative w-full">
-            <div className="w-full aspect-[5/4] lg:aspect-[5/4] p-2 z-10">
+            <div className="w-full aspect-[5/4] lg:aspect-[5/4] p-2 z-10 cursor-pointer" onClick={onPlay} >
                 <audio id="audio" src={audio[0].link} style={{ display:'none' }}></audio>
                 {/* 디스크 */}
                 <div className="flex h-full w-full relative">
-                    <div className="relative ml-4">
+                    <div className="relative ml-4 " >
                         <div className={click ? styles.playDisk : styles.stopDisk} >
                             <div className={click ? styles.playDisk_inner : styles.stopDisk_inner}></div>
                         </div>
@@ -103,7 +108,7 @@ const RecodePlayer = ({audio, toggle}) => {
                     {/* <svg className={styles.leftSvgButton} viewBox="0 0 24 24">
                         <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M8,8L13,12L8,16M14,8H16V16H14" />
                     </svg> */}
-                    {click 
+                    {/* {click 
                         ?
                         // stop
                         <svg viewBox="0 0 24 24" onClick={onPlay}>
@@ -114,15 +119,14 @@ const RecodePlayer = ({audio, toggle}) => {
                         <svg viewBox="0 0 24 24" onClick={onPlay}>
                             <path fill="currentColor" d="M10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
                         </svg>
-                    } 
+                    }  */}
                     {/* <svg viewBox="0 0 24 24">
                         <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M8,8L13,12L8,16M14,8H16V16H14" />
                     </svg> */}
                 </div>
             </div> 
             <div className="relative w-full">
-                <div ref={waveformRef} className="w-full">
-                </div>
+                <div ref={waveformRef} className="w-full"></div>
                 <div ref={timeRef} className="absolute left-0">
                     00 : 00
                 </div>
