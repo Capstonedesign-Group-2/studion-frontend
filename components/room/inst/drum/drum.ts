@@ -82,7 +82,7 @@ export const DATA = [
     letter: 'E',
     keycode: 69,
     id: 'Kick-and-Hat',
-    url: '/sounds/drum/snoff.wav'
+    url: '/sounds/drum/rs.wav'
   },
   {
     letter: 'A',

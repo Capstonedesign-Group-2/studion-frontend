@@ -23,7 +23,11 @@ const DrumComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) =>
   }, [mixerRef])
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    const key = e.key.toUpperCase()
+    playDrum(e.key)
+  }, [sendDataToAllUsers, mixerRef])
+
+  const playDrum = (eventKey: string) => {
+    const key = eventKey.toUpperCase()
     const dcData = {
       type: 'drum',
       key,
@@ -35,7 +39,7 @@ const DrumComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) =>
     setTimeout(() => {
       setPlaying((prev) => prev.filter(v => v !== key))
     }, 100)
-  }, [sendDataToAllUsers, mixerRef])
+  }
 
   useEffect(() => {
     // 사용자가 드럼을 선택했을때만 키 입력 리슨
@@ -53,9 +57,10 @@ const DrumComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) =>
       <div className="flex items-center gap-4 p-4 bg-studion-600 rounded-md">
         <div className="grid grid-cols-3 gap-2 rounded-l-md">
           {DATA && DATA.map((pad) => (
-            <div className="flex justify-center items-center text-white bg-studion-300 w-24 h-24 rounded-md duration-75"
+            <div className="flex justify-center items-center text-white bg-studion-300 w-24 h-24 rounded-md duration-75 hover:cursor-pointer"
               style={playing.find(v => v === pad.letter) ? playingStyle : {}}
               key={pad.id}
+              onClick={() => playDrum(pad.letter)}
             >
               <div id={pad.id}>
                 <audio key={pad.id} id={pad.id} src={pad.url}></audio>
