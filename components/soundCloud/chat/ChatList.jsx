@@ -1,5 +1,8 @@
-// import 
+import styles from "../../../styles/soundCloud/soundCloud.module.scss"
 const ChatList = ({userData}) => {
+    // const onClickUser = () => {
+
+    // }
     return (
         <div className="flex flex-col h-full absolute right-0 max-w-xs w-full border-2 bg-white">
             {/* <div className="h-full relative"> */}
@@ -8,7 +11,7 @@ const ChatList = ({userData}) => {
                     {userData.name}
                 </div>
                 {/* 닉네임 / 채팅내용 */}
-                <div className="overflow-y-scroll flex-1 max-h-fit">
+                <div className={styles.chatListMenu}>
                     <User />
                     <User />
                     <User />
@@ -30,7 +33,7 @@ const ChatList = ({userData}) => {
 }
 const User = () => {
     return (
-        <div className="flex p-2 items-center">
+        <div className="flex p-2 items-center hover:bg-gray-200">
             {/* 사진 */}
             <div className="w-14 h-14 rounded-full bg-studion-300"></div>
             {/* 아이디 / 내용*/}
@@ -38,8 +41,8 @@ const User = () => {
                 <div>
                     user_id
                 </div>
-                <div className="text-gray-400">
-                    message
+                <div className="flex-1 text-gray-400 truncate w-52">
+                    messagesadasdsaa.. asd asd as
                 </div>
             </div>
         </div>
