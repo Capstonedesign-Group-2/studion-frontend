@@ -397,6 +397,14 @@ const Room = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
 	await stayLoggedIn(context, store)
+	if (!store.getState().user.data) { // 유저 데이터가 없으면 '/login'으로 리다이렉트
+		return {
+			redirect: {
+				destination: '/login',
+				permanent: false,
+			},
+		}
+	}
 	return { props: {} }
 })
 

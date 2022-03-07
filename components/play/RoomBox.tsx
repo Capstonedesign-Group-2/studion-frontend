@@ -1,18 +1,38 @@
+import Link from "next/link"
+import Router from "next/router"
 import React, { memo, useCallback } from "react"
-import { IRoom } from "../../types"
+import { useSelector } from "react-redux"
+import { RootState } from "../../redux/slices"
+import { IRoom, IUser } from "../../types"
 
 import { Modal } from "../common/modals"
 import EnterForm from "./EnterForm"
 
 const RoomBox = ({ room }: { room: IRoom }) => {
+  const userData = useSelector<RootState, IUser>(state => state.user.data)
+
+  const redirectLogin = () => {
+    Modal.close()
+    Router.push('login')
+  }
 
   const onShowRoom = useCallback(() => {
-    Modal.fire({
-      title: <p>{room.title}</p>,
-      html: <EnterForm room={room} />,
-      showConfirmButton: false,
-    })
-  }, [room])
+    if (!userData?.id) {
+      Modal.fire({
+        icon: 'error',
+        title: 'ログインしてください！',
+        text: 'ログインが必要なサービスです。',
+        footer: <p onClick={redirectLogin} className="text-studion-400 hover:cursor-pointer">ログイン →</p>,
+        showConfirmButton: false,
+      })
+    } else {
+      Modal.fire({
+        title: <p>{room.title}</p>,
+        html: <EnterForm room={room} />,
+        showConfirmButton: false,
+      })
+    }
+  }, [room, userData])
 
   return (
     <div className="flex flex-col relative rounded-lg items-center group hover:cursor-pointer"

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import audioMaker from 'audiomaker'
+import { MdReplay, MdOutlinePlayCircleFilled, MdOutlinePauseCircleFilled, MdOutlineFileDownload } from 'react-icons/md';
+import { FaTrash } from 'react-icons/fa';
 
 import { AudioFile } from "../player/mixer/Recorder"
 import { Modal } from "../../common/modals"
@@ -159,22 +161,22 @@ const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
           <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
             onClick={onPlay}
           >
-            {isPlaying ? '⏸' : '▶️'}
+            {isPlaying ? <MdOutlinePauseCircleFilled /> : <MdOutlinePlayCircleFilled />}
           </div>
           <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
             onClick={onReplay}
           >
-            🔁
+            <MdReplay />
           </div>
           <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
             onClick={onDownload}
           >
-            ⏏️
+            <MdOutlineFileDownload />
           </div>
           <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
             onClick={onDelete}
           >
-            🗑️
+            <FaTrash />
           </div>
         </div>
         <p className="text-gray-400">

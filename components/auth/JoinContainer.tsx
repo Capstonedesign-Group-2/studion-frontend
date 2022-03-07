@@ -78,7 +78,7 @@ const JoinContainer = () => {
 
   return (
     <div className={styles.container}>
-      <h2>Join Studion</h2>
+      <h2>アカウントを作成</h2>
       <article>
         <div className={styles.formDiv}>
           {errorMsg && // 에러 메세지
@@ -86,22 +86,22 @@ const JoinContainer = () => {
           }
           <form onSubmit={submitHandler}>
             {/* 이름 */}
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">名前</label>
             <input id='name' name='name' type="text" value={name} onChange={onChange} />
 
             {/* 이메일 */}
-            <label htmlFor="email" className='mt-4'>Email address</label>
+            <label htmlFor="email" className='mt-4'>Eメールアドレス</label>
             <input id='email' name='email' type="email" value={email} onChange={onChange} />
 
             {/* 비밀번호 */}
-            <label htmlFor="password" className='mt-4'>Password</label>
+            <label htmlFor="password" className='mt-4'>パスワード</label>
             <input id='password' name='password' type="password" value={password} onChange={onChange} />
 
             {/* 비밀번호 확인 */}
-            <label htmlFor="password_confirmation" className='mt-4'>Confirm Password</label>
+            <label htmlFor="password_confirmation" className='mt-4'>もう一度パスワードを入力してください</label>
             <input id='password_confirmation' name='password_confirmation' type="password" value={password_confirmation} onChange={onChange} />
 
-            <button type='submit'>Create Account</button>
+            <button type='submit'>アカウントを作成</button>
           </form>
         </div>
 
