@@ -99,7 +99,7 @@ const Article = ({post}) => {
                 <div className={styles.articleContainer}>
                     {/* 게시글 내용 */}
                     <div className='mt-2 px-3 border-b-2 pb-4'>
-                        <div className='flex break-words whitespace-pre text-left'>
+                        <div className='flex truncate whitespace-pre-line h-fit break-all text-left'>
                             {post.content}
                         </div>
                         

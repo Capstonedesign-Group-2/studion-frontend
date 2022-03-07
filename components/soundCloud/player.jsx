@@ -11,7 +11,7 @@ const Player = ({ audio, image }) => {
     }
     return (
         <div className="max-w-xl w-full h-full flex flex-col">
-            <div className="flex flex-col h-full justify-center relative w-full">
+            <div className="flex flex-col h-full justify-center items-center relative w-full">
                 {
                     (audio.length !== 0 && !toggle)
                     &&
