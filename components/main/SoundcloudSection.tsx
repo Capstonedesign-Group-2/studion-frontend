@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Album from '../soundCloud/album'
+import Album from '../soundCloud/Album'
 
 const SoundcloudSection = () => {
   return (

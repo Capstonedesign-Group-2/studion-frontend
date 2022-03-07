@@ -1,28 +1,27 @@
 import { useState, useEffect } from "react";
-import { Modal, Toast } from "../common/modals";
-import { useSelector, useDispatch } from 'react-redux';
-import wrapper from '../../redux/store';
+import { useDispatch, useSelector } from "react-redux";
 import http from "../../http/index";
-import { getPostList } from "../../redux/actions/post";
+import wrapper from "../../redux/store";
+import { Modal } from "../common/modals";
 
-const CreatePost = () => {
+const EditCard = ({pevPost}) => {
     const dispatch = useDispatch();
     const userData = useSelector(state => state.user.data);
     // const [image, setImage] = useState([]);
     // const [audio, setAudio] = useState([])
-
+    
     const [post, setPost] = useState({
         user_id: userData.id,
-        content: '',
-        image: {},
-        audio: {},
+        content: pevPost.content,
+        image: pevPost.images.length ? pevPost.images : {},
+        audio: pevPost.audios.length ? pevPost.audios : {},
     })
     const onImageChange = (e) => {
-        if (e.target.files.length) {
+        if(e.target.files.length) {
             let value = e.target.files[0];
             setPost({
                 ...post,
-                image: value,
+                image : value,
             });
         }
         else {
@@ -30,9 +29,9 @@ const CreatePost = () => {
         }
     }
     const onAudioChange = (e) => {
-        if (e.target.files.length) {
+        if(e.target.files.length) {
             let value = e.target.files[0];
-
+            
             setPost({
                 ...post,
                 audio: value
@@ -44,12 +43,11 @@ const CreatePost = () => {
     }
     const onContentChange = (e) => {
         const { value } = e.target;
-        // console.log(value.replace(/(?:\r\n|\r|\n)/g, '<br />'));
         setPost({
             ...post,
             content: value
         })
-
+        
     }
     const onClickCancel = () => {
         Modal.close()
@@ -57,45 +55,52 @@ const CreatePost = () => {
     const onPosting = () => {
         let formData = new FormData();
         let config = {
-            header: { 'content-type': 'multipart/form-data' }
+            header: {'content-type': 'multipart/form-data'}
         }
         formData.append("user_id", post.user_id)
         formData.append("content", post.content)
-        if (post.image.name) {
+        if(post.image !== null) {
             formData.append("image", post.image)
         }
-        if (post.audio.name) {
+        if(post.audio !== null) {
             formData.append("audio", post.audio)
         }
-        http.post('/posts/create', formData, config)
-            .then(res => {
-                dispatch(getPostList())
-                console.log(res);
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Save successfully'
-                })
+        http.post(`/posts/update/${post.id}`,{_method: 'patch'}, formData, config)
+        .then(res => {
+            dispatch(getPostList())
+            console.log(res);
+            Toast.fire({
+                icon: 'success',
+                title: 'Save successfully'
             })
-            .catch(err => {
-                console.log(err);
-            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }
     useEffect(() => {
-        if (post.image.name) {
-            let imgEl = document.querySelector(".img_box");
-            var reader = new FileReader();
-            reader.readAsDataURL(post.image);
-            reader.onload = (e) => (imgEl.src = e.target.result);
+        console.log(pevPost);
+        let imgEl = document.querySelector(".img_box");
+        let audioEl = document.querySelector(".audio_box");
+        var reader = new FileReader();
+        
+        if(pevPost.images.length) {
+            imgEl.src = pevPost.images[0].link
         }
-        if (post.audio.name) {
-            let audioEl = document.querySelector(".audio_box");
-            var reader = new FileReader();
+        if(pevPost.audios.length) {
+            audioEl.src = pevPost.audios[0].link
+        }
+        if(post.image.name) {
+            console.log(post.image)
+            reader.readAsDataURL(post.image);
+            reader.onload = (e) => (imgEl.src = e.target.result); 
+        }
+        if(post.audio.name) {
             reader.readAsDataURL(post.audio);
             reader.onload = (e) => (audioEl.src = e.target.result);
         }
 
-    }, [post.image, post.audio])
-
+    },[post.image, post.audio])
     return (
         <div className="max-w-screen-xl mx-auto h-full">
             {/* 나가기 버튼 */}
@@ -109,35 +114,35 @@ const CreatePost = () => {
                 {/* 음악, 사진 */}
                 <div className="flex flex-col items-center h-full justify-center w-full max-screen-w-lg mx-auto lg:mx-0 lg:max-w-3xl ">
                     {/* 사진 */}
-                    <input type="file" name="" id="inputImg" accept="img/*" className="hidden" onChange={onImageChange} />
-                    {post.image.name
-                        ?
+                    <input type="file" name="" id="inputImg" accept="img/*" className="hidden" onChange={onImageChange}/>
+                    {post.image.length || post.image.name
+                    ?
                         <div className="border-2 border-black">
-                            <img className="img_box object-contain"></img>
+                            <img id="img_box" className="img_box object-contain"></img>
                         </div>
-                        : null
+                    :   null
                     }
-
+                    
                     {/* 오디오 */}
                     <input type="file" id="inputAudio" accept="audio/*" className="hidden" onChange={onAudioChange} />
-                    {post.audio.name
-                        ?
+                    {post.audio.length || post.audio.name
+                    ?
                         <div className="w-full">
-                            <audio controls className="audio_box" style={{ width: "100%", padding: '5px', borderRadius: '0px' }}>
+                            <audio controls className="audio_box" style={{ width:"100%", padding:'5px', borderRadius:'0px'}}>
                                 {/* <source className="audio_box" type="audio/mp3"/> */}
                             </audio>
                         </div>
-                        : null
+                    :   null
                     }
-
+                    
                 </div>
                 {/* 버튼 */}
                 <div className="absolute bottom-5">
                     <label htmlFor="inputImg" className="bg-studion-200 rounded-md hover:bg-studion-300" >
-                        이미지 추가
+                        이미지 수정
                     </label>
                     <label htmlFor="inputAudio" className="bg-studion-200 rounded-md hover:bg-studion-300">
-                        오디오 추가
+                        오디오 수정
                     </label>
                 </div>
                 {/* 컨탠츠 */}
@@ -147,11 +152,11 @@ const CreatePost = () => {
                         <span className="ml-2">{userData.name}</span>
                     </div>
                     <div className="mt-4 w-full px-3">
-                        <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 border-black w-full decoration-none">
+                        <textarea onChange={onContentChange} id="" value={post.content}  rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 border-black w-full decoration-none">
 
                         </textarea>
                         <div className="cursor-pointer hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>
-                            제출
+                            수정
                         </div>
                     </div>
                 </div>
@@ -160,4 +165,4 @@ const CreatePost = () => {
     )
 }
 
-export default wrapper.withRedux(CreatePost);
+export default wrapper.withRedux(EditCard);

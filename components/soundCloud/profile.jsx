@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 import Image from "next/image"
 import { Modal } from "../common/modals"
-import CreatePost from "./createPost"
+import CreatePost from "./CreatePost"
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 // import Post from "./postContainer"
 
@@ -11,6 +11,7 @@ const Profile = () => {
         Modal.fire({
             html: <CreatePost />,
             showConfirmButton: false,
+            
             customClass: styles.post,
         })
     }
@@ -63,8 +64,8 @@ const Profile = () => {
                 </div>
             </div>
             {/* create button */}
-            <div>
-                <button className="bg-studion-500 rounded-md px-8 py-2 text-white hover:bg-studion-400 text-sm" onClick={onCreatePost}>Create</button>
+            <div className="w-full mt-4 md:w-1/2 xl:w-28">
+                <button className="w-full bg-studion-500 rounded-md px-8 py-2 text-white hover:bg-studion-400 text-sm" onClick={onCreatePost}>Create</button>
             </div>
         </div>
     )
