@@ -79,7 +79,7 @@ const Article = ({post}) => {
                     }
                     <div className='font-semibold'>
                         {post.user.name}
-                    </div>
+                    </div>   
                     <div  onClick={() => setDropDown(!dropDown)} className='absolute right-3 hover:scale-125 transition-all cursor-pointer'>
                         <svg aria-label="옵션 더 보기"  color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24">
                             <circle cx="12" cy="12" r="1.5"></circle>

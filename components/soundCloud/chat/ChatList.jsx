@@ -7,7 +7,7 @@ const ChatList = ({userData}) => {
         <div className="flex flex-col h-full absolute right-0 max-w-xs w-full border-2 bg-white">
             {/* <div className="h-full relative"> */}
             {/* 아이디 */}
-                <div className="absolute relative h-14 border-2 flex text-xl font-semibold justify-center items-center">
+                <div className="absolute relative h-14 border-b-2 flex text-xl font-semibold justify-center items-center">
                     {userData.name}
                 </div>
                 {/* 닉네임 / 채팅내용 */}
