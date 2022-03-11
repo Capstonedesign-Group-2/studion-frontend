@@ -31,14 +31,12 @@ class Piano {
 
   onKey(midiNumber: string) {
     if (this.ctx && this.gainNode && this.channel) {
-      console.log(midiNumber, this)
       const audioBufferSourceNode = this.ctx.createBufferSource()
       audioBufferSourceNode.buffer = this.tracks.find(track => track.keycord === midiNumber.toString())?.buffer as AudioBuffer
       audioBufferSourceNode
         .connect(this.gainNode)
         .connect(this.channel.gainNode as GainNode)
       audioBufferSourceNode.start()
-      console.log(this.tracks.find(track => track.keycord == midiNumber))
     }
   }
 

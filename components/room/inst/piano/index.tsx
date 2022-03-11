@@ -1,4 +1,4 @@
-import { forwardRef, MutableRefObject, useCallback } from 'react'
+import { MutableRefObject, useCallback } from 'react'
 import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano'
 import "react-piano/dist/styles.css"
 import Box from '@mui/material/Box'
@@ -91,4 +91,4 @@ const PianoComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) =
   )
 }
 
-export default forwardRef(PianoComponent)
+export default PianoComponent
