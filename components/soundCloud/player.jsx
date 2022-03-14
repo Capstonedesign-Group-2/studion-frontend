@@ -15,9 +15,9 @@ const Player = ({ audio, image }) => {
                 {
                     (audio.length !== 0 && !toggle)
                     &&
-                    <div className="w-full h-full relative">
+                    <div className="w-full h-full relative flex items-center">
                         <div className="w-full">
-                            <RecodePlayer audio={audio} />
+                            <RecodePlayer audio={audio[0]} />
 
                         </div>
                         <div className='mt-2 absolute bottom-0 text-left left-0'>
@@ -82,7 +82,7 @@ const Player = ({ audio, image }) => {
 const BandMember = () => {
     return (
         <div>
-            <div className='rounded-full w-9 h-9 border-black border-2 mr-1'>
+            <div className='rounded-full w-9 h-9 border-black border-2 mr-1 cursor-pointer '>
             </div>
         </div>
     )
