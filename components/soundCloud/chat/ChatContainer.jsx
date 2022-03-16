@@ -2,88 +2,24 @@ import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import styles from "../../../styles/soundCloud/soundCloud.module.scss"
 import io from "socket.io-client"
-const ChatContainer = () => {
+const ChatContainer = ({setMessage, message, selectUser, messages, chatRef, onClickSend, onKeyPress}) => {
     const userData = useSelector(state => state.user.data);
-    // const [socket, setSocket] = useState(io.connect("http://localhost:5000/chat"), () => {
-    //     console.log('connected', socket)
-    // });
-    const socket_url = "http://localhost:5000/chat";
-    const socket = useRef();
-    const register = () => {
-        socket.current.emit('user_register', {
-            id: userData.id
-        })
-    }
-    const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState([
-        {
-            user_id : 2,
-            text : 'hello'
-        },
-        {
-            user_id : 1,
-            text : 'hi'
-        },
-        {
-            user_id : 2,
-            text : 'yes'
-        },
-    ]);
-    const ChatRef = useRef();
-    
+    // const onClickSend = () => {
+        // socket.current.emit('send_msg', {
+        //     id: // 상대 user_id
+        //     room_id: // 방 고유번호
+        //     msg: { // 나의 정보
+        //         user_id: 1,
+        //         name: '',
+        //         image: '',
+        //         content: '',
+        //     }
+        // })
+    // }
     const onChangeMessage = (e) => {
         const {value} = e.target;
         setMessage(value);
     }
-    const onClickSend = () => {
-        if(message.trim() === '') return;
-        socket.current.emit('send_msg', {
-            id: userData.id !== 1 ? 1 : 2,
-            name: userData.name,
-            image: null,
-            msg: message
-        })
-        setMessages([
-            ...messages,
-            {
-                user_id: userData.id,
-                text: message
-            }
-        ])
-        console.log('click')
-        setMessage('')
-    }
-    const onKeyPress = (e) => {
-        if(e.key == 'Enter') {
-            onClickSend()
-            console.log(messages)
-        }
-    }
-    useEffect(() => {
-        socket.current = io(socket_url);
-        register()
-        console.log(socket.current)
-        
-    }, [])
-    useEffect(() => {
-        ChatRef.current.scrollTop = ChatRef.current.scrollHeight
-        socket.current.on('user_register_on', res => {
-            console.log(res)
-        })
-        socket.current.on('send_msg_on', res => {
-            console.log(res)
-            setMessages([
-                ...messages,
-                {
-                    user_id: res.id === 1 ? 2 : 1,
-                    text: res.msg
-                }
-            ])
-            console.log(res)
-            console.log(messages)
-        })
-    },[messages])
-
     return (
         <div className="max-w-2xl md:maw-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl max-h-screen h-full w-full">
             <div className="h-full w-full flex flex-col">
@@ -91,12 +27,12 @@ const ChatContainer = () => {
                 <div className="mt-2 flex items-center w-full h-16 pb-2">
                     {/* 사진 */}
                     <div className="bg-studion-300 w-14 h-14 rounded-full mr-2"></div>
-                    {/* 아이디 */}
-                    <div className="text-2xl font-semibold">user_id</div>
+                    {/* 상대방 아이디 */}
+                    <div className="text-2xl font-semibold">{ selectUser.id && selectUser.to.name }</div>
                 </div>
-                <div ref={ChatRef} className={styles.chatSection}>
+                <div ref={chatRef} className={styles.chatSection}>
                     { messages &&
-                        messages.map((messageInfo, index) => ( messageInfo.user_id !== userData.id ? <ReceivedMessage message={messageInfo.text} key={index} />: <SendMessage message={messageInfo.text} key={index} />))
+                        messages.map((messageInfo, index) => ( messageInfo.user_id !== userData.id ? <ReceivedMessage messageInfo={messageInfo} key={index} />: <SendMessage messageInfo={messageInfo} key={index} />))
                         }
                 </div>
                 <div className="flex w-full mt-2 pb-4">
@@ -108,7 +44,7 @@ const ChatContainer = () => {
         </div>
     )
 }
-const ReceivedMessage = ({message}) => {
+const ReceivedMessage = ({messageInfo}) => {
     // const userData = useSelector(state => state.user.data);
     return (
         <div className="flex mt-2 ml-1">
@@ -117,21 +53,18 @@ const ReceivedMessage = ({message}) => {
             </div>
             <div className="w-fit px-4 py-1 max-w-xs lg:max-w-xl break-all rounded-2xl bg-studion-100">
                 {/* {text} */}
-                {message}
+                { messageInfo.content }
             </div>
         </div>
     )
 }
-const SendMessage = ({ message}) => {
+const SendMessage = ({ messageInfo }) => {
     const userData = useSelector(state => state.user.data)
     return (
         <div className="flex justify-end mt-2 mr-1">
             <div className="w-fit px-4 py-1 max-w-xs md:max-w-sm lg:max-w-xl break-all rounded-2xl bg-studion-300">
                 {/* {text} */}
-                {message}
-            </div>
-            <div className="flex justify-center items-center w-10 h-10 text-white text-base rounded-full ml-2 bg-studion-400 self-end">
-                {userData.name.slice(0, 2).toUpperCase()}    
+                { messageInfo.content }
             </div>
         </div>
     )
