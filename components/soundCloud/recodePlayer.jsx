@@ -4,8 +4,9 @@ import Image from "next/image"
 import Loader from '../common/Loader'
 import { useState, useRef } from "react"
 import { useEffect } from "react"
+import { URL } from "url"
 
-const RecodePlayer = ({audio, toggle}) => {
+const RecodePlayer = ({audio}) => {
     const [click, setClick] = useState(false);
     const wavesurferRef = useRef()
     const waveformRef = useRef()
@@ -33,7 +34,14 @@ const RecodePlayer = ({audio, toggle}) => {
             // fillParent: true,
         })
 
-        wavesurferRef.current.load(audio[0].link);
+        if(audio.type) {
+            console.log(window.URL.createObjectURL(audio)) 
+            wavesurferRef.current.load(window.URL.createObjectURL(audio));
+        }
+        else if(audio.link) {
+            wavesurferRef.current.load(audio.link);
+            // wavesurferRef.current.load(URL.createObjectURL(audio));
+        }
 
         wavesurferRef.current.on('ready', () => {
             console.log('ready')
@@ -72,22 +80,22 @@ const RecodePlayer = ({audio, toggle}) => {
         return ref.current.innerText = `${minute} : ${second}`
     }
     useEffect(() => {
+        console.log(audio);
         initWaveSurfer()
         
-
         return () => {
           if (!wavesurferRef.current) return
           wavesurferRef.current.destroy()
         }
-    }, [])
+    }, [audio])
     useEffect(() => {
         console.log(click)
-    }, [click])
+    }, [click, audio])
 
     return (
         <div className="relative w-full">
-            <div className="w-full aspect-[5/4] lg:aspect-[5/4] p-2 z-10 cursor-pointer" onClick={onPlay} >
-                <audio id="audio" src={audio[0].link} style={{ display:'none' }}></audio>
+            <div className="w-full aspect-[5/4] lg:aspect-[4/3] p-2 z-10 cursor-pointer" onClick={onPlay} >
+                <audio id="audio" src={audio?.link} style={{ display:'none' }}></audio>
                 {/* 디스크 */}
                 <div className="flex h-full w-full relative">
                     <div className="relative ml-4 " >
@@ -126,12 +134,14 @@ const RecodePlayer = ({audio, toggle}) => {
                 </div>
             </div> 
             <div className="relative w-full">
-                <div ref={waveformRef} className="w-full"></div>
-                <div ref={timeRef} className="absolute left-0">
-                    00 : 00
-                </div>
-                <div ref={allTimeRef} className="absolute right-0">
-                    00 : 00
+                <div ref={waveformRef} className="w-full cursor-pointer"></div>
+                <div className="relative w-full h-8">
+                    <div ref={timeRef} className="absolute left-0">
+                        00 : 00
+                    </div>
+                    <div ref={allTimeRef} className="absolute right-0">
+                        00 : 00
+                    </div>
                 </div>
             </div>
         </div>

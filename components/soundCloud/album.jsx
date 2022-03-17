@@ -19,7 +19,7 @@ const Album = ({ post }) => {
                 <div className={styles.disk}>
                     <div className={styles.disk_inner}></div>
                 </div>
-                <div className="relative bg-studion-600 z-10 h-full aspect-square">
+                <div className="relative bg-studion-600 z-10 h-full aspect-square ">
                     {
                         post.images?.length
                             ?

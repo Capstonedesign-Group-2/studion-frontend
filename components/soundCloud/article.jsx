@@ -45,6 +45,7 @@ const Article = ({post}) => {
     // }
     useEffect(() => {
         callComments();
+        console.log(post);
         console.log('render')
     },[]);
 
@@ -69,24 +70,29 @@ const Article = ({post}) => {
                     {
                         !post.user.image
                         ? 
-                            <div className='bg-studion-400 text-white rounded-full flex items-center justify-center text-lg font-lite w-10 h-10 mr-2'>
+                            <div className='cursor-pointer bg-studion-400 text-white rounded-full flex items-center justify-center text-lg font-lite w-10 h-10 mr-2'>
                                 {post.user.name.slice(0, 2).toUpperCase()}
                             </div>
                         : 
-                            <div className='border-2 border-black rounded-full w-10 h-10 mr-2'>
+                            <div className='cursor-pointer border-2 border-black rounded-full w-10 h-10 mr-2'>
                                 <img src={post.user.image} alt="" />
                             </div>
                     }
                     <div className='font-semibold'>
                         {post.user.name}
                     </div>
-                    <div  onClick={() => setDropDown(!dropDown)} className='absolute right-3 hover:scale-125 transition-all cursor-pointer'>
-                        <svg aria-label="옵션 더 보기"  color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24">
-                            <circle cx="12" cy="12" r="1.5"></circle>
-                            <circle cx="6" cy="12" r="1.5"></circle>
-                            <circle cx="18" cy="12" r="1.5"></circle>
-                        </svg>
-                    </div>
+                    {
+                        (userData.id === post.user.id) &&
+                        (
+                            <div onClick={() => setDropDown(!dropDown)} className='absolute right-3 hover:scale-125 transition-all cursor-pointer'>
+                                <svg aria-label="옵션 더 보기"  color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24">
+                                    <circle cx="12" cy="12" r="1.5"></circle>
+                                    <circle cx="6" cy="12" r="1.5"></circle>
+                                    <circle cx="18" cy="12" r="1.5"></circle>
+                                </svg>
+                            </div>
+                        )
+                    }
                     {
                         dropDown &&
                         (
@@ -94,12 +100,13 @@ const Article = ({post}) => {
                                 <Dropdown post={post}/>
                             </div>
                         )
-                    }
+                    }        
+                    
                 </div>
                 <div className={styles.articleContainer}>
                     {/* 게시글 내용 */}
                     <div className='mt-2 px-3 border-b-2 pb-4'>
-                        <div className='flex break-words whitespace-pre text-left'>
+                        <div className='flex truncate whitespace-pre-line h-fit break-all text-left'>
                             {post.content}
                         </div>
                         
