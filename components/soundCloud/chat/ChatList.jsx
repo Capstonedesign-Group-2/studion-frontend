@@ -28,14 +28,18 @@ const ChatList = ({socket, userData, userList, setSelectUser, onClickUserList}) 
     )
 }
 const User = ({listInfo, setSelectUser, onClickUserList}) => {
-    useEffect(() => {
-        setSelectUser(listInfo)    
-    })
-    
+    const onClick = () => {
+        setSelectUser(listInfo)  
+    }
     return (
-        <div onClick={onClickUserList} className="flex p-2 items-center hover:bg-gray-200 cursor-pointer">
+        <div onClick={() => onClick()} className="flex p-2 items-center hover:bg-gray-200 cursor-pointer">
             {/* 사진 */}
-            <div className="w-14 h-14 rounded-full bg-studion-300"></div>
+            <div className="w-14 h-14 rounded-full bg-studion-300 flex justify-center items-center text-2xl text-white font-normal">
+                {listInfo.to.image 
+                    ? <img src={listInfo.to.image} />
+                    : listInfo.to.name.slice(0, 2).toUpperCase()
+                }
+            </div>
             {/* 아이디 / 내용*/}
             <div className="ml-3 font-lite text-lg leading-5">
                 <div>
