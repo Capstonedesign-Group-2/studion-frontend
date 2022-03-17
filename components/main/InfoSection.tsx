@@ -7,6 +7,7 @@ import 'swiper/css';
 import 'swiper/css/effect-fade'
 
 import styles from '../../styles/main/main.module.scss'
+import Image from 'next/image';
 
 const InfoSection = () => {
   return (

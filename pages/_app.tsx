@@ -10,7 +10,7 @@ import Router from 'next/router'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const getUserError = useSelector((state: RootState) => state.user.getUserError)
+  const getUserError = useSelector<RootState, string>((state) => state.user.getUserError)
 
   useEffect(() => {
     if (getUserError === 'Request failed with status code 401') {
