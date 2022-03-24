@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useRouter } from "next/router"
+import ab2str from 'arraybuffer-to-string'
 
 import ChatSection from "../../components/room/menu/ChatSection"
 import MyInfoSection from "../../components/room/menu/MyInfoSection"
@@ -179,7 +180,14 @@ const Room = () => {
 		}
 
 		dc.onmessage = (e) => {
-			const { type, key, socketId } = JSON.parse(e.data) as DcData
+			let data = e.data
+
+			// string이 아닐 경우 arraybuffer -> string
+			if (typeof data !== 'string') {
+				data = ab2str(data)
+			}
+
+			const { type, key, socketId } = JSON.parse(data) as DcData
 			console.log('received dc data :', type, key);
 			switch (type) {
 				case 'drum':
