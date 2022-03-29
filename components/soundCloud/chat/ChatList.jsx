@@ -1,10 +1,11 @@
+import Link from "next/link"
 import { useEffect } from "react"
 import styles from "../../../styles/soundCloud/soundCloud.module.scss"
 
 const ChatList = ({socket, userData, userList, setSelectUser, onClickUserList}) => {
 
     return (
-        <div className="flex flex-col h-full absolute right-0 max-w-xs w-full border-2 bg-white">
+        <div className="relative flex flex-col h-full right-0 max-w-xs w-full border-l-2 bg-white">
             {/* <div className="h-full relative"> */}
             {/* 아이디 */}
                 <div className="absolute relative h-14 border-b-2 flex text-xl font-semibold justify-center items-center">

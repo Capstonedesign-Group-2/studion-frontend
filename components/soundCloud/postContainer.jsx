@@ -16,7 +16,9 @@ const PostContainer = ({post}) => {
             </div>
             <div className="mx-auto h-full lg:flex justify-center">
                 {/* 뮤직플레이어/사진 */}
-                
+                {
+                    console.log('post', post)
+                }
                 <div className="flex h-full items-center justify-center w-full max-screen-w-lg" style={ (post.audios.length || post.images.length) ? {display: "flex"} : {display: "none"}}>
                     <Player audio={post.audios} image={post.images} />
                 </div>

@@ -239,3 +239,11 @@
     display: none;
   }
 }
+.listShow {
+  animation: listShow 0.3s;
+}
+@keyframes listShow {
+  from {transform: translateX(400px);
+  }
+  to {transform: translateX(0px);}
+}
