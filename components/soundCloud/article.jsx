@@ -6,7 +6,7 @@ import wrapper from '../../redux/store';
 import Comment from './Comment';
 import Dropdown from './DropDown';
 
-const Article = ({post}) => {
+const Article = ({post, userId}) => {
     const [comment, setComment] = useState('');
     const userData = useSelector(state => state.user.data);
     const [comments, setComments] = useState([])
@@ -22,7 +22,7 @@ const Article = ({post}) => {
             content: comment
         }
         console.log(commentData);
-        http.post('/comments/create', commentData)
+        http.post('/comments', commentData)
         .then(res => {
             console.log(res);
             setComment('');
@@ -33,11 +33,11 @@ const Article = ({post}) => {
         })
     }
     const callComments = () => {
-        http.get(`/comments/show/${post.id}`)
+        http.get(`/comments/${post.id}`)
         .then(res => {
             setComments(res.data.comments);    
         }).catch(err => {
-            console.log(err);
+            console.error(err);
         })
     }
     // const userClick = () => {
@@ -67,17 +67,17 @@ const Article = ({post}) => {
                 {/* 글쓴이 정보 */}
                 <div className='relative flex items-center border-b-2 pb-2'>
                     {/* 사진 */}
-                    {
-                        !post.user.image
-                        ? 
-                            <div className='cursor-pointer bg-studion-400 text-white rounded-full flex items-center justify-center text-lg font-lite w-10 h-10 mr-2'>
-                                {post.user.name.slice(0, 2).toUpperCase()}
-                            </div>
-                        : 
-                            <div className='cursor-pointer border-2 border-black rounded-full w-10 h-10 mr-2'>
+                    <div className='cursor-pointer bg-studion-400 text-white rounded-full flex items-center justify-center text-lg font-lite w-10 h-10 mr-2'>
+                        <a href={`/soundcloud/${post.user.id}`}>
+                        {
+                            !post.user.image
+                            ? 
+                                post.user.name.slice(0, 2).toUpperCase()
+                            : 
                                 <img src={post.user.image} alt="" />
-                            </div>
-                    }
+                        }
+                        </a>
+                    </div>
                     <div className='font-semibold'>
                         {post.user.name}
                     </div>
@@ -97,7 +97,7 @@ const Article = ({post}) => {
                         dropDown &&
                         (
                             <div ref={ref} className={styles.dropDown}>
-                                <Dropdown post={post}/>
+                                <Dropdown userId={userId} post={post}/>
                             </div>
                         )
                     }        
@@ -124,9 +124,7 @@ const Article = ({post}) => {
                 <div className='flex w-full h-10'>
                     <input type="text" onChange={onCommentChange} value={comment} placeholder='댓글 달기...'  className='w-11/12 h-full grow-1 outline-studion-200	caret-studion-200'/>
                     <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-300 hover:bg-studion-400'>
-                        <div>
-                            게시
-                        </div>
+                        게시
                     </div>
                 </div>
             </div>

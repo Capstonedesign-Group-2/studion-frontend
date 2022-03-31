@@ -15,7 +15,14 @@ import http from '../../http'
 export const getPostList = createAsyncThunk(
   'post/getPostList',
   async (data, thunkAPI) => {
-    const res = await http.get('/posts/show')
+    const res = await http.get('/posts')
+    return res.data.posts
+  }
+)
+export const getUserPostList = createAsyncThunk(
+  'post/getUserPostList',
+  async (data, thunkAPI) => {
+    const res = await http.get(`/posts/${data.id}`)
     return res.data.posts
   }
 )

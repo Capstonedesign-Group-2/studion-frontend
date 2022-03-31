@@ -77,8 +77,6 @@ const Chat = () => {
       }
   }
   const handleOnMessage = (res) => {
-    console.log('res', res)
-    console.log('messages : ', messages);
     let newMessage = {
         flag: res.flag,
         image: res.image,

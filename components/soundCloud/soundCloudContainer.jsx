@@ -1,7 +1,8 @@
+import Link from "next/link";
 import Profile from "./Profile"
 import RecodeList from "./RecodeList"
 
-const SoundCloudContainer = () => {
+const SoundCloudContainer = ({userId}) => {
     return (
         <div className="bg-gray-100">
             <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
@@ -10,8 +11,9 @@ const SoundCloudContainer = () => {
                         <h2 className="text-2xl font-medium mb-8">
                         SoundCloud
                         </h2>
-                        <Profile />
-                        <RecodeList />
+                        <Profile userId={userId}/>
+                        {/* <Link href="/soundcloud/1">hello</Link> */}
+                        <RecodeList userId={userId} />
                     </div>
                 </div>
             </div>

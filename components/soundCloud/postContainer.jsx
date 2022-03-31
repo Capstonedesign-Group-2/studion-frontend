@@ -2,7 +2,7 @@ import Article from "./Article"
 import Player from "./Player";
 import { Modal } from "../common/modals";
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
-const PostContainer = ({post}) => {
+const PostContainer = ({post, userId}) => {
     const closeModal = () => {
         Modal.close();
     }
@@ -25,7 +25,7 @@ const PostContainer = ({post}) => {
                 
                 {/* 컨텐츠, 코멘트 */}
                 <div className="max-w-xl mx-auto pl-2 md:pt-5 lg:max-w-lg lg:mx-0 w-full">
-                    <Article post={post}/>
+                    <Article userId={userId} post={post}/>
                 </div>
             </div>
         </div>

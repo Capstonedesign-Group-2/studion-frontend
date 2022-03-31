@@ -2,9 +2,9 @@ import { Modal } from '../common/modals'
 import styles from "../../styles/soundCloud/soundCloud.module.scss";
 import http from '../../http/index';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPostList } from '../../redux/actions/post';
+import { getUserPostList, getPostList } from '../../redux/actions/post';
 import EditCard from './EditCard';
-const Dropdown = ({post}) => {
+const Dropdown = ({post, userId}) => {
     const userData = useSelector(state => state.user.data)
     const dispatch = useDispatch();
     const onEditModal = () => {
@@ -41,11 +41,15 @@ const Dropdown = ({post}) => {
                 const data = {
                     user_id: userData.id
                 }
-                http.delete(`/posts/destory/${post.id}`, {
+                http.delete(`/posts/${post.id}`, {
                     data : data
                 })
                 .then(res => {
-                    dispatch(getPostList());
+                    if(userId !== undefined)
+                        dispatch(getUserPostList({id: userId}));
+                    else 
+                        dispatch(getPostList());
+
                     console.log(res);
                     Modal.fire(
                         'Deleted!',

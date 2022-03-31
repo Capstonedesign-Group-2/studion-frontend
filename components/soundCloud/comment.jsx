@@ -3,8 +3,10 @@ const Comment = ({comment}) => {
         <div>
             <div className="mt-2 font-semibolds">
                 {/* 사진 / 아이디*/}
+                {console.log(comment)}
                 <div className="flex ">
                     <div className='bg-studion-400 text-white text-lg rounded-full flex items-center justify-center text-sm w-10 h-10 mr-2 cursor-pointer'>
+                        <a href={`/soundcloud/${comment.user.id}`}>
                         {
                             !comment.user.image
                             ? 
@@ -16,6 +18,7 @@ const Comment = ({comment}) => {
                                     <img src={comment.user.image} alt="" />
                                 // </div>
                         }
+                        </a>
                     </div>
                     <div className="flex flex-col">
                         <div className="text-lg font-semibold text-left">

@@ -3,18 +3,18 @@ import { Modal, Toast } from "../common/modals";
 import { useSelector, useDispatch } from 'react-redux';
 import wrapper from '../../redux/store';
 import http from "../../http/index";
-import { getPostList } from "../../redux/actions/post";
+import { getUserPostList, getPostList } from "../../redux/actions/post";
 import RecodePlayer from "./RecodePlayer";
 import styles from "../../styles/soundCloud/soundCloud.module.scss";
-const CreatePost = ({composers, blob}) => {
+
+const CreatePost = ({composers, userId}) => {
     const dispatch = useDispatch();
     const userData = useSelector(state => state.user.data);
-    // const [image, setImage] = useState([]);
-    // const [audio, setAudio] = useState([])
     const [toggle, setToggle] = useState(false);
     const onToggle = () => {
         setToggle(!toggle);
     }
+    console.log(userId)
     const [post, setPost] = useState({
         user_id: userData.id,
         content: '',
@@ -103,10 +103,12 @@ const CreatePost = ({composers, blob}) => {
         if (post.audio.name) {
             formData.append("audio", post.audio)
         }
-        http.post('/posts/create', formData, config)
+        http.post('/posts', formData, config)
             .then(res => {
-                dispatch(getPostList())
-                console.log(res);
+                if(userId !== undefined)
+                    dispatch(getUserPostList({id: userId}));
+                else 
+                    dispatch(getPostList());
                 Toast.fire({
                     icon: 'success',
                     title: 'Save successfully'
@@ -117,9 +119,6 @@ const CreatePost = ({composers, blob}) => {
             })
     }
     useEffect(() => {
-        // console.log('post')
-        // console.log(post.image.size);
-        // console.log(post.audio.size);
         console.log(post)
         if (((post.image.size !== undefined && toggle !== false) || (post.image.size !== undefined && post.audio.size === undefined && toggle !== true))) {
             let imgEl = document.querySelector(".img_box");

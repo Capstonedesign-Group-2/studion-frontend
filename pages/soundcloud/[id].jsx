@@ -1,14 +1,19 @@
+import { useRouter } from "next/router"
 import AppLayout from "../../components/common/AppLayout"
 import SoundCloudContainer from "../../components/soundCloud/soundCloudContainer"
 import { stayLoggedIn } from '../../http/stay'
-import { getPostList } from "../../redux/actions/post"
+import { getUserPostList } from "../../redux/actions/post"
 import wrapper from '../../redux/store'
 
 const SoundCloud = () => {
+  const router = useRouter();
+  // const onClickFollow = () => {
+
+  // }
   return (
     <div>
       <AppLayout>
-        <SoundCloudContainer />
+        <SoundCloudContainer userId={router.query.id}/>
       </AppLayout>
     </div>
   )
@@ -24,7 +29,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async (c
       },
     }
   }
-  await store.dispatch(getPostList())
+  await store.dispatch(getUserPostList({ id: context.query.id }))
   return { props: {} }
 })
 
