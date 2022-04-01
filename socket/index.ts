@@ -73,8 +73,7 @@ class Socket {
   // 합주실 정보 업데이트 감지 (방제, 설명, 인원수, ...)
   onUpdateRoomInfo(dispatch: Dispatch<any>) {
     this.socket.on('update_room_info_on', (data: IRoom) => {
-      console.log(data)
-      if (!data.title) return;
+      if (!data || !data.title) return;
       dispatch(roomSlice.actions.setRoomData(data))
     })
   }
