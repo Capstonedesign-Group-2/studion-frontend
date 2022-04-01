@@ -176,7 +176,7 @@ const Room = () => {
 
 	const initDataChannel = (dc: RTCDataChannel) => {
 		dc.onerror = (err) => {
-			console.error('datachannel error:', err);
+			console.error('datachannel error: ', err);
 		}
 
 		dc.onmessage = (e) => {
@@ -348,7 +348,7 @@ const Room = () => {
 		);
 
 		Socket.socket.on('user_exit', (data: { id: string }) => {
-			if (!pcsRef.current[data.id]) return
+			if (!pcsRef.current[data.id] || !dcsRef.current[data.id]) return
 			pcsRef.current[data.id].close()
 			delete pcsRef.current[data.id]
 			dcsRef.current[data.id].close()
