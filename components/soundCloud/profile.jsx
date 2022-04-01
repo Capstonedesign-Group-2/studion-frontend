@@ -13,27 +13,33 @@ import Link from "next/link"
 const Profile = ({userId}) => {
     const userData = useSelector(state => state.user.data)
     const [userInfo, setUserInfo] = useState(userData);
-    const [following, setFollowing] = useState(Boolean);
+    const [following, setFollowing] = useState({});
     const onClickFollow = () => {
-        if(following !== true) {
+        if(following.status !== true) {
             http.post('/follows', {
                 follower: userData.id,
                 following: userInfo.id
             })
             .then(res => {
                 console.log('follower : ', res)
-                setFollowing(true)
+                setFollowing({
+                    ...following,
+                    status: true
+                })
+                followers();
             })
             .catch(err => {
                 console.error(err);
             })
         } else {
-            console.log(`following: ${following}`)
-            console.log(`userId : ${userId}`)
-            http.delete(`/follows/${userId}`)
+            http.delete(`/follows/${following.follow_id}`)
             .then(res => {
                 console.log(res);
-                setFollowing(false);
+                setFollowing({
+                    ...following,
+                    status: false
+                });
+                followers();
             })
             .catch(err => {
                 console.err(err);
@@ -48,7 +54,7 @@ const Profile = ({userId}) => {
                 console.log(res);
             })
             .catch(err => {
-                console.errror(err);
+                console.error(err);
             })
         } else {
             console.log(`kind: ${kind}`)
@@ -57,7 +63,7 @@ const Profile = ({userId}) => {
                 console.log(res);
             })
             .catch(err => {
-                console.errror(err);
+                console.error(err);
             })
         }
     }
@@ -69,7 +75,7 @@ const Profile = ({userId}) => {
             customClass: styles.post,
         })
     }
-    useEffect(() => {
+    const followers = () => {
         if(userId !== undefined) {
             http.get(`/users/${userId}`)
             .then(res => {
@@ -79,7 +85,7 @@ const Profile = ({userId}) => {
                     user_id: userData.id
                 })
                 .then(res => {
-                    setFollowing(res.data.status)
+                    setFollowing(res.data)
                 })
                 .catch(err => {
                     setFollowing(false);
@@ -90,6 +96,9 @@ const Profile = ({userId}) => {
                 console.error(err);
             })
         }
+    }
+    useEffect(() => {
+        followers()
     }, [])
     return (
         <div className="flex flex-col items-center xl:flex-row justify-between xl:items-end">
@@ -115,7 +124,7 @@ const Profile = ({userId}) => {
                             </div>
                             <div className="items-center grid grid-cols-2 mt-1 pr-24">
                                 <div className="hover:cursor-pointer" onClick={() => onClickFollowUser('following')}>
-                                    <span className="text-xs text-gray-500 block ">
+                                    <span className="text-xs text-gray-500 block">
                                     Following
                                     </span>
                                     <h4>{ userInfo.followings }</h4>
@@ -142,8 +151,21 @@ const Profile = ({userId}) => {
                             </>
                             :
                             <>
-                                <div onClick={onClickFollow} className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
-                                    Follow
+                                <div onClick={onClickFollow} style={(following.status !== false && following.status !== undefined) ? {background: "#206276", color: "white"}: {}} className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+                                    {
+                                        (following.status !== true)
+                                        ?
+                                            <>
+                                                {
+                                                    console.log(following.status)
+                                                }
+                                                Follow
+                                            </>
+                                        :
+                                            <>
+                                                Unfollow
+                                            </>
+                                    }
                                 </div>
                                 <div className="w-full pt-2">
                                     <Link href="/chat">
