@@ -9,7 +9,7 @@ const Dropdown = ({post, userId}) => {
     const dispatch = useDispatch();
     const onEditModal = () => {
         Modal.fire({
-            html: <EditCard pevPost={post}/>,
+            html: <EditCard userId={userId} pevPost={post}/>,
             showConfirmButton: false,
             customClass: styles.post,
             width: '1024px',

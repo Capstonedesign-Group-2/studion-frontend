@@ -80,7 +80,6 @@ const Profile = ({userId}) => {
         Modal.fire({
             html: <CreatePost userId={userId} />,
             showConfirmButton: false,
-            
             customClass: styles.post,
         })
     }
