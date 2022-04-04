@@ -20,15 +20,15 @@ const Header = () => {
           <div className={styles.logo}>
             <Link href="/">
               <a>
-                <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+                <Image src="/studion.png" alt="Studion Logo" width='84' height='26' />
               </a>
             </Link>
           </div>
 
           {!(router.pathname === '/login' || router.pathname === '/join') &&
             <div className={styles.link}>
-              <Link href="/play"><a>バンドルーム</a></Link>
-              <Link href="/soundcloud"><a href="">コミュニティ</a></Link>
+              <Link href="/play"><a>スタジオン</a></Link>
+              <Link href="/soundcloud"><a href="">サウンドくも</a></Link>
             </div>
           }
 

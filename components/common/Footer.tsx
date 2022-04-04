@@ -21,8 +21,8 @@ const Footer = () => {
               <article>
                 <h4>NAVIGATION</h4>
                 <ul>
-                  <li><Link href="/play"><a>バンドルーム</a></Link></li>
-                  <li><Link href="/soundcloud"><a>コミュニティ</a></Link></li>
+                  <li><Link href="/play"><a>スサシオン</a></Link></li>
+                  <li><Link href="/soundcloud"><a>サウンドくも</a></Link></li>
                 </ul>
               </article>
 
@@ -38,9 +38,11 @@ const Footer = () => {
 
           {/* 로고 */}
           <article className={styles.logoArticle}>
-            <span>
-              <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-            </span>
+            <Link href="/">
+              <a>
+                <Image src="/studion.png" alt="Studion Logo" width='84' height='26' />
+              </a>
+            </Link>
             <span>Online Band. Play your moment.</span>
           </article>
         </div>
