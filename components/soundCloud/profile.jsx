@@ -6,14 +6,16 @@ import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import { useEffect, useState } from "react"
 import http from "../../http"
 import { BiMessageDetail } from 'react-icons/bi'
-import { RiUserFollowFill } from 'react-icons/ri'
 import Link from "next/link"
-// import Post from "./postContainer"
+import Follow from "./follow"
+
 
 const Profile = ({userId}) => {
     const userData = useSelector(state => state.user.data)
     const [userInfo, setUserInfo] = useState(userData);
     const [following, setFollowing] = useState({});
+
+    // dropdown
     const onClickFollow = () => {
         if(following.status !== true) {
             http.post('/follows', {
@@ -26,7 +28,7 @@ const Profile = ({userId}) => {
                     ...following,
                     status: true
                 })
-                followers();
+                getFollowData();
             })
             .catch(err => {
                 console.error(err);
@@ -39,28 +41,35 @@ const Profile = ({userId}) => {
                     ...following,
                     status: false
                 });
-                followers();
+                getFollowData();
             })
             .catch(err => {
                 console.err(err);
             })
         }
     }
+    // 팔로우, 팔로잉 하는 유저 정보 알기
     const onClickFollowUser = (kind) => {
         if(userId !== undefined) {
-            console.log(`kind: ${kind}`)
             http.get(`/follows/${userId}/${kind}`)
             .then(res => {
-                console.log(res);
+                Modal.fire({
+                    html: <Follow followUserInfos={res.data}/>,
+                    showConfirmButton: false,
+                    customClass: styles.followList,
+                })
             })
             .catch(err => {
                 console.error(err);
             })
         } else {
-            console.log(`kind: ${kind}`)
             http.get(`/follows/${userData.id}/${kind}`)
             .then(res => {
-                console.log(res);
+                Modal.fire({
+                    html: <Follow followUserInfos={res.data}/>,
+                    showConfirmButton: false,
+                    customClass: styles.followList,
+                })
             })
             .catch(err => {
                 console.error(err);
@@ -75,7 +84,7 @@ const Profile = ({userId}) => {
             customClass: styles.post,
         })
     }
-    const followers = () => {
+    const getFollowData = () => {
         if(userId !== undefined) {
             http.get(`/users/${userId}`)
             .then(res => {
@@ -98,8 +107,9 @@ const Profile = ({userId}) => {
         }
     }
     useEffect(() => {
-        followers()
+        getFollowData()
     }, [])
+
     return (
         <div className="flex flex-col items-center xl:flex-row justify-between xl:items-end">
             <div className="w-full md:w-1/2">
@@ -129,12 +139,17 @@ const Profile = ({userId}) => {
                                     </span>
                                     <h4>{ userInfo.followings }</h4>
                                 </div>
-                                <div className="ml-8 hover:cursor-pointer" onClick={() => onClickFollowUser('follower')}>
-                                    <span className="text-xs text-gray-500 block ">
-                                        Follower
-                                    </span>
-                                    <h4>{ userInfo.followers }</h4>
+                                
+                                <div className="relative ml-8">
+                                    <div className="hover:cursor-pointer" onClick={() => onClickFollowUser('follower')}>
+                                        <span className="text-xs text-gray-500 block ">
+                                            Follower
+                                        </span>
+                                        <h4>{ userInfo.followers }</h4>
+                                    </div>
+
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -157,7 +172,7 @@ const Profile = ({userId}) => {
                                         ?
                                             <>
                                                 {
-                                                    console.log(following.status)
+                                                    console.log(following)
                                                 }
                                                 Follow
                                             </>
@@ -174,10 +189,7 @@ const Profile = ({userId}) => {
                                         </a>
                                     </Link>
                                 </div>
-                                    
-                                
                             </>
-
                         }
                     </div>
                 </div>

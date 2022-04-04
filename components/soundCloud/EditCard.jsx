@@ -65,7 +65,7 @@ const EditCard = ({pevPost}) => {
         if(post.audio !== null) {
             formData.append("audio", post.audio)
         }
-        http.post(`/posts/update/${post.id}`,{_method: 'patch'}, formData, config)
+        http.post(`/posts/${post.id}`,{_method: 'patch'}, formData, config)
         .then(res => {
             dispatch(getPostList())
             console.log(res);
