@@ -180,16 +180,14 @@ const Room = () => {
 			console.error('datachannel error: ', err);
 		}
 
-		dc.onmessage = (e) => {
+		dc.onmessage = async (e) => {
 			let data = e.data
 			console.log(data, typeof data)
 			// string이 아닐 경우 arraybuffer -> string
 			// blob -> string
 			if (typeof data !== 'string') {
 				// data = ab2str(data)
-				const reader = new FileReader()
-				reader.readAsText(data)
-				data = reader.result
+				data = await (data as Blob).text()
 				console.log('read data', data)
 			}
 
@@ -354,7 +352,9 @@ const Room = () => {
 		);
 
 		Socket.socket.on('user_exit', (data: { id: string }) => {
+			console.log('before user_exit', data, pcsRef.current, dcsRef.current)
 			if (!pcsRef.current[data.id] || !dcsRef.current[data.id]) return
+			console.log('after user_exit', data, pcsRef.current, dcsRef.current)
 			pcsRef.current[data.id].close()
 			delete pcsRef.current[data.id]
 			dcsRef.current[data.id].close()
