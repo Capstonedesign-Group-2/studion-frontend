@@ -117,6 +117,7 @@ const Room = () => {
 	}
 
 	const createPeerConnection = useCallback((socketId: string, name: string) => {
+		console.log('connect new user', name, socketId)
 		try {
 			const pc = new RTCPeerConnection(pc_config)
 
@@ -181,10 +182,15 @@ const Room = () => {
 
 		dc.onmessage = (e) => {
 			let data = e.data
-
+			console.log(data, typeof data)
 			// string이 아닐 경우 arraybuffer -> string
+			// blob -> string
 			if (typeof data !== 'string') {
-				data = ab2str(data)
+				// data = ab2str(data)
+				const reader = new FileReader()
+				reader.readAsText(data)
+				data = reader.result
+				console.log('read data', data)
 			}
 
 			const { type, key, socketId } = JSON.parse(data) as DcData

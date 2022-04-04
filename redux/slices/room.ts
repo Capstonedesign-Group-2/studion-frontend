@@ -16,6 +16,7 @@ const roomSlice = createSlice({
   initialState,
   reducers: {
     addUser(state, action) {
+      if (state.users.find(user => user.id === action.payload.id)) return;
       state.users = state.users.concat(action.payload);
     },
     deleteUser(state, action) {
