@@ -14,7 +14,6 @@ const CreatePost = ({composers, userId}) => {
     const onToggle = () => {
         setToggle(!toggle);
     }
-    console.log(userId)
     const [post, setPost] = useState({
         user_id: userData.id,
         content: '',
@@ -40,7 +39,6 @@ const CreatePost = ({composers, userId}) => {
     })
     const onChange = (e) => {
         if (e.target.files.length) {
-            // console.log(e.target.files.type)
             let value = e.target.files[0];
             console.log(e.target.files);
             if(value.type.slice(0, 5) === "image"){
@@ -81,7 +79,6 @@ const CreatePost = ({composers, userId}) => {
     // }
     const onContentChange = (e) => {
         const { value } = e.target;
-        // console.log(value.replace(/(?:\r\n|\r|\n)/g, '<br />'));
         setPost({
             ...post,
             content: value
@@ -142,7 +139,6 @@ const CreatePost = ({composers, userId}) => {
                 </svg>
             </div>
             {/*  */}
-            {console.log('composers : ', composers)}
             <div className="mx-auto lg:flex-row h-full flex flex-col">
                 {/* 음악, 사진 */}
                 <div className="flex relative flex-col items-center h-full justify-center w-full max-screen-w-lg mx-auto lg:mx-0 lg:max-w-3xl ">
@@ -222,7 +218,7 @@ const CreatePost = ({composers, userId}) => {
                             ?
                                 <img src={userData.image} />
                             :
-                                <div className="rounded-full w-10 h-10 bg-studion-200 text-white font-lite text-lg flex items-center justify-center" >
+                                <div className="rounded-full w-10 h-10 bg-studion-400 text-white font-lite text-lg flex items-center justify-center" >
                                     {userData.name.slice(0, 2).toUpperCase()}
                                 </div>
                             
