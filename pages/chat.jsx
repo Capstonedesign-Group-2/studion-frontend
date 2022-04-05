@@ -7,6 +7,7 @@ import ChatList from "../components/soundCloud/chat/ChatList"
 import { useSelector } from 'react-redux'
 import styles from "../styles/soundCloud/soundCloud.module.scss"
 import io from "socket.io-client"
+import ChatSocket from '../socket/chat'
 
 const Chat = () => {
   const [list, setList] = useState(false);
@@ -88,44 +89,48 @@ const Chat = () => {
     setMessages((prev) => [...prev, newMessage])
     // console.log('messages : ' , messages)
   }
+  // useEffect(() => {
+  //   chatRef.current.scrollTop = chatRef.current.scrollHeight
+  // }, [messages])
+  // useEffect(() => {
+  //   console.log('main : ', messages)
+  //   socket.current = io(socket_url);
+  //   register()
+  //   console.log(socket.current)
+  //   socket.current.on('user_register_on', res => {
+  //     console.log(res)
+  //   })
+  //   // socket.current.on('send_msg_on', res => {
+  //   //   console.log('send_msg_on', res)
+  //   //   console.log('user_id : ' ,selectUser)
+  //   //   setMessages([
+  //   //       ...messages,
+  //   //       {
+  //   //           user_id: selectUser.to.user_id,
+  //   //           content: res.msg
+  //   //       }
+  //   //   ])
+  //   //   console.log(messages)
+  //   // })
+  //   socket.current.on("get_chats_on", res => {
+  //     console.log('get_chats_on', typeof res.data)
+  //     setUserList(res.data)
+  //   })
+  //   socket.current.on("get_messages_on", res => {
+  //     setMessages(res);
+  //   })
+  //   socket.current.on('send_msg_on', res => handleOnMessage(res))
+  // }, [])
+  // useEffect(() => {
+  //   console.log('selectUser', selectUser)
+  //   if(selectUser) {
+  //     onClickUserList()
+  //   }
+  // }, [selectUser])
+
   useEffect(() => {
-    chatRef.current.scrollTop = chatRef.current.scrollHeight
-  }, [messages])
-  useEffect(() => {
-    console.log('main : ', messages)
-    socket.current = io(socket_url);
-    register()
-    console.log(socket.current)
-    socket.current.on('user_register_on', res => {
-      console.log(res)
-    })
-    // socket.current.on('send_msg_on', res => {
-    //   console.log('send_msg_on', res)
-    //   console.log('user_id : ' ,selectUser)
-    //   setMessages([
-    //       ...messages,
-    //       {
-    //           user_id: selectUser.to.user_id,
-    //           content: res.msg
-    //       }
-    //   ])
-    //   console.log(messages)
-    // })
-    socket.current.on("get_chats_on", res => {
-      console.log('get_chats_on', typeof res.data)
-      setUserList(res.data)
-    })
-    socket.current.on("get_messages_on", res => {
-      setMessages(res);
-    })
-    socket.current.on('send_msg_on', res => handleOnMessage(res))
+    console.log('chatSocket:', ChatSocket)
   }, [])
-  useEffect(() => {
-    console.log('selectUser', selectUser)
-    if(selectUser) {
-      onClickUserList()
-    }
-  }, [selectUser])
 
   return (
     <div>

@@ -4,6 +4,7 @@ import cookie from 'react-cookies'
 
 import http from '../../http'
 import { LoginData, SignUpData, IUser } from '../../types'
+import ChatSocket from '../../socket/chat'
 
 export const delay = (time: number, value: any) => new Promise((resolve, reject) => {
   setTimeout(() => {
@@ -29,6 +30,7 @@ export const logOut = createAsyncThunk(
   async (data, thunkAPI) => {
     await http.get('/users/logout')
     cookie.remove('accessToken')
+    ChatSocket.socket.removeAllListeners()
   }
 )
 
