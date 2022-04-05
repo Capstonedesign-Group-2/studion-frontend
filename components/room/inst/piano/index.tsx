@@ -32,16 +32,12 @@ const PianoComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) =
   const onPlayNote = useCallback((midiNumber: string) => {
     const dcData = {
       type: 'onPiano',
-      key: midiNumber,
+      key: `p_${midiNumber}`, // swift에서 string으로 보내도 숫자만 보내면 number로 처리 됨
       socketId: Socket.socket.id
     } as DcData
     sendDataToAllUsers(dcData)
     mixerRef.current?.channels[Socket.socket.id]?.piano?.onKey(midiNumber)
   }, [mixerRef, sendDataToAllUsers])
-
-  const onStopNote = useCallback((midiNumber: string) => {
-    // setPlayingNotes(prev => prev?.filter(v => v.midiNumber !== midiNumber))
-  }, [])
 
   return (
     <div className='flex justify-center mt-12 mb-24'>
@@ -51,23 +47,9 @@ const PianoComponent = ({ selectedInst, sendDataToAllUsers, mixerRef }: Props) =
           playNote={(midiNumber: string) => {
             if (selectedInst === 'piano') {
               onPlayNote(midiNumber)
-              const dcData = {
-                type: 'onPiano',
-                key: midiNumber
-              } as DcData
-              sendDataToAllUsers(dcData)
             }
           }}
-          stopNote={(midiNumber: string) => {
-            if (selectedInst === 'piano') {
-              onStopNote(midiNumber)
-              const dcData = {
-                type: 'offPiano',
-                key: midiNumber
-              } as DcData
-              sendDataToAllUsers(dcData)
-            }
-          }}
+          stopNote={(midiNumber: string) => { }}
           width={1000}
           keyboardShortcuts={keyboardShortcuts}
         />

@@ -198,10 +198,7 @@ const Room = () => {
 					mixerRef.current?.channels[socketId]?.drum?.onPlay(key)
 					break
 				case 'onPiano':
-					mixerRef.current?.channels[socketId]?.piano?.onKey(key)
-					break
-				case 'offPiano':
-					mixerRef.current?.channels[socketId]?.piano?.offKey(key)
+					mixerRef.current?.channels[socketId]?.piano?.onKey(key.slice(2, 4)) // key: 'p_48'
 					break
 			}
 		}
