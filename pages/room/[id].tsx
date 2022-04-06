@@ -397,7 +397,7 @@ const Room = () => {
 					<div className="w-full py-7 md:px-4">
 						<RoomInfoSection />
 					</div>
-					<div className="w-full md:px-4">
+					<div className="flex-1 overflow-hidden w-full md:px-4">
 						<ChatSection />
 					</div>
 				</div>

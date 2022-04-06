@@ -37,13 +37,13 @@ const UserProfileBox = () => {
                   <span className="text-xs text-gray-500 block">
                     Following
                   </span>
-                  <h4>9</h4>
+                  <h4>{userData.followings}</h4>
                 </div>
                 <div className="ml-8">
                   <span className="text-xs text-gray-500 block">
                     Follower
                   </span>
-                  <h4>10</h4>
+                  <h4>{userData.followers}</h4>
                 </div>
               </div>
             </div>

@@ -36,11 +36,19 @@ const InfoSection = () => {
             </div>
             <div className={styles.infoContainer}>
               <h3>キーボードを使った合奏</h3>
-              <div className={styles.instList}>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
+              <div className="flex gap-4 mb-4">
+                <span className='flex justify-center items-center overflow-hidden rounded-full h-12 w-12 bg-white'>
+                  <Image src='/images/main/mic_icon.png' alt="mic icon" width={22} height={40} />
+                </span>
+                <span className='flex justify-center items-center overflow-hidden rounded-full h-12 w-12 bg-white'>
+                  <Image src='/images/main/guitar_icon.png' alt="mic icon" width={40} height={39} />
+                </span>
+                <span className='flex justify-center items-center overflow-hidden rounded-full h-12 w-12 bg-white'>
+                  <Image src='/images/main/drum_icon.png' alt="mic icon" width={40} height={30} />
+                </span>
+                <span className='flex justify-center items-center overflow-hidden rounded-full h-12 w-12 bg-white'>
+                  <Image src='/images/main/piano_icon.png' alt="mic icon" width={40} height={20} />
+                </span>
               </div>
               <ul>
                 <li>楽器なしにキーボードで簡単に演奏</li>

@@ -29,6 +29,7 @@ export const logOut = createAsyncThunk(
   async (data, thunkAPI) => {
     await http.get('/users/logout')
     cookie.remove('accessToken')
+    location.reload()
   }
 )
 

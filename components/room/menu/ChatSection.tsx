@@ -12,13 +12,13 @@ const ChatSection = () => {
 
   useEffect(() => {
     if (chatListRef.current) {
-      chatListRef.current.scrollTo({ top: chatListRef.current.scrollHeight })
+      chatListRef.current.scrollTo({ top: chatListRef.current.scrollHeight, behavior: 'smooth' })
     }
   }, [chatListRef.current?.scrollHeight])
 
   return (
-    <div className="flex flex-col bg-gray-100 shadow-md align-middle rounded-md overflow-hidden sm:rounded-lg border-b border-gray-200 w-full">
-      <div className="flex-1 flex flex-col p-2 overflow-y-scroll gap-2 py-6"
+    <div className="flex flex-col bg-gray-100 shadow-md align-middle rounded-md sm:rounded-lg border-b border-gray-200 w-full h-full">
+      <div className="flex-1 flex flex-col px-4 overflow-y-scroll gap-2 py-6"
         ref={chatListRef}
       >
         {messageList.length !== 0
@@ -26,7 +26,9 @@ const ChatSection = () => {
             <ChatItem key={index} message={message} />
           ))
           : (
-            <p className="text-gray-400 text-center">メッセージを送ってみよう！</p>
+            <div className="h-full flex justify-center items-center">
+              <p className="text-gray-400 text-center">メッセージを送ってみよう！</p>
+            </div>
           )
         }
       </div>
