@@ -1,7 +1,6 @@
 import { useRouter } from "next/router"
-import { useEffect } from "react"
 import AppLayout from "../../components/common/AppLayout"
-import SoundCloudContainer from "../../components/soundCloud/soundCloudContainer"
+import SoundCloudContainer from "../../components/soundCloud/SoundCloudContainer"
 import http from "../../http"
 import { stayLoggedIn } from '../../http/stay'
 import { getUserPostList } from "../../redux/actions/post"

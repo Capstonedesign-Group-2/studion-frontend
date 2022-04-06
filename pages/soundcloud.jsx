@@ -1,5 +1,5 @@
 import AppLayout from "../components/common/AppLayout"
-import SoundCloudContainer from "../components/soundCloud/soundCloudContainer"
+import SoundCloudContainer from "../components/soundCloud/SoundCloudContainer"
 import { stayLoggedIn } from '../http/stay'
 import { getPostList } from "../redux/actions/post"
 import wrapper from '../redux/store'

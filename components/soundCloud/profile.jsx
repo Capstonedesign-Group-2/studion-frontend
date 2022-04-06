@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import http from "../../http"
 import { BiMessageDetail } from 'react-icons/bi'
 import Link from "next/link"
-import Follow from "./follow"
+import Follow from "./Follow"
 
 
 const Profile = ({ userId, userInfo }) => {
