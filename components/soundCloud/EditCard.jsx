@@ -202,7 +202,7 @@ const EditCard = ({pevPost, userId}) => {
                             {post.content}
                         </textarea>
                         <div className="cursor-pointer hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>
-                            제출
+                            編集
                         </div>
                     </div>
                     <div className="w-full flex justify-center pt-20">
