@@ -26,7 +26,7 @@ const SoundcloudSection = () => {
         <div className="lg:mx-auto grid grid-cols-1 lg:grid-cols-3 place-items-center gap-12 lg:gap-10 lg:max-w-screen-xl">
           {[1, 2, 3].map(post => (
             <div className='w-96 -translate-x-[12%] lg:translate-x-0 lg:w-full lg:pr-[25%]' key={post}>
-              <Album post={post} />
+              <Album post={post} userId={undefined} />
             </div>
           ))}
         </div>
