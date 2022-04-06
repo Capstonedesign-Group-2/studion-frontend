@@ -184,18 +184,18 @@ const EditCard = ({pevPost, userId}) => {
 
                 {/* 컨탠츠 */}
                 <div className="w-full mx-auto pt-5 max-w-3xl lg:max-w-lg pl-2">
-                    <div className="flex items-center mt-3">
+                    <div className="flex mt-3">
                         {
                             userData.image
                             ?
                                 <img src={userData.image} />
                             :
-                                <div className="rounded-full w-10 h-10 bg-studion-200 text-white font-lite text-lg flex items-center justify-center" >
+                                <div className="rounded-full ml-3 w-10 h-10 bg-studion-400 text-white font-lite text-lg flex items-center justify-center" >
                                     {userData.name.slice(0, 2).toUpperCase()}
                                 </div>
                             
                         }
-                        <span className="ml-2 font-semibold">{userData.name}</span>
+                        <span className="ml-2 mt-1 font-semibold">{userData.name}</span>
                     </div>
                     <div className="mt-4 w-full px-3">
                         <textarea onChange={onContentChange} value={post.content} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 border-black w-full decoration-none">

@@ -194,7 +194,7 @@
 //   display: none;
 // }
 .articleContainer {
-  @apply max-h-96 lg:flex-1 lg:max-h-fit overflow-y-scroll;
+  @apply flex flex-col max-h-96 lg:flex-1 lg:max-h-fit overflow-y-scroll;
   // max-height: "700px";
 
   &::-webkit-scrollbar {

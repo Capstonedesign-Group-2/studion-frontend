@@ -134,7 +134,7 @@ const Profile = ({userId}) => {
                             <div className="items-center grid grid-cols-2 mt-1 pr-24">
                                 <div className="hover:cursor-pointer" onClick={() => onClickFollowUser('following')}>
                                     <span className="text-xs text-gray-500 block">
-                                    Following
+                                    フォロー
                                     </span>
                                     <h4>{ userInfo.followings }</h4>
                                 </div>
@@ -142,7 +142,7 @@ const Profile = ({userId}) => {
                                 <div className="relative ml-8">
                                     <div className="hover:cursor-pointer" onClick={() => onClickFollowUser('follower')}>
                                         <span className="text-xs text-gray-500 block ">
-                                            Follower
+                                            フォロワー
                                         </span>
                                         <h4>{ userInfo.followers }</h4>
                                     </div>
@@ -154,7 +154,7 @@ const Profile = ({userId}) => {
                     </div>
                     <div className="mt-10 flex justify-end items-center w-full md:w-1/2 ">
                         {
-                            (userInfo.id === userData.id) ?
+                            (userInfo.id === userData?.id) ?
                             <>
                                 <a className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
                                     Edit profile
@@ -173,11 +173,11 @@ const Profile = ({userId}) => {
                                                 {
                                                     console.log(following)
                                                 }
-                                                Follow
+                                                フォロー
                                             </>
                                         :
                                             <>
-                                                Unfollow
+                                                フォロー中
                                             </>
                                     }
                                 </div>
@@ -195,7 +195,7 @@ const Profile = ({userId}) => {
             </div>
             {/* create button */}
             <div className="w-full mt-4 md:w-1/2 xl:w-28">
-                <button className="w-full bg-studion-500 rounded-md px-8 py-2 text-white hover:bg-studion-400 text-sm" onClick={onCreatePost}>Create</button>
+                <button className="w-full bg-studion-500 rounded-md px-8 py-2 text-white hover:bg-studion-400 text-sm" onClick={onCreatePost}>作成</button>
             </div>
         </div>
     )

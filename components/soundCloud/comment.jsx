@@ -3,7 +3,6 @@ const Comment = ({comment}) => {
         <div>
             <div className="mt-2 font-semibolds">
                 {/* 사진 / 아이디*/}
-                {console.log(comment)}
                 <div className="flex ">
                     <div className='bg-studion-400 text-white text-lg rounded-full flex items-center justify-center text-sm w-10 h-10 mr-2 cursor-pointer'>
                         <a href={`/soundcloud/${comment.user.id}`}>

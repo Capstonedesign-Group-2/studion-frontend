@@ -5,12 +5,15 @@ import { useSelector } from 'react-redux';
 import wrapper from '../../redux/store';
 import Comment from './Comment';
 import Dropdown from './DropDown';
+import Loader from '../common/Loader';
 
 const Article = ({post, userId}) => {
     const [comment, setComment] = useState('');
     const userData = useSelector(state => state.user.data);
     const [comments, setComments] = useState([])
     const [dropDown, setDropDown] = useState(false);
+    const [isLoading, setLoading] = useState(false);
+    const commentRef = useRef();
     const ref = useRef();
     const onCommentChange = (e) => {
         setComment(e.target.value)
@@ -21,22 +24,27 @@ const Article = ({post, userId}) => {
             post_id: post.id,
             content: comment
         }
-        console.log(commentData);
         http.post('/comments', commentData)
         .then(res => {
-            console.log(res);
-            setComment('');
-            // setComments([...comments, commentData])
+            console.log('comments : ',res);
+            setComment('')
             callComments();
         }).catch(err => {
             console.log(err);
         })
     }
+    const onKeyPress = (e) => {
+        if(e.key == 'Enter') {
+            onClickSubmit()
+          }
+      }
     const callComments = () => {
         http.get(`/comments/${post.id}`)
         .then(res => {
             setComments(res.data.comments);    
+            setLoading(false)
         }).catch(err => {
+            setLoading(false)
             console.error(err);
         })
     }
@@ -44,8 +52,8 @@ const Article = ({post, userId}) => {
     //     http.get(`/posts/show/${}`)
     // }
     useEffect(() => {
+        setLoading(true)
         callComments();
-        console.log(post);
         console.log('render')
     },[]);
 
@@ -57,6 +65,9 @@ const Article = ({post, userId}) => {
             window.removeEventListener("click", checkIfClickedOutside)
         }
     }, [dropDown])
+    useEffect(() => {
+        commentRef.current.scrollTop = commentRef.current.scrollHeight
+        }, [comments])
     const checkIfClickedOutside = ({ target }) => {
         if(dropDown && ref.current && !ref.current.contains(target)) {
             setDropDown(false);
@@ -103,7 +114,7 @@ const Article = ({post, userId}) => {
                     }        
                     
                 </div>
-                <div className={styles.articleContainer}>
+                <div className={styles.articleContainer} ref={commentRef}>
                     {/* 게시글 내용 */}
                     <div className='mt-2 px-3 border-b-2 pb-4'>
                         <div className='flex truncate whitespace-pre-line h-fit break-all text-left'>
@@ -112,18 +123,29 @@ const Article = ({post, userId}) => {
                         
                     </div>
                     {/* 댓글 */}
-                    <div className="mt-2">
-                        {comments&&
-                            comments.map(comment => (
+                    <div className="mt-2 flex-1">
+                        {
+                            isLoading ? 
+                            
+                            <div className='flex h-full justify-center items-center'>
+                                <Loader />
+                            </div> : 
+                            
+                            comments?.map(comment => (
                                 <Comment comment={comment} key={comment.id}/>
                             ))
                         }
+                        {/* {comments&&
+                            comments.map(comment => (
+                                <Comment comment={comment} key={comment.id}/>
+                            ))
+                        } */}
                         
                     </div>
                 </div>
                 <div className='flex w-full h-10'>
-                    <input type="text" onChange={onCommentChange} value={comment} placeholder='댓글 달기...'  className='w-11/12 h-full grow-1 outline-studion-200	caret-studion-200'/>
-                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-300 hover:bg-studion-400'>
+                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...'  className='pl-2 w-11/12 h-full grow-1 outline-studion-400	caret-studion-400'/>
+                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150'>
                         게시
                     </div>
                 </div>

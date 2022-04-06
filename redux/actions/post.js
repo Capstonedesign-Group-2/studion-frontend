@@ -27,4 +27,13 @@ export const getUserPostList = createAsyncThunk(
   }
 )
 
-
+// export const newPost = createAsyncThunk(
+//   'post/newPost',
+//   async (data, thunkAPI) => {
+//     const config = {
+//         header: { 'content-type': 'multipart/form-data' }
+//     }
+//     const res = await http.post('/posts', data.payload, config)
+//     return res.data
+//   }
+// )

@@ -10,6 +10,7 @@ import styles from "../../styles/soundCloud/soundCloud.module.scss";
 const CreatePost = ({composers, userId}) => {
     const dispatch = useDispatch();
     const userData = useSelector(state => state.user.data);
+    const [isLoading, setLoading] = useState(false);
     const [toggle, setToggle] = useState(false);
     const onToggle = () => {
         setToggle(!toggle);
@@ -88,6 +89,8 @@ const CreatePost = ({composers, userId}) => {
         Modal.close()
     }
     const onPosting = () => {
+        if(isLoading) return;
+        setLoading(true)
         let formData = new FormData();
         let config = {
             header: { 'content-type': 'multipart/form-data' }
@@ -212,7 +215,7 @@ const CreatePost = ({composers, userId}) => {
 
                 {/* 컨탠츠 */}
                 <div className="w-full mx-auto pt-5 max-w-3xl lg:max-w-lg pl-2">
-                    <div className="flex items-center mt-3">
+                    <div className="ml-3 flex mt-3">
                         {
                             userData.image
                             ?
@@ -223,10 +226,10 @@ const CreatePost = ({composers, userId}) => {
                                 </div>
                             
                         }
-                        <span className="ml-2 font-semibold">{userData.name}</span>
+                        <span className="ml-2 font-semibold mt-1">{userData.name}</span>
                     </div>
                     <div className="mt-4 w-full px-3">
-                        <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 border-black w-full decoration-none">
+                        <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 p-2 border-black w-full decoration-none">
 
                         </textarea>
                         <div className="cursor-pointer hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>
