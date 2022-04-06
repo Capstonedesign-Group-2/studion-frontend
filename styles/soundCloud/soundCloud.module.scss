@@ -194,7 +194,7 @@
 //   display: none;
 // }
 .articleContainer {
-  @apply max-h-96 lg:flex-1 lg:max-h-fit overflow-y-scroll;
+  @apply flex flex-col max-h-96 lg:flex-1 lg:max-h-fit overflow-y-scroll;
   // max-height: "700px";
 
   &::-webkit-scrollbar {
@@ -238,4 +238,17 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+.listShow {
+  animation: listShow 0.3s;
+}
+@keyframes listShow {
+  from {transform: translateX(400px);
+  }
+  to {transform: translateX(0px);}
+}
+.followList {
+  width: 400px !important;
+  height: 45vh !important;
+  text-align: start !important;
 }

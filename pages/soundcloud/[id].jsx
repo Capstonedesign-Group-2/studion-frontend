@@ -1,14 +1,21 @@
+import { useRouter } from "next/router"
+import { useEffect } from "react"
 import AppLayout from "../../components/common/AppLayout"
 import SoundCloudContainer from "../../components/soundCloud/soundCloudContainer"
+import http from "../../http"
 import { stayLoggedIn } from '../../http/stay'
-import { getPostList } from "../../redux/actions/post"
+import { getUserPostList } from "../../redux/actions/post"
 import wrapper from '../../redux/store'
 
-const SoundCloud = () => {
+const SoundCloud = ({ userInfo }) => {
+  const router = useRouter();
+  // const onClickFollow = () => {
+
+  // }
   return (
     <div>
       <AppLayout>
-        <SoundCloudContainer />
+        <SoundCloudContainer userId={router.query.id} userInfo={userInfo} />
       </AppLayout>
     </div>
   )
@@ -24,7 +31,17 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async (c
       },
     }
   }
-  await store.dispatch(getPostList())
+  let queryId = context.query.id
+  await store.dispatch(getUserPostList({ id: queryId }))
+
+  try {
+    const res = await http.get(`/users/${queryId}`)
+    console.log(res.data.user)
+    return { props: { userInfo: res.data.user } }
+  } catch (err) {
+    console.error('[Error] get user data error soundcloud/[id].jsx', err)
+  }
+
   return { props: {} }
 })
 

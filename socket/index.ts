@@ -14,7 +14,7 @@ export interface ExitData {
   userId: number
 }
 
-class Socket {
+export class Socket {
   URL: string
   socket: SocketIOClient.Socket
 

@@ -1,7 +1,8 @@
-import Album from "./Album";
+import Link from "next/link"
 import RecodePlayer from "./RecodePlayer";
 import { useState, useRef } from "react";
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
+import wrapper from "../../redux/store";
 const Player = ({ audio, image }) => {
     const [toggle, setToggle] = useState(false)
     const toggleRef = useRef();
@@ -29,6 +30,15 @@ const Player = ({ audio, image }) => {
                                 <BandMember />
                             </div>
                         </div>
+                    </div>
+                }
+                {
+                    (audio.length !== 0)
+                    &&
+                    <div className="bg-studion-400 absolute left-0 top-3 cursor-pointer rounded-lg text-white hover:bg-studion-300 text-base w-24">
+                        <a href="/relay">
+                            録音リレー
+                        </a>
                     </div>
                 }
                 {
@@ -87,4 +97,4 @@ const BandMember = () => {
         </div>
     )
 }
-export default Player;
+export default wrapper.withRedux(Player);

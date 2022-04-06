@@ -3,14 +3,14 @@ import { Modal, Toast } from "../common/modals";
 import { useSelector, useDispatch } from 'react-redux';
 import wrapper from '../../redux/store';
 import http from "../../http/index";
-import { getPostList } from "../../redux/actions/post";
+import { getUserPostList, getPostList } from "../../redux/actions/post";
 import RecodePlayer from "./RecodePlayer";
 import styles from "../../styles/soundCloud/soundCloud.module.scss";
-const CreatePost = ({composers, blob}) => {
+
+const CreatePost = ({composers, userId}) => {
     const dispatch = useDispatch();
     const userData = useSelector(state => state.user.data);
-    // const [image, setImage] = useState([]);
-    // const [audio, setAudio] = useState([])
+    const [isLoading, setLoading] = useState(false);
     const [toggle, setToggle] = useState(false);
     const onToggle = () => {
         setToggle(!toggle);
@@ -40,7 +40,6 @@ const CreatePost = ({composers, blob}) => {
     })
     const onChange = (e) => {
         if (e.target.files.length) {
-            // console.log(e.target.files.type)
             let value = e.target.files[0];
             console.log(e.target.files);
             if(value.type.slice(0, 5) === "image"){
@@ -81,7 +80,6 @@ const CreatePost = ({composers, blob}) => {
     // }
     const onContentChange = (e) => {
         const { value } = e.target;
-        // console.log(value.replace(/(?:\r\n|\r|\n)/g, '<br />'));
         setPost({
             ...post,
             content: value
@@ -91,6 +89,8 @@ const CreatePost = ({composers, blob}) => {
         Modal.close()
     }
     const onPosting = () => {
+        if(isLoading) return;
+        setLoading(true)
         let formData = new FormData();
         let config = {
             header: { 'content-type': 'multipart/form-data' }
@@ -103,10 +103,12 @@ const CreatePost = ({composers, blob}) => {
         if (post.audio.name) {
             formData.append("audio", post.audio)
         }
-        http.post('/posts/create', formData, config)
+        http.post('/posts', formData, config)
             .then(res => {
-                dispatch(getPostList())
-                console.log(res);
+                if(userId !== undefined)
+                    dispatch(getUserPostList({id: userId}));
+                else 
+                    dispatch(getPostList());
                 Toast.fire({
                     icon: 'success',
                     title: 'Save successfully'
@@ -117,9 +119,6 @@ const CreatePost = ({composers, blob}) => {
             })
     }
     useEffect(() => {
-        // console.log('post')
-        // console.log(post.image.size);
-        // console.log(post.audio.size);
         console.log(post)
         if (((post.image.size !== undefined && toggle !== false) || (post.image.size !== undefined && post.audio.size === undefined && toggle !== true))) {
             let imgEl = document.querySelector(".img_box");
@@ -197,10 +196,12 @@ const CreatePost = ({composers, blob}) => {
                     {(post.audio.size !== undefined && toggle !== true) &&
                         <div className="w-full md:max-w-xl lg:max-w-2xl relative">
                             <RecodePlayer audio={post.audio}/>
-                        {/* 유저 추가하기 */}
-                            <div>
-                                <button>유저 추가하기</button>
-                            </div>
+                        {/* 유저 추가하기
+                            <div className="cursor-pointer">
+                                <svg style={{ width: "24px", height: "24px" }} viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
+                                </svg>
+                            </div> */}
                         {/* 추가된 유저 */}
                         </div>
                         
@@ -214,21 +215,21 @@ const CreatePost = ({composers, blob}) => {
 
                 {/* 컨탠츠 */}
                 <div className="w-full mx-auto pt-5 max-w-3xl lg:max-w-lg pl-2">
-                    <div className="flex items-center mt-3">
+                    <div className="ml-3 flex mt-3">
                         {
                             userData.image
                             ?
                                 <img src={userData.image} />
                             :
-                                <div className="rounded-full w-10 h-10 bg-studion-200 text-white font-lite text-lg flex items-center justify-center" >
+                                <div className="rounded-full w-10 h-10 bg-studion-400 text-white font-lite text-lg flex items-center justify-center" >
                                     {userData.name.slice(0, 2).toUpperCase()}
                                 </div>
                             
                         }
-                        <span className="ml-2 font-semibold">{userData.name}</span>
+                        <span className="ml-2 font-semibold mt-1">{userData.name}</span>
                     </div>
                     <div className="mt-4 w-full px-3">
-                        <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 border-black w-full decoration-none">
+                        <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 p-2 border-black w-full decoration-none">
 
                         </textarea>
                         <div className="cursor-pointer hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>

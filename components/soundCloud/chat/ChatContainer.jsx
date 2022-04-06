@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import styles from "../../../styles/soundCloud/soundCloud.module.scss"
-import io from "socket.io-client"
+
 const ChatContainer = ({ setMessage, message, selectUser, messages, chatRef, onClickSend, onKeyPress}) => {
     const userData = useSelector(state => state.user.data);
     // const onClickSend = () => {
@@ -26,6 +26,7 @@ const ChatContainer = ({ setMessage, message, selectUser, messages, chatRef, onC
                 {/* 채팅방 */}
                 <div className="mt-2 flex items-center w-full h-16 pb-2">
                     {/* 사진 */}
+                    <div className="flex cursor-pointer">
                     {
                         selectUser && 
                         (<div className="bg-studion-400 w-14 h-14 rounded-full mr-2 flex justify-center items-center text-white text-2xl font-normal">
@@ -35,11 +36,12 @@ const ChatContainer = ({ setMessage, message, selectUser, messages, chatRef, onC
                         </div>)
                     }
                     {/* 상대방 아이디 */}
-                    <div className="text-2xl font-semibold">
-                        { 
-                            selectUser && 
-                            selectUser.to.name 
-                        }
+                        <div className="text-2xl font-semibold">
+                            { 
+                                selectUser && 
+                                selectUser.to.name 
+                            }
+                        </div>
                     </div>
                 </div>
                 <div ref={chatRef} className={styles.chatSection}>
@@ -60,14 +62,15 @@ const ReceivedMessage = ({messageInfo}) => {
     // const userData = useSelector(state => state.user.data);
     return (
         <div className="flex mt-2 ml-4 items-start">
+            {/* {console.log('message', messageInfo)} */}
             <div className="w-fit h-full">
-                <div className="w-10 flex items-center justify-center text-white text-sm h-10 mr-2 rounded-full bg-studion-400 self-end flex justify-center">
+                <div className="w-10 flex items-center justify-center text-white text-sm h-10 mr-2 rounded-full bg-studion-400 self-end flex justify-center cursor-pointer">
                     {
                         messageInfo.image 
                         ? <img src={`${messageInfo.image}`} />
                         : messageInfo.name.slice(0, 2).toUpperCase()
                     }
-                    {console.log(messageInfo)}   
+                    
                 </div>
             </div>
             <div className="flex flex-col text-lg">

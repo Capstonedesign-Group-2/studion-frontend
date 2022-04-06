@@ -2,7 +2,7 @@ import Article from "./Article"
 import Player from "./Player";
 import { Modal } from "../common/modals";
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
-const PostContainer = ({post}) => {
+const PostContainer = ({post, userId}) => {
     const closeModal = () => {
         Modal.close();
     }
@@ -16,14 +16,16 @@ const PostContainer = ({post}) => {
             </div>
             <div className="mx-auto h-full lg:flex justify-center">
                 {/* 뮤직플레이어/사진 */}
-                
+                {
+                    console.log('post', post)
+                }
                 <div className="flex h-full items-center justify-center w-full max-screen-w-lg" style={ (post.audios.length || post.images.length) ? {display: "flex"} : {display: "none"}}>
                     <Player audio={post.audios} image={post.images} />
                 </div>
                 
                 {/* 컨텐츠, 코멘트 */}
                 <div className="max-w-xl mx-auto pl-2 md:pt-5 lg:max-w-lg lg:mx-0 w-full">
-                    <Article post={post}/>
+                    <Article userId={userId} post={post}/>
                 </div>
             </div>
         </div>

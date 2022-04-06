@@ -5,12 +5,15 @@ import { useSelector } from 'react-redux';
 import wrapper from '../../redux/store';
 import Comment from './Comment';
 import Dropdown from './DropDown';
+import Loader from '../common/Loader';
 
-const Article = ({post}) => {
+const Article = ({post, userId}) => {
     const [comment, setComment] = useState('');
     const userData = useSelector(state => state.user.data);
     const [comments, setComments] = useState([])
     const [dropDown, setDropDown] = useState(false);
+    const [isLoading, setLoading] = useState(false);
+    const commentRef = useRef();
     const ref = useRef();
     const onCommentChange = (e) => {
         setComment(e.target.value)
@@ -21,31 +24,36 @@ const Article = ({post}) => {
             post_id: post.id,
             content: comment
         }
-        console.log(commentData);
-        http.post('/comments/create', commentData)
+        http.post('/comments', commentData)
         .then(res => {
-            console.log(res);
-            setComment('');
-            // setComments([...comments, commentData])
+            console.log('comments : ',res);
+            setComment('')
             callComments();
         }).catch(err => {
             console.log(err);
         })
     }
+    const onKeyPress = (e) => {
+        if(e.key == 'Enter') {
+            onClickSubmit()
+          }
+      }
     const callComments = () => {
-        http.get(`/comments/show/${post.id}`)
+        http.get(`/comments/${post.id}`)
         .then(res => {
             setComments(res.data.comments);    
+            setLoading(false)
         }).catch(err => {
-            console.log(err);
+            setLoading(false)
+            console.error(err);
         })
     }
     // const userClick = () => {
     //     http.get(`/posts/show/${}`)
     // }
     useEffect(() => {
+        setLoading(true)
         callComments();
-        console.log(post);
         console.log('render')
     },[]);
 
@@ -57,6 +65,9 @@ const Article = ({post}) => {
             window.removeEventListener("click", checkIfClickedOutside)
         }
     }, [dropDown])
+    useEffect(() => {
+        commentRef.current.scrollTop = commentRef.current.scrollHeight
+        }, [comments])
     const checkIfClickedOutside = ({ target }) => {
         if(dropDown && ref.current && !ref.current.contains(target)) {
             setDropDown(false);
@@ -67,17 +78,17 @@ const Article = ({post}) => {
                 {/* 글쓴이 정보 */}
                 <div className='relative flex items-center border-b-2 pb-2'>
                     {/* 사진 */}
-                    {
-                        !post.user.image
-                        ? 
-                            <div className='cursor-pointer bg-studion-400 text-white rounded-full flex items-center justify-center text-lg font-lite w-10 h-10 mr-2'>
-                                {post.user.name.slice(0, 2).toUpperCase()}
-                            </div>
-                        : 
-                            <div className='cursor-pointer border-2 border-black rounded-full w-10 h-10 mr-2'>
+                    <div className='cursor-pointer bg-studion-400 text-white rounded-full flex items-center justify-center text-lg font-lite w-10 h-10 mr-2'>
+                        <a href={`/soundcloud/${post.user.id}`}>
+                        {
+                            !post.user.image
+                            ? 
+                                post.user.name.slice(0, 2).toUpperCase()
+                            : 
                                 <img src={post.user.image} alt="" />
-                            </div>
-                    }
+                        }
+                        </a>
+                    </div>
                     <div className='font-semibold'>
                         {post.user.name}
                     </div>
@@ -97,13 +108,13 @@ const Article = ({post}) => {
                         dropDown &&
                         (
                             <div ref={ref} className={styles.dropDown}>
-                                <Dropdown post={post}/>
+                                <Dropdown userId={userId} post={post}/>
                             </div>
                         )
                     }        
                     
                 </div>
-                <div className={styles.articleContainer}>
+                <div className={styles.articleContainer} ref={commentRef}>
                     {/* 게시글 내용 */}
                     <div className='mt-2 px-3 border-b-2 pb-4'>
                         <div className='flex truncate whitespace-pre-line h-fit break-all text-left'>
@@ -112,21 +123,30 @@ const Article = ({post}) => {
                         
                     </div>
                     {/* 댓글 */}
-                    <div className="mt-2">
-                        {comments&&
-                            comments.map(comment => (
+                    <div className="mt-2 flex-1">
+                        {
+                            isLoading ? 
+                            
+                            <div className='flex h-full justify-center items-center'>
+                                <Loader />
+                            </div> : 
+                            
+                            comments?.map(comment => (
                                 <Comment comment={comment} key={comment.id}/>
                             ))
                         }
+                        {/* {comments&&
+                            comments.map(comment => (
+                                <Comment comment={comment} key={comment.id}/>
+                            ))
+                        } */}
                         
                     </div>
                 </div>
                 <div className='flex w-full h-10'>
-                    <input type="text" onChange={onCommentChange} value={comment} placeholder='댓글 달기...'  className='w-11/12 h-full grow-1 outline-studion-200	caret-studion-200'/>
-                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-300 hover:bg-studion-400'>
-                        <div>
-                            게시
-                        </div>
+                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...'  className='pl-2 w-11/12 h-full grow-1 outline-studion-400	caret-studion-400'/>
+                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150'>
+                        게시
                     </div>
                 </div>
             </div>

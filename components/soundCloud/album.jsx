@@ -3,10 +3,10 @@ import Link from "next/link"
 import { Modal } from "../common/modals";
 import PostContainer from "./PostContainer"
 
-const Album = ({ post }) => {
+const Album = ({ post, userId }) => {
     const openModal = () => {
         Modal.fire({
-            html: <PostContainer post={post} />,
+            html: <PostContainer post={post} userId={userId} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.post,
