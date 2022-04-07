@@ -1,21 +1,28 @@
+import Router from "next/router";
+import { Modal } from "../common/modals"
 const Follow = ({ followUserInfos }) => {
+    const onClickProfile = (ClickedUserId) => {
+        console.log('onClickProfile')
+        Modal.close();
+        Router.push(`/soundcloud/${ClickedUserId}`)
+    }
     return (
         <div className="w-full h-full relative">
             <header className="">
-                <p className="font-bold">{followUserInfos.kind}</p>
+                <p className="font-bold">{followUserInfos.kind =='follower' ? 'フォロワー' : 'フォロー中'}</p>
             </header>
             <div className="w-full h-fit text-left">
                 {
                     followUserInfos && 
                     followUserInfos.follows.map(followUserInfo => (
-                        <User kind={followUserInfos.kind} followUserInfo={followUserInfo} key={followUserInfo.id} />
+                        <User onClickProfile={onClickProfile} kind={followUserInfos.kind} followUserInfo={followUserInfo} key={followUserInfo.id} />
                     ))
                 }
             </div>
         </div>
     )
 }
-const User = ({followUserInfo, kind}) => {
+const User = ({followUserInfo, kind, onClickProfile}) => {
     
     const {follower, following} = followUserInfo
 
@@ -23,7 +30,7 @@ const User = ({followUserInfo, kind}) => {
         <>
         {
             kind === 'follower' ?
-            <a href={`/soundcloud/${follower.id}`} className="hover:bg-gray-200 hover:cursor-pointer flex w-full mt-2">       
+            <div onClick={() => onClickProfile(follower.id)} className="hover:bg-gray-200 hover:cursor-pointer items-center p-1 flex w-full mt-2 duration-200">       
                 <div>
                     {
                         follower.image !== null 
@@ -44,9 +51,9 @@ const User = ({followUserInfo, kind}) => {
                         {follower.email}
                     </div>
                 </div>
-            </a>
+            </div>
             :
-            <a href={`/soundcloud/${following.id}`} className="hover:bg-gray-200 hover:cursor-pointer flex w-full mt-2">       
+            <div onClick={() => onClickProfile(following.id)} className="hover:bg-gray-200 p-1 hover:cursor-pointer flex items-center w-full mt-2">       
                 <div>
                     {
                         following.image !== null 
@@ -67,7 +74,7 @@ const User = ({followUserInfo, kind}) => {
                         {following.email}
                     </div>
                 </div>
-            </a>
+            </div>
         }
         </>
     )

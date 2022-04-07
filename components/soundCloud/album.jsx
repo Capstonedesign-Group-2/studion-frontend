@@ -4,6 +4,7 @@ import { Modal } from "../common/modals";
 import PostContainer from "./PostContainer"
 
 const Album = ({ post, userId }) => {
+    
     const openModal = () => {
         Modal.fire({
             html: <PostContainer post={post} userId={userId} />,
@@ -29,9 +30,6 @@ const Album = ({ post, userId }) => {
                                 {post.content}
                             </div>
                     }
-                    {/* <Link href="/">
-                        <a href=""></a>
-                    </Link> */}
                 </div>
             </div>
         </div>
