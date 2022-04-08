@@ -31,7 +31,6 @@ class Piano {
   }
 
   onKey(midiNumber: string) {
-    console.log('piano onKey:', midiNumber, this)
     if (this.ctx && this.gainNode && this.channel) {
       const audioBufferSourceNode = this.ctx.createBufferSource()
       audioBufferSourceNode.buffer = this.tracks.find(track => track.keycord === midiNumber.toString())?.buffer as AudioBuffer
