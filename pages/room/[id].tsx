@@ -22,6 +22,11 @@ const pc_config = {
 		{
 			urls: process.env.NEXT_PUBLIC_ICE_STUN_SERVER || 'stun:stun.l.google.com:19302',
 		},
+		{
+			urls: process.env.NEXT_PUBLIC_ICE_TURN_SERVER,
+			credential: process.env.NEXT_PUBLIC_ICE_TURN_SERVER_PASSWORD,
+			username: process.env.NEXT_PUBLIC_ICE_TURN_SERVER_USERNAME
+		}
 	],
 }
 
