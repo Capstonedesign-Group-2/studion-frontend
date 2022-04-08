@@ -34,21 +34,19 @@ export const getUserPostList = createAsyncThunk(
     return res.data.posts
   }
 )
-// export const getNextUserPostList = createAsyncThunk(
-//   'post/getNextUserPostList',
-//   async (data, thunkAPI) => {
-//     const res = await http.get(data.next_page_url)
-//     return res.data.posts
-//   }
-// )
 
-// export const newPost = createAsyncThunk(
-//   'post/newPost',
-//   async (data, thunkAPI) => {
-//     const config = {
-//         header: { 'content-type': 'multipart/form-data' }
-//     }
-//     const res = await http.post('/posts', data.payload, config)
-//     return res.data
-//   }
-// )
+export const getCommentList = createAsyncThunk(
+  'post/getCommentList',
+  async (data, thunkAPI) => {
+    const res = await http.get(`/comments/${data.id}`)
+    console.log('commentList', res.data.comments);
+    return res.data.comments
+  }
+)
+export const getNextCommentList = createAsyncThunk(
+  'post/getNextCommentList',
+  async (data, thunkAPI) => {
+    const res = await http.get(data.next_page_url)
+    return res.data.comments
+  }
+)
