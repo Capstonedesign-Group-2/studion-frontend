@@ -9,12 +9,10 @@ import { BiMessageDetail } from 'react-icons/bi'
 import Link from "next/link"
 import Follow from "./Follow"
 
-
 const Profile = ({ userId, userInfo }) => {
     const userData = useSelector(state => state.user.data)
     // const [userInfo, setUserInfo] = useState(userData);
     const [following, setFollowing] = useState({});
-
     // dropdown
     const onClickFollow = () => {
         if (following.status !== true) {

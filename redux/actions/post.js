@@ -19,6 +19,14 @@ export const getPostList = createAsyncThunk(
     return res.data.posts
   }
 )
+// 다음 전체 게시글
+export const getNextPostList = createAsyncThunk(
+  'post/getNextPostList',
+  async (data, thunkAPI) => {
+    const res = await http.get(data.next_page_url)
+    return res.data.posts
+  }
+)
 export const getUserPostList = createAsyncThunk(
   'post/getUserPostList',
   async (data, thunkAPI) => {
@@ -26,6 +34,13 @@ export const getUserPostList = createAsyncThunk(
     return res.data.posts
   }
 )
+// export const getNextUserPostList = createAsyncThunk(
+//   'post/getNextUserPostList',
+//   async (data, thunkAPI) => {
+//     const res = await http.get(data.next_page_url)
+//     return res.data.posts
+//   }
+// )
 
 // export const newPost = createAsyncThunk(
 //   'post/newPost',
