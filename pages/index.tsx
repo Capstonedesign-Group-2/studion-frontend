@@ -3,10 +3,15 @@ import Head from 'next/head'
 
 import AppLayout from '../components/common/AppLayout'
 import MainSection from '../components/main/MainContainer'
+import http from '../http'
 import { stayLoggedIn } from '../http/stay'
 import wrapper from '../redux/store'
 
-const Home: NextPage = () => {
+interface Props {
+  rank: { week: [], month: [] }
+}
+
+const Home: NextPage<Props> = ({ rank }) => {
   return (
     <div>
       <Head>
@@ -17,7 +22,7 @@ const Home: NextPage = () => {
 
       <AppLayout>
         {/* main section */}
-        <MainSection />
+        <MainSection rank={rank} />
       </AppLayout>
     </div>
   )
@@ -25,7 +30,22 @@ const Home: NextPage = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
   await stayLoggedIn(context, store);
-  return { props: {} }
+
+  const rank = {
+    week: [],
+    month: []
+  }
+
+  try {
+    const week = await http.get('/posts/rank/week')
+    const month = await http.get('/posts/rank/month')
+    rank.week = week.data.posts
+    rank.month = month.data.posts
+  } catch (err) {
+    console.error('get rank error', err)
+  }
+
+  return { props: { rank } }
 })
 
 export default Home

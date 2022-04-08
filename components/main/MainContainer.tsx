@@ -3,8 +3,13 @@ import styles from '../../styles/main/main.module.scss'
 import JoinSection from './JoinSection'
 import InfoSection from './InfoSection'
 import SoundcloudSection from './SoundcloudSection'
+import { FC } from 'react'
 
-const MainContainer = () => {
+interface Props {
+  rank: { week: [], month: [] }
+}
+
+const MainContainer: FC<Props> = ({ rank }) => {
   return (
     <>
       {/* Studion Section */}
@@ -24,7 +29,7 @@ const MainContainer = () => {
       </div>
 
       {/* Soundcloud Section */}
-      <SoundcloudSection />
+      <SoundcloudSection rank={rank} />
     </>
   )
 }
