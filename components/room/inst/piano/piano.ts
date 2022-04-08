@@ -17,9 +17,10 @@ class Piano {
     this.channel = channel
 
     for (let i = 0; i < 18; i++) {
-      loadBuffer(`/sounds/piano/piano-ff-0${i + 40}.wav`, ctx as AudioContext, function (buffer: AudioBuffer) {
+      const keycord = i + 40 + 8
+      loadBuffer(`/sounds/piano/piano-ff-0${i + 40}.wav`, ctx as AudioContext, (buffer: AudioBuffer) => {
         self.tracks.push({
-          'keycord': (i + 40 + 8).toString(),
+          'keycord': keycord.toString(),
           'buffer': buffer
         })
       })
