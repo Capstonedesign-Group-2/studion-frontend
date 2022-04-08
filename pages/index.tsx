@@ -6,9 +6,10 @@ import MainSection from '../components/main/MainContainer'
 import http from '../http'
 import { stayLoggedIn } from '../http/stay'
 import wrapper from '../redux/store'
+import { IPost } from '../types'
 
 interface Props {
-  rank: { week: [], month: [] }
+  rank: { week: IPost[], month: IPost[] }
 }
 
 const Home: NextPage<Props> = ({ rank }) => {

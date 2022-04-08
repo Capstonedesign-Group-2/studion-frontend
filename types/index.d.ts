@@ -83,3 +83,17 @@ declare interface IMessage {
   user: IUser
   msg: string
 }
+
+/**
+ * post
+ */
+declare interface IPost {
+  audios: string[]
+  content: string
+  flag: string
+  id: number
+  images: string[]
+  likes_count: string
+  user_id: string
+  user: IUser
+}

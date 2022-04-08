@@ -4,9 +4,10 @@ import JoinSection from './JoinSection'
 import InfoSection from './InfoSection'
 import SoundcloudSection from './SoundcloudSection'
 import { FC } from 'react'
+import { IPost } from '../../types'
 
 interface Props {
-  rank: { week: [], month: [] }
+  rank: { week: IPost[], month: IPost[] }
 }
 
 const MainContainer: FC<Props> = ({ rank }) => {
