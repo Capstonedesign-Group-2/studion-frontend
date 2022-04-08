@@ -26,6 +26,7 @@ const Profile = ({ userId, userInfo }) => {
                         ...following,
                         status: true
                     })
+                    console.log('get')
                     getFollowData();
                 })
                 .catch(err => {
@@ -34,7 +35,7 @@ const Profile = ({ userId, userInfo }) => {
         } else {
             http.delete(`/follows/${following.follow_id}`)
                 .then(res => {
-                    console.log(res);
+                    console.log('delete',res);
                     setFollowing({
                         ...following,
                         status: false
@@ -83,29 +84,21 @@ const Profile = ({ userId, userInfo }) => {
     }
     const getFollowData = () => {
         if (userId !== undefined) {
-            http.get(`/users/${userId}`)
+            console.log('getFollowData')
+            http.post(`/follows/${userId}`,{ user_id: userData.id })
                 .then(res => {
-                    setUserInfo(res.data.user);
-                    http.post(`/follows/${userId}`,
-                        {
-                            user_id: userData.id
-                        })
-                        .then(res => {
-                            setFollowing(res.data)
-                        })
-                        .catch(err => {
-                            setFollowing(false);
-                            console.error(err);
-                        })
+                    console.log(res)
+                    setFollowing(res.data)
                 })
                 .catch(err => {
+                    setFollowing(null);
                     console.error(err);
                 })
         }
     }
-    // useEffect(() => {
-    //     getFollowData()
-    // }, [])
+    useEffect(() => {
+        getFollowData()
+    }, [])
 
     return (
         <div className="flex flex-col items-center xl:flex-row justify-between xl:items-end">
@@ -134,7 +127,7 @@ const Profile = ({ userId, userInfo }) => {
                                     <span className="text-xs text-gray-500 block">
                                         フォロー
                                     </span>
-                                    <h4>{userInfo.followings}</h4>
+                                    <h4>{console.log(userInfo)}</h4>
                                 </div>
 
                                 <div className="relative ml-8">

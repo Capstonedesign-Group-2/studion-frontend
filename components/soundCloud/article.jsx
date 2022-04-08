@@ -1,20 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
 import styles from '../../styles/soundCloud/soundCloud.module.scss'
 import http from '../../http/index';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import wrapper from '../../redux/store';
 import Comment from './Comment';
 import Dropdown from './DropDown';
 import Loader from '../common/Loader';
+import { getCommentList, getNextCommentList } from '../../redux/actions/post';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 
 const Article = ({ post, userId, onClickProfile }) => {
     const [comment, setComment] = useState('');
     const userData = useSelector(state => state.user.data);
-    const [comments, setComments] = useState([])
+    const comments = useSelector(state => state.post.commentList);
+    const nextUrl = useSelector(state => state.post.commentNextUrl);
+    
+    const isLoading = useSelector(state => state.post.getCommentListLoading)
+    const getNextCommentListLoading = useSelector(state => state.post.getNextCommentListLoading)
+    const dispatch = useDispatch();
     const [dropDown, setDropDown] = useState(false);
-    const [isLoading, setLoading] = useState(false);
-    const commentRef = useRef();
+    const observerRef = useRef();
     const ref = useRef();
+
     const onCommentChange = (e) => {
         setComment(e.target.value)
     }
@@ -39,35 +46,36 @@ const Article = ({ post, userId, onClickProfile }) => {
         }
     }
     const callComments = () => {
-        http.get(`/comments/${post.id}`)
-            .then(res => {
-                setComments(res.data.comments);
-                setLoading(false)
-            }).catch(err => {
-                setLoading(false)
-                console.error(err);
-            })
+        dispatch(getCommentList({id: post.id}))
     }
-    // const userClick = () => {
-    //     http.get(`/posts/show/${}`)
-    // }
-    useEffect(() => {
-        setLoading(true)
-        callComments();
-        console.log('render')
-    }, []);
 
+    useEffect(() => {
+        callComments()
+    }, [])
+    // useEffect(() => {
+    //     commentRef.current.scrollTop = commentRef.current.scrollHeight
+    // }, [comments])
+    const observer = (node) => {
+        if (getNextCommentListLoading) return;
+        if (observerRef.current) observerRef.current.disconnect();
+    
+        observerRef.current = new IntersectionObserver(([entry]) => {
+            console.log('nextURL', entry.isIntersecting)
+            console.log(entry.isIntersecting && nextUrl !== null)
+          if (entry.isIntersecting && nextUrl !== null) {
+            dispatch(getNextCommentList({next_page_url : nextUrl}))
+          }
+        });
+    
+        node && observerRef.current.observe(node);
+      };
     // 바깥 클릭 시 드롭다운 사라짐
     useEffect(() => {
         window.addEventListener("click", checkIfClickedOutside)
-
         return () => {
             window.removeEventListener("click", checkIfClickedOutside)
         }
     }, [dropDown])
-    useEffect(() => {
-        commentRef.current.scrollTop = commentRef.current.scrollHeight
-    }, [comments])
     const checkIfClickedOutside = ({ target }) => {
         if (dropDown && ref.current && !ref.current.contains(target)) {
             setDropDown(false);
@@ -114,7 +122,7 @@ const Article = ({ post, userId, onClickProfile }) => {
                 }
 
             </div>
-            <div className={styles.articleContainer} ref={commentRef}>
+            <div className={styles.articleContainer} >
                 {/* 게시글 내용 */}
                 <div className='mt-2 px-3 border-b-2 pb-4'>
                     <div className='flex truncate whitespace-pre-line h-fit break-all text-left'>
@@ -123,7 +131,7 @@ const Article = ({ post, userId, onClickProfile }) => {
 
                 </div>
                 {/* 댓글 */}
-                <div className="mt-2 flex-1">
+                <div className="mt-2 flex-1" >
                     {
                         isLoading ?
 
@@ -135,18 +143,23 @@ const Article = ({ post, userId, onClickProfile }) => {
                                 <Comment comment={comment} key={comment.id} onClickProfile={onClickProfile}/>
                             ))
                     }
-                    {/* {comments&&
-                            comments.map(comment => (
-                                <Comment comment={comment} key={comment.id}/>
-                            ))
-                        } */}
-
+                    {
+                        getNextCommentListLoading && 
+                        <div className="w-full h-max flex justify-center mt-1">
+                            <Loader />
+                        </div>
+                    }
+                    <div ref={observer} className="border-white h-2"/>
                 </div>
             </div>
-            <div className='flex w-full h-10'>
-                <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...' className='pl-2 w-11/12 h-full grow-1 outline-studion-400	caret-studion-400' />
-                <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150'>
-                    게시
+            <div className='w-full h-10'>
+                <AiOutlineHeart />
+                <AiFillHeart className='text-red-500'/>
+                <div className='flex w-full h-full'>
+                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...' className='pl-2 w-11/12 h-full outline-studion-400 caret-studion-400' />
+                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150'>
+                        게시
+                    </div>
                 </div>
             </div>
         </div>

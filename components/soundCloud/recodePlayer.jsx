@@ -35,20 +35,14 @@ const RecodePlayer = ({audio}) => {
         })
 
         if(audio.type) {
-            console.log(window.URL.createObjectURL(audio)) 
             wavesurferRef.current.load(window.URL.createObjectURL(audio));
         }
         else if(audio.link) {
             wavesurferRef.current.load(audio.link);
-            // wavesurferRef.current.load(URL.createObjectURL(audio));
         }
 
         wavesurferRef.current.on('ready', () => {
-            console.log('ready')
-            // setLoaded(true)
-
             var allTime = wavesurferRef.current.getDuration()
-            // console.log(allTime)
             time(allTimeRef, allTime)
         })
         wavesurferRef.current.on('play', () => {
@@ -59,8 +53,7 @@ const RecodePlayer = ({audio}) => {
 
         })
         wavesurferRef.current.on('finish', () => {
-            console.log('finish')
-                setClick(false)
+            setClick(false)
         })
         wavesurferRef.current.on('audioprocess', function () {
             // document.querySelector(".msg").innerText = 'Audio Process ' + ;
@@ -80,7 +73,6 @@ const RecodePlayer = ({audio}) => {
         return ref.current.innerText = `${minute} : ${second}`
     }
     useEffect(() => {
-        console.log(audio);
         initWaveSurfer()
         
         return () => {
@@ -88,9 +80,6 @@ const RecodePlayer = ({audio}) => {
           wavesurferRef.current.destroy()
         }
     }, [audio])
-    useEffect(() => {
-        console.log(click)
-    }, [click, audio])
 
     return (
         <div className="relative w-full">

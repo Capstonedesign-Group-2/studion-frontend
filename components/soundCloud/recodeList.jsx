@@ -6,39 +6,17 @@ import Album from "./Album"
 
 const RecodeList = ({ userId }) => {
     const postList = useSelector(state => state.post.postList)
-    const nextUrl = useSelector(state => state.post.nextUrl)
+    const nextUrl = useSelector(state => state.post.postNextUrl)
     const getNextPostListLoading = useSelector(state => state.post.getNextPostListLoading)
     
     const observerRef = useRef();
     const dispatch = useDispatch();
-    
-    // const getMoreList = async() => {
-    //     if(nextUrl !== null) {
-    //         console.log(nextUrl);
-    //         setIsLoading(true);
-    //         await new Promise((resolve) => setTimeout(resolve, 1500));
-    //         dispatch(getNextPostList({next_page_url : nextUrl}))
-    //         console.log('sibal')
-    //         setIsLoading(false)
-    //     }
-    //     return ;
-    // }
-    // const onIntersect = (e, observer) => {
-    //     console.log(e, observer)
-    //     // if(e.isIntersecting && !isLoading) {
-    //     //     observer.unobserve(e.target);
-    //     //     getMoreList();
-    //     //     observer.observe(e.target);
-    //     // }
-    // }
 
     const observer = (node) => {
-        console.log('node', node)
         if (getNextPostListLoading) return;
         if (observerRef.current) observerRef.current.disconnect();
     
         observerRef.current = new IntersectionObserver(([entry]) => {
-            console.log('entry', entry)
           if (entry.isIntersecting && nextUrl !== null) {
             dispatch(getNextPostList({next_page_url : nextUrl}))
           }
