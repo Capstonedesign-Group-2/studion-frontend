@@ -13,8 +13,11 @@ const Follow = ({ followUserInfos }) => {
             </header>
             <div className="w-full h-fit text-left">
                 {
+                    console.log(followUserInfos)
+                }
+                {
                     followUserInfos && 
-                    followUserInfos.follows.map(followUserInfo => (
+                    followUserInfos.follows.data.map(followUserInfo => (
                         <User onClickProfile={onClickProfile} kind={followUserInfos.kind} followUserInfo={followUserInfo} key={followUserInfo.id} />
                     ))
                 }

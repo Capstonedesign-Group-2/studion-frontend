@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import Image from "next/image"
 import { Modal } from "../common/modals"
 import CreatePost from "./CreatePost"
@@ -8,11 +8,13 @@ import http from "../../http"
 import { BiMessageDetail } from 'react-icons/bi'
 import Link from "next/link"
 import Follow from "./Follow"
+import { getAnotherUserInfo } from "../../redux/actions/another"
 
-const Profile = ({ userId, userInfo }) => {
+const Profile = () => {
     const userData = useSelector(state => state.user.data)
-    // const [userInfo, setUserInfo] = useState(userData);
+    const userInfo = useSelector(state => state.another.userInfo)
     const [following, setFollowing] = useState({});
+    const dispatch = useDispatch();
     // dropdown
     const onClickFollow = () => {
         if (following.status !== true) {
@@ -26,7 +28,7 @@ const Profile = ({ userId, userInfo }) => {
                         ...following,
                         status: true
                     })
-                    console.log('get')
+                    dispatch(getAnotherUserInfo({ id: userInfo.id }))
                     getFollowData();
                 })
                 .catch(err => {
@@ -40,40 +42,27 @@ const Profile = ({ userId, userInfo }) => {
                         ...following,
                         status: false
                     });
+                    dispatch(getAnotherUserInfo({ id: userInfo.id }))
                     getFollowData();
                 })
                 .catch(err => {
-                    console.err(err);
+                    console.error(err);
                 })
         }
     }
     // 팔로우, 팔로잉 하는 유저 정보 알기
     const onClickFollowUser = (kind) => {
-        if (userId !== undefined) {
-            http.get(`/follows/${userId}/${kind}`)
-                .then(res => {
-                    Modal.fire({
-                        html: <Follow followUserInfos={res.data} />,
-                        showConfirmButton: false,
-                        customClass: styles.followList,
-                    })
+        http.get(`/follows/${userInfo.id}/${kind}`)
+            .then(res => {
+                Modal.fire({
+                    html: <Follow followUserInfos={res.data} />,
+                    showConfirmButton: false,
+                    customClass: styles.followList,
                 })
-                .catch(err => {
-                    console.error(err);
-                })
-        } else {
-            http.get(`/follows/${userData.id}/${kind}`)
-                .then(res => {
-                    Modal.fire({
-                        html: <Follow followUserInfos={res.data} />,
-                        showConfirmButton: false,
-                        customClass: styles.followList,
-                    })
-                })
-                .catch(err => {
-                    console.error(err);
-                })
-        }
+            })
+            .catch(err => {
+                console.error(err);
+            })
     }
     const onCreatePost = () => {
         Modal.fire({
@@ -83,18 +72,15 @@ const Profile = ({ userId, userInfo }) => {
         })
     }
     const getFollowData = () => {
-        if (userId !== undefined) {
-            console.log('getFollowData')
-            http.post(`/follows/${userId}`,{ user_id: userData.id })
-                .then(res => {
-                    console.log(res)
-                    setFollowing(res.data)
-                })
-                .catch(err => {
-                    setFollowing(null);
-                    console.error(err);
-                })
-        }
+        http.post(`/follows/${userInfo.id}`,{ user_id: userData.id })
+            .then(res => {
+                console.log('getFollowData',res)
+                setFollowing(res.data)
+            })
+            .catch(err => {
+                setFollowing(null);
+                console.error(err);
+            })
     }
     useEffect(() => {
         getFollowData()
@@ -127,7 +113,7 @@ const Profile = ({ userId, userInfo }) => {
                                     <span className="text-xs text-gray-500 block">
                                         フォロー
                                     </span>
-                                    <h4>{console.log(userInfo)}</h4>
+                                    <h4>{userInfo.followings}</h4>
                                 </div>
 
                                 <div className="relative ml-8">
