@@ -11,7 +11,7 @@ const SoundCloudContainer = ({ userId }) => {
                         <h2 className="text-2xl font-medium mb-8">
                             サウンドくも
                         </h2>
-                        <Profile />
+                        <Profile userId={userId}/>
                         {/* <Link href="/soundcloud/1">hello</Link> */}
                         <RecodeList userId={userId} />
                     </div>

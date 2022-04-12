@@ -12,7 +12,7 @@ import { getAnotherUserInfo } from "../../redux/actions/another"
 
 const Profile = () => {
     const userData = useSelector(state => state.user.data)
-    const userInfo = useSelector(state => state.another.userInfo)
+    const userInfo = (useSelector(state => state.another.userInfo) !== null ? useSelector(state => state.another.userInfo) : userData)
     const [following, setFollowing] = useState({});
     const dispatch = useDispatch();
     // dropdown
@@ -72,7 +72,7 @@ const Profile = () => {
         })
     }
     const getFollowData = () => {
-        http.post(`/follows/${userInfo.id}`,{ user_id: userData.id })
+        http.post(`/follows/${userInfo?.id}`,{ user_id: userData.id })
             .then(res => {
                 console.log('getFollowData',res)
                 setFollowing(res.data)
@@ -84,6 +84,7 @@ const Profile = () => {
     }
     useEffect(() => {
         getFollowData()
+        
     }, [])
 
     return (
@@ -95,7 +96,7 @@ const Profile = () => {
                             {userInfo?.image
                                 ? <Image className="w-full rounded-full" src='/' layout="fill" alt="profile image" />
                                 : <div className='flex w-full aspect-square rounded-full bg-studion-400 justify-center items-center text-white text-7xl md:text-4xl xl:text-5xl'>
-                                    <p>{userInfo.name.slice(0, 2).toUpperCase()}</p>
+                                    <p>{userInfo?.name.slice(0, 2).toUpperCase()}</p>
                                 </div>
                             }
                         </div>
@@ -105,7 +106,7 @@ const Profile = () => {
                                     Name
                                 </span>
                                 <h3 className="font-medium text-3xl leading-8">
-                                    {userInfo.name}
+                                    {userInfo?.name}
                                 </h3>
                             </div>
                             <div className="items-center grid grid-cols-2 mt-1 pr-24">
@@ -113,7 +114,7 @@ const Profile = () => {
                                     <span className="text-xs text-gray-500 block">
                                         フォロー
                                     </span>
-                                    <h4>{userInfo.followings}</h4>
+                                    <h4>{userInfo?.followings}</h4>
                                 </div>
 
                                 <div className="relative ml-8">
@@ -121,7 +122,7 @@ const Profile = () => {
                                         <span className="text-xs text-gray-500 block ">
                                             フォロワー
                                         </span>
-                                        <h4>{userInfo.followers}</h4>
+                                        <h4>{userInfo?.followers}</h4>
                                     </div>
 
                                 </div>
@@ -131,7 +132,7 @@ const Profile = () => {
                     </div>
                     <div className="mt-10 flex justify-end items-center w-full md:w-1/2 ">
                         {
-                            (userInfo.id === userData?.id) ?
+                            (userInfo?.id === userData?.id) ?
                                 <>
                                     <a className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
                                         Edit profile

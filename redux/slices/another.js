@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { getAnotherUserInfo } from "../actions/another";
 
 const initialState = {
-    userInfo: Object,
+    userInfo: null,
     getAnotherUserInfoError: null,
 }
 
