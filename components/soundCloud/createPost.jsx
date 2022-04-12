@@ -7,9 +7,10 @@ import { getUserPostList, getPostList } from "../../redux/actions/post";
 import RecodePlayer from "./RecodePlayer";
 import styles from "../../styles/soundCloud/soundCloud.module.scss";
 
-const CreatePost = ({composers, userId}) => {
+const CreatePost = () => {
     const dispatch = useDispatch();
     const userData = useSelector(state => state.user.data);
+    const userInfo = useSelector(state => state.another.userInfo);
     const [isLoading, setLoading] = useState(false);
     const [toggle, setToggle] = useState(false);
     const onToggle = () => {
@@ -90,6 +91,7 @@ const CreatePost = ({composers, userId}) => {
     }
     const onPosting = () => {
         if(isLoading) return;
+        console.log(userInfo)
         setLoading(true)
         let formData = new FormData();
         let config = {
@@ -105,8 +107,8 @@ const CreatePost = ({composers, userId}) => {
         }
         http.post('/posts', formData, config)
             .then(res => {
-                if(userId !== undefined)
-                    dispatch(getUserPostList({id: userId}));
+                if(userInfo !== undefined)
+                    dispatch(getUserPostList({id: userInfo.id}));
                 else 
                     dispatch(getPostList());
                 Toast.fire({

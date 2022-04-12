@@ -66,7 +66,7 @@ const Profile = () => {
     }
     const onCreatePost = () => {
         Modal.fire({
-            html: <CreatePost userId={userId} />,
+            html: <CreatePost userId={userData.id} />,
             showConfirmButton: false,
             customClass: styles.post,
         })
