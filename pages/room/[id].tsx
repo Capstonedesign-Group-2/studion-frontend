@@ -150,6 +150,7 @@ const Room = () => {
 				if (e.type === 'datachannel') {
 					initDataChannel(e.channel);
 					dcsRef.current = { ...dcsRef.current, [e.channel.label]: e.channel }
+					console.log('ondatachannel', dcsRef.current)
 				}
 			}
 
@@ -276,6 +277,7 @@ const Room = () => {
 				// 데이터 채널 연결
 				const dc = openDataChannel(pc)
 				dcsRef.current = { ...dcsRef.current, [user.id]: dc as RTCDataChannel }
+				console.log('openDataChannel', dcsRef.current)
 
 				// 오퍼 전송
 				try {
