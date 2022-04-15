@@ -6,10 +6,12 @@ import http from "../../http/index";
 import { getUserPostList, getPostList } from "../../redux/actions/post";
 import RecodePlayer from "./RecodePlayer";
 import styles from "../../styles/soundCloud/soundCloud.module.scss";
+import Router from "next/router";
 
-const CreatePost = ({composers, userId}) => {
+const CreatePost = () => {
     const dispatch = useDispatch();
     const userData = useSelector(state => state.user.data);
+    const userInfo = useSelector(state => state.another.userInfo);
     const [isLoading, setLoading] = useState(false);
     const [toggle, setToggle] = useState(false);
     const onToggle = () => {
@@ -105,8 +107,10 @@ const CreatePost = ({composers, userId}) => {
         }
         http.post('/posts', formData, config)
             .then(res => {
-                if(userId !== undefined)
-                    dispatch(getUserPostList({id: userId}));
+                if(userInfo !== undefined) {
+                    dispatch(getUserPostList({id: userData.id}));
+                    Router.push(`/soundcloud`)
+                }
                 else 
                     dispatch(getPostList());
                 Toast.fire({

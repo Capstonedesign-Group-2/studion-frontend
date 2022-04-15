@@ -11,6 +11,7 @@ import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 
 const Article = ({ post, userId, onClickProfile }) => {
     const [comment, setComment] = useState('');
+    const [isLike, setLike] = useState(false);
     const userData = useSelector(state => state.user.data);
     const comments = useSelector(state => state.post.commentList);
     const nextUrl = useSelector(state => state.post.commentNextUrl);
@@ -33,7 +34,6 @@ const Article = ({ post, userId, onClickProfile }) => {
         }
         http.post('/comments', commentData)
             .then(res => {
-                console.log('comments : ', res);
                 setComment('')
                 callComments();
             }).catch(err => {
@@ -43,6 +43,28 @@ const Article = ({ post, userId, onClickProfile }) => {
     const onKeyPress = (e) => {
         if (e.key == 'Enter') {
             onClickSubmit()
+        }
+    }
+    const onClickLikeButton = () => {
+        // 좋아요 하는 것
+        if(isLike !== true) {
+            http.post(`/likes/${post.id}`, { user_id : userData.id })
+            .then(res => {
+                setLike(true)
+            })
+            .catch(err => {
+                console.error(err)
+            })
+        }
+        // 좋아요 취소
+        else {
+            http.delete(`/likes/${post.id}`, { data: {user_id : userData.id} })
+            .then(res => {
+                setLike(false)
+            })
+            .catch(err => {
+                console.log(err)
+            })
         }
     }
     const callComments = () => {
@@ -60,8 +82,6 @@ const Article = ({ post, userId, onClickProfile }) => {
         if (observerRef.current) observerRef.current.disconnect();
     
         observerRef.current = new IntersectionObserver(([entry]) => {
-            console.log('nextURL', entry.isIntersecting)
-            console.log(entry.isIntersecting && nextUrl !== null)
           if (entry.isIntersecting && nextUrl !== null) {
             dispatch(getNextCommentList({next_page_url : nextUrl}))
           }
@@ -82,7 +102,7 @@ const Article = ({ post, userId, onClickProfile }) => {
         }
     }
     return (
-        <div className="flex flex-col h-full relative">
+        <div className="flex flex-col h-full relative overflow-hidden">
             {/* 글쓴이 정보 */}
             <div className='relative flex items-center border-b-2 pb-2'>
                 {/* 사진 */}
@@ -152,12 +172,19 @@ const Article = ({ post, userId, onClickProfile }) => {
                     <div ref={observer} className="border-white h-2"/>
                 </div>
             </div>
-            <div className='w-full h-10'>
-                <AiOutlineHeart />
-                <AiFillHeart className='text-red-500'/>
-                <div className='flex w-full h-full'>
-                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...' className='pl-2 w-11/12 h-full outline-studion-400 caret-studion-400' />
-                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150'>
+            <div className='w-full'>
+                <div className='flex'>
+                    <span onClick={onClickLikeButton} >
+                        {
+                            isLike ?
+                            <AiFillHeart className='text-red-500 text-2xl'/> :
+                            <AiOutlineHeart className='text-2xl inline'/> 
+                        }
+                    </span>
+                </div>
+                <div className='flex w-full'>
+                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...' className='pl-2 w-11/12 h-full outline-studion-400 caret-studion-400 py-2' />
+                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150 py-2'>
                         게시
                     </div>
                 </div>

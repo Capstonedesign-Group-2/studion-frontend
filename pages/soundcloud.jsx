@@ -1,6 +1,7 @@
 import AppLayout from "../components/common/AppLayout"
 import SoundCloudContainer from "../components/soundCloud/SoundCloudContainer"
 import { stayLoggedIn } from '../http/stay'
+import { getAnotherUserInfo } from "../redux/actions/another"
 import { getPostList } from "../redux/actions/post"
 import wrapper from '../redux/store'
 
@@ -8,7 +9,7 @@ const SoundCloud = ({ userInfo }) => {
   return (
     <div>
       <AppLayout>
-        <SoundCloudContainer userInfo={userInfo} />
+        <SoundCloudContainer userId={ userInfo.id } />
       </AppLayout>
     </div>
   )

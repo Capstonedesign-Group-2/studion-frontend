@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import Image from "next/image"
 import { Modal } from "../common/modals"
 import CreatePost from "./CreatePost"
@@ -8,26 +8,28 @@ import http from "../../http"
 import { BiMessageDetail } from 'react-icons/bi'
 import Link from "next/link"
 import Follow from "./Follow"
+import { getAnotherUserInfo, getFollowData } from "../../redux/actions/another"
 
-const Profile = ({ userId, userInfo }) => {
+const Profile = ({userId}) => {
     const userData = useSelector(state => state.user.data)
-    // const [userInfo, setUserInfo] = useState(userData);
-    const [following, setFollowing] = useState({});
+    const userInfo = (useSelector(state => state.another.userInfo) !== null ? useSelector(state => state.another.userInfo) : userData)
+    const following = useSelector(state => state.another.following);
+    const [flwLoading, setFlwLoading] = useState(false);
+    const dispatch = useDispatch();
     // dropdown
     const onClickFollow = () => {
+        if(flwLoading) return;
+        setFlwLoading(true);
         if (following.status !== true) {
             http.post('/follows', {
                 follower: userData.id,
                 following: userInfo.id
             })
                 .then(res => {
-                    console.log('follower : ', res)
-                    setFollowing({
-                        ...following,
-                        status: true
-                    })
-                    console.log('get')
+                    dispatch(getFollowData({ userInfo: userInfo.id, userData: userData.id }))
+                    dispatch(getAnotherUserInfo({ id: userInfo.id }))
                     getFollowData();
+                    setFlwLoading(false)
                 })
                 .catch(err => {
                     console.error(err);
@@ -36,69 +38,35 @@ const Profile = ({ userId, userInfo }) => {
             http.delete(`/follows/${following.follow_id}`)
                 .then(res => {
                     console.log('delete',res);
-                    setFollowing({
-                        ...following,
-                        status: false
-                    });
-                    getFollowData();
+                    dispatch(getAnotherUserInfo({ id: userInfo.id }))
+                    dispatch(getFollowData({ userInfo: userInfo.id, userData: userData.id }));
+                    setFlwLoading(false)
                 })
                 .catch(err => {
-                    console.err(err);
+                    console.error(err);
                 })
         }
     }
     // 팔로우, 팔로잉 하는 유저 정보 알기
     const onClickFollowUser = (kind) => {
-        if (userId !== undefined) {
-            http.get(`/follows/${userId}/${kind}`)
-                .then(res => {
-                    Modal.fire({
-                        html: <Follow followUserInfos={res.data} />,
-                        showConfirmButton: false,
-                        customClass: styles.followList,
-                    })
-                })
-                .catch(err => {
-                    console.error(err);
-                })
-        } else {
-            http.get(`/follows/${userData.id}/${kind}`)
-                .then(res => {
-                    Modal.fire({
-                        html: <Follow followUserInfos={res.data} />,
-                        showConfirmButton: false,
-                        customClass: styles.followList,
-                    })
-                })
-                .catch(err => {
-                    console.error(err);
-                })
-        }
+        Modal.fire({
+            html: <Follow userId={userInfo.id} kind={kind}/>,
+            showConfirmButton: false,
+            customClass: styles.followList,
+        })
     }
     const onCreatePost = () => {
         Modal.fire({
-            html: <CreatePost userId={userId} />,
+            html: <CreatePost />,
             showConfirmButton: false,
             customClass: styles.post,
         })
     }
-    const getFollowData = () => {
-        if (userId !== undefined) {
-            console.log('getFollowData')
-            http.post(`/follows/${userId}`,{ user_id: userData.id })
-                .then(res => {
-                    console.log(res)
-                    setFollowing(res.data)
-                })
-                .catch(err => {
-                    setFollowing(null);
-                    console.error(err);
-                })
-        }
-    }
+
     useEffect(() => {
-        getFollowData()
-    }, [])
+        
+        
+    }, []) 
 
     return (
         <div className="flex flex-col items-center xl:flex-row justify-between xl:items-end">
@@ -109,7 +77,7 @@ const Profile = ({ userId, userInfo }) => {
                             {userInfo?.image
                                 ? <Image className="w-full rounded-full" src='/' layout="fill" alt="profile image" />
                                 : <div className='flex w-full aspect-square rounded-full bg-studion-400 justify-center items-center text-white text-7xl md:text-4xl xl:text-5xl'>
-                                    <p>{userInfo.name.slice(0, 2).toUpperCase()}</p>
+                                    <p>{userInfo?.name.slice(0, 2).toUpperCase()}</p>
                                 </div>
                             }
                         </div>
@@ -119,7 +87,7 @@ const Profile = ({ userId, userInfo }) => {
                                     Name
                                 </span>
                                 <h3 className="font-medium text-3xl leading-8">
-                                    {userInfo.name}
+                                    {userInfo?.name}
                                 </h3>
                             </div>
                             <div className="items-center grid grid-cols-2 mt-1 pr-24">
@@ -127,7 +95,7 @@ const Profile = ({ userId, userInfo }) => {
                                     <span className="text-xs text-gray-500 block">
                                         フォロー
                                     </span>
-                                    <h4>{console.log(userInfo)}</h4>
+                                    <h4>{userInfo?.followings}</h4>
                                 </div>
 
                                 <div className="relative ml-8">
@@ -135,7 +103,7 @@ const Profile = ({ userId, userInfo }) => {
                                         <span className="text-xs text-gray-500 block ">
                                             フォロワー
                                         </span>
-                                        <h4>{userInfo.followers}</h4>
+                                        <h4>{userInfo?.followers}</h4>
                                     </div>
 
                                 </div>
@@ -145,7 +113,7 @@ const Profile = ({ userId, userInfo }) => {
                     </div>
                     <div className="mt-10 flex justify-end items-center w-full md:w-1/2 ">
                         {
-                            (userInfo.id === userData?.id) ?
+                            (userInfo?.id === userData?.id) ?
                                 <>
                                     <a className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
                                         Edit profile
@@ -156,14 +124,11 @@ const Profile = ({ userId, userInfo }) => {
                                 </>
                                 :
                                 <>
-                                    <div onClick={onClickFollow} style={(following.status !== false && following.status !== undefined) ? { background: "#206276", color: "white" } : {}} className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+                                    <div onClick={onClickFollow} style={(following?.status !== false ) ? { background: "#206276", color: "white" } : {}} className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
                                         {
-                                            (following.status !== true)
+                                            (following?.status !== true)
                                                 ?
                                                 <>
-                                                    {
-                                                        console.log(following)
-                                                    }
                                                     フォロー
                                                 </>
                                                 :
