@@ -17,18 +17,18 @@ export const getFollowData = createAsyncThunk(
     return res.data
   }
 )
-export const getFollowUsersData = createAsyncThunk(
-  'another/getFollowUsersData',
-  async (data, thunkAPI) => {
-    const res = await http.get(`/follows/${data.userId}/${data.kind}`)
-    return res.data
-  }
-)
-export const getNextFollowUsersData = createAsyncThunk(
-  'another/getNextFollowUsersData',
-  async (data, thunkAPI) => {
-    const res = await http.get(data.next_page_url)
-    console.log('getNextFollowUsersData', res)
-    return res.data
-  }
-)
+// export const getFollowUsersData = createAsyncThunk(
+//   'another/getFollowUsersData',
+//   async (data, thunkAPI) => {
+//     const res = await http.get(`/follows/${data.userId}/${data.kind}`)
+//     return res.data
+//   }
+// )
+// export const getNextFollowUsersData = createAsyncThunk(
+//   'another/getNextFollowUsersData',
+//   async (data, thunkAPI) => {
+//     const res = await http.get(data.next_page_url)
+//     console.log('getNextFollowUsersData', res)
+//     return res.data
+//   }
+// )

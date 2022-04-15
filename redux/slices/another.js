@@ -7,12 +7,13 @@ const initialState = {
     getAnotherUserInfoError: null,
 
     following: null,
+    getFollowUsersData: null,
     getFollowDataError: null,
 
-    getFollowUsersData: null,
     nextUrl: null,
-    getNextFollowUsersDataLoading: false,
+    kind: null,
     getFollowUsersDataError: null,
+    getNextFollowUsersDataLoading: false,
     getNextFollowUsersDataError: null,
 }
 
@@ -46,33 +47,34 @@ const anotherSlice = createSlice({
       .addCase(getFollowData.rejected, (state, action) => { // room/getFollowData/rejected
         state.getFollowDataError = action.error.message;
       })
-      // 팔로우 하고 있는 유저들 정보
-      .addCase(getFollowUsersData.pending, (state, action) => { // room/getFollowUsersData/pending
-        state.getFollowUsersDataError = null;
-      })
-      .addCase(getFollowUsersData.fulfilled, (state, action) => { // room/getFollowUsersData/fulfilled
-        state.getFollowUsersData = action.payload;
-        state.nextUrl = action.payload.follows.next_page_url
-        state.getFollowUsersDataError = null;
-      })
-      .addCase(getFollowUsersData.rejected, (state, action) => { // room/getFollowUsersData/rejected
-        state.getFollowUsersDataError = action.error.message;
-      })
-      // 팔로우 하고 있는 유저들 정보
-      .addCase(getNextFollowUsersData.pending, (state, action) => { // room/getNextFollowUsersData/pending
-        state.getNextFollowUsersDataLoading = true;
-        state.getNextFollowUsersDataError = null;
-      })
-      .addCase(getNextFollowUsersData.fulfilled, (state, action) => { // room/getNextFollowUsersData/fulfilled
-        state.getNextFollowUsersDataLoading = false;
-        state.getNextFollowUsersData = action.payload;
-        state.nextUrl = action.payload.follows.next_page_url
-        state.getNextFollowUsersDataError = null;
-      })
-      .addCase(getNextFollowUsersData.rejected, (state, action) => { // room/getNextFollowUsersData/rejected
-        state.getNextFollowUsersDataLoading = false;
-        state.getNextFollowUsersDataError = action.error.message;
-      })
+      // // 팔로우 하고 있는 유저들 정보
+      // .addCase(getFollowUsersData.pending, (state, action) => { // room/getFollowUsersData/pending
+      //   state.getFollowUsersDataError = null;
+      // })
+      // .addCase(getFollowUsersData.fulfilled, (state, action) => { // room/getFollowUsersData/fulfilled
+      //   state.getFollowUsersData = action.payload.follows.data;
+      //   state.nextUrl = action.payload.follows.next_page_url;
+      //   state.kind = action.payload.kind
+      //   state.getFollowUsersDataError = null;
+      // })
+      // .addCase(getFollowUsersData.rejected, (state, action) => { // room/getFollowUsersData/rejected
+      //   state.getFollowUsersDataError = action.error.message;
+      // })
+      // // 다음 페이지 팔로우 하고 있는 유저들 정보
+      // .addCase(getNextFollowUsersData.pending, (state, action) => { // room/getNextFollowUsersData/pending
+      //   state.getNextFollowUsersDataLoading = true;
+      //   state.getNextFollowUsersDataError = null;
+      // })
+      // .addCase(getNextFollowUsersData.fulfilled, (state, action) => { // room/getNextFollowUsersData/fulfilled
+      //   state.getNextFollowUsersDataLoading = false;
+      //   state.getFollowUsersData = [...state.getFollowUsersData, ...action.payload.follows.data];
+      //   state.nextUrl = action.payload.follows.next_page_url
+      //   state.getNextFollowUsersDataError = null;
+      // })
+      // .addCase(getNextFollowUsersData.rejected, (state, action) => { // room/getNextFollowUsersData/rejected
+      //   state.getNextFollowUsersDataLoading = false;
+      //   state.getNextFollowUsersDataError = action.error.message;
+      // })
   },
 });
 

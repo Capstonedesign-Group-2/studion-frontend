@@ -1,16 +1,18 @@
 import Router from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getNextFollowUsersData } from "../../redux/actions/another";
+// import { getNextFollowUsersData, getFollowUsersData } from "../../redux/actions/another";
 import { Modal } from "../common/modals"
 import wrapper from '../../redux/store';
 import Loader from "../common/Loader";
+import http from "../../http";
 
-const Follow = ({ usersData }) => {
+const Follow = ({ userId, kind }) => {
     const observerRef = useRef()
-    const isLoading = useSelector(state => state.another.getNextFollowUsersDataLoading)
-    const nextUrl = useSelector(state => state.another.nextUrl)
-    const dispatch = useDispatch();
+    const [usersData, setUsersData] = useState(null);
+    const [isLoading, setLoading] = useState(false);
+    const [nextUrl, setNextUrl] = useState(null);
+    // const dispatch = useDispatch();
     const onClickProfile = (ClickedUserId) => {
         console.log('onClickProfile')
         Modal.close();
@@ -22,7 +24,21 @@ const Follow = ({ usersData }) => {
     
         observerRef.current = new IntersectionObserver(([entry]) => {
           if (entry.isIntersecting && nextUrl !== null) {
-            dispatch(getNextFollowUsersData({next_page_url : usersData.follows.next_page_url}))
+            setLoading(true)
+            http.get(nextUrl)
+            .then(res => {
+                console.log(res)
+                setUsersData((prev) => [
+                    ...prev,
+                    ...res.data.follows.data
+                ])
+                setNextUrl(res.data.follows.next_page_url)
+                setLoading(false)
+            })
+            .catch(err => {
+                setLoading(false)
+                console.error(err)
+            })
             console.log('hello')
           }
         });
@@ -30,18 +46,29 @@ const Follow = ({ usersData }) => {
         node && observerRef.current.observe(node);
       };
     useEffect(() => {
-        console.log('followUserInfos', usersData)
+        setLoading(true)
+        http.get(`/follows/${userId}/${kind}`)
+        .then(res => {
+            console.log(res);
+            setUsersData(res.data.follows.data)
+            setNextUrl(res.data.follows.next_page_url)
+            setLoading(false)
+        })
+        .catch(err => {
+            console.error(err)
+        })
+        // dispatch(getFollowUsersData({userId: userId, kind: kind}))
     }, [])
     return (
         <div className="w-full h-full relative">
             <header className="">
-                <p className="font-bold">{usersData?.kind =='follower' ? 'フォロワー' : 'フォロー中'}</p>
+                <p className="font-bold">{kind =='follower' ? 'フォロワー' : 'フォロー中'}</p>
             </header>
             <div className="w-full h-fit text-left">
                 {
-                    usersData?.follows.data && 
-                    usersData.follows.data.map(userData => (
-                        <User onClickProfile={onClickProfile} kind={usersData.kind} userData={userData} key={userData.id} />
+                    usersData && 
+                    usersData.map(userData => (
+                        <User onClickProfile={onClickProfile} kind={kind} userData={userData} key={userData.id} />
                     ))
                 }
             </div>
@@ -66,7 +93,7 @@ const User = ({userData, kind, onClickProfile}) => {
             <div onClick={() => onClickProfile(follower.id)} className="hover:bg-gray-200 hover:cursor-pointer items-center p-1 flex w-full mt-2 duration-200">       
                 <div>
                     {
-                        follower.image !== null 
+                        follower?.image !== null 
                         ? <img src={info.image} />
                         : <div className="flex w-10 h-10 rounded-full bg-studion-400 items-center justify-center text-white">
                             {follower.name.slice(0, 2).toUpperCase()}
@@ -76,12 +103,12 @@ const User = ({userData, kind, onClickProfile}) => {
                 <div className="ml-3">
                     {/* name */}
                     <div className="font-semibold">
-                        {follower.name}
+                        {follower?.name}
                     </div>
 
                     {/* email */}
                     <div className="text-base">
-                        {follower.email}
+                        {follower?.email}
                     </div>
                 </div>
             </div>
@@ -89,22 +116,22 @@ const User = ({userData, kind, onClickProfile}) => {
             <div onClick={() => onClickProfile(following.id)} className="hover:bg-gray-200 p-1 hover:cursor-pointer flex items-center w-full mt-2">       
                 <div>
                     {
-                        following.image !== null 
-                        ? <img src={info.image} />
+                        following?.image !== null 
+                        ? <img src={following?.image} />
                         : <div className="flex w-10 h-10 rounded-full bg-studion-400 items-center justify-center text-white">
-                            {following.name.slice(0, 2).toUpperCase()}
+                            {following?.name.slice(0, 2).toUpperCase()}
                         </div>
                     }
                 </div>
                 <div className="ml-3">
                     {/* name */}
                     <div className="font-semibold">
-                        {following.name}
+                        {following?.name}
                     </div>
 
                     {/* email */}
                     <div className="text-base">
-                        {following.email}
+                        {following?.email}
                     </div>
                 </div>
             </div>

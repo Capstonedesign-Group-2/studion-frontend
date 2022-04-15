@@ -8,13 +8,12 @@ import http from "../../http"
 import { BiMessageDetail } from 'react-icons/bi'
 import Link from "next/link"
 import Follow from "./Follow"
-import { getAnotherUserInfo, getFollowData, getFollowUsersData } from "../../redux/actions/another"
+import { getAnotherUserInfo, getFollowData } from "../../redux/actions/another"
 
 const Profile = ({userId}) => {
     const userData = useSelector(state => state.user.data)
     const userInfo = (useSelector(state => state.another.userInfo) !== null ? useSelector(state => state.another.userInfo) : userData)
     const following = useSelector(state => state.another.following);
-    const followUsersData = useSelector(state => state.another.getFollowUsersData)
     const [flwLoading, setFlwLoading] = useState(false);
     const dispatch = useDispatch();
     // dropdown
@@ -50,7 +49,11 @@ const Profile = ({userId}) => {
     }
     // 팔로우, 팔로잉 하는 유저 정보 알기
     const onClickFollowUser = (kind) => {
-        dispatch(getFollowUsersData({userId: userInfo.id, kind: kind}))
+        Modal.fire({
+            html: <Follow userId={userInfo.id} kind={kind}/>,
+            showConfirmButton: false,
+            customClass: styles.followList,
+        })
     }
     const onCreatePost = () => {
         Modal.fire({
@@ -61,13 +64,9 @@ const Profile = ({userId}) => {
     }
 
     useEffect(() => {
-        if(!followUsersData) return
-        Modal.fire({
-            html: <Follow usersData={followUsersData} />,
-            showConfirmButton: false,
-            customClass: styles.followList,
-        })
-    }, [followUsersData])
+        
+        
+    }, []) 
 
     return (
         <div className="flex flex-col items-center xl:flex-row justify-between xl:items-end">
