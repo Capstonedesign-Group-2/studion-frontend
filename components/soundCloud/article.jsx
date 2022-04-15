@@ -34,7 +34,6 @@ const Article = ({ post, userId, onClickProfile }) => {
         }
         http.post('/comments', commentData)
             .then(res => {
-                console.log('comments : ', res);
                 setComment('')
                 callComments();
             }).catch(err => {
@@ -51,7 +50,6 @@ const Article = ({ post, userId, onClickProfile }) => {
         if(isLike !== true) {
             http.post(`/likes/${post.id}`, { user_id : userData.id })
             .then(res => {
-                console.log(res)
                 setLike(true)
             })
             .catch(err => {
@@ -62,7 +60,6 @@ const Article = ({ post, userId, onClickProfile }) => {
         else {
             http.delete(`/likes/${post.id}`, { data: {user_id : userData.id} })
             .then(res => {
-                console.log(res)
                 setLike(false)
             })
             .catch(err => {
@@ -85,8 +82,6 @@ const Article = ({ post, userId, onClickProfile }) => {
         if (observerRef.current) observerRef.current.disconnect();
     
         observerRef.current = new IntersectionObserver(([entry]) => {
-            console.log('nextURL', entry.isIntersecting)
-            console.log(entry.isIntersecting && nextUrl !== null)
           if (entry.isIntersecting && nextUrl !== null) {
             dispatch(getNextCommentList({next_page_url : nextUrl}))
           }

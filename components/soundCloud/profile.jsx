@@ -8,28 +8,29 @@ import http from "../../http"
 import { BiMessageDetail } from 'react-icons/bi'
 import Link from "next/link"
 import Follow from "./Follow"
-import { getAnotherUserInfo } from "../../redux/actions/another"
+import { getAnotherUserInfo, getFollowData, getFollowUsersData } from "../../redux/actions/another"
 
-const Profile = () => {
+const Profile = ({userId}) => {
     const userData = useSelector(state => state.user.data)
     const userInfo = (useSelector(state => state.another.userInfo) !== null ? useSelector(state => state.another.userInfo) : userData)
-    const [following, setFollowing] = useState({});
+    const following = useSelector(state => state.another.following);
+    const followUsersData = useSelector(state => state.another.getFollowUsersData)
+    const [flwLoading, setFlwLoading] = useState(false);
     const dispatch = useDispatch();
     // dropdown
     const onClickFollow = () => {
+        if(flwLoading) return;
+        setFlwLoading(true);
         if (following.status !== true) {
             http.post('/follows', {
                 follower: userData.id,
                 following: userInfo.id
             })
                 .then(res => {
-                    console.log('follower : ', res)
-                    setFollowing({
-                        ...following,
-                        status: true
-                    })
+                    dispatch(getFollowData({ userInfo: userInfo.id, userData: userData.id }))
                     dispatch(getAnotherUserInfo({ id: userInfo.id }))
                     getFollowData();
+                    setFlwLoading(false)
                 })
                 .catch(err => {
                     console.error(err);
@@ -38,12 +39,9 @@ const Profile = () => {
             http.delete(`/follows/${following.follow_id}`)
                 .then(res => {
                     console.log('delete',res);
-                    setFollowing({
-                        ...following,
-                        status: false
-                    });
                     dispatch(getAnotherUserInfo({ id: userInfo.id }))
-                    getFollowData();
+                    dispatch(getFollowData({ userInfo: userInfo.id, userData: userData.id }));
+                    setFlwLoading(false)
                 })
                 .catch(err => {
                     console.error(err);
@@ -52,40 +50,24 @@ const Profile = () => {
     }
     // 팔로우, 팔로잉 하는 유저 정보 알기
     const onClickFollowUser = (kind) => {
-        http.get(`/follows/${userInfo.id}/${kind}`)
-            .then(res => {
-                Modal.fire({
-                    html: <Follow followUserInfos={res.data} />,
-                    showConfirmButton: false,
-                    customClass: styles.followList,
-                })
-            })
-            .catch(err => {
-                console.error(err);
-            })
+        dispatch(getFollowUsersData({userId: userInfo.id, kind: kind}))
     }
     const onCreatePost = () => {
         Modal.fire({
-            html: <CreatePost userId={userData.id} />,
+            html: <CreatePost />,
             showConfirmButton: false,
             customClass: styles.post,
         })
     }
-    const getFollowData = () => {
-        http.post(`/follows/${userInfo?.id}`,{ user_id: userData.id })
-            .then(res => {
-                console.log('getFollowData',res)
-                setFollowing(res.data)
-            })
-            .catch(err => {
-                setFollowing(null);
-                console.error(err);
-            })
-    }
+
     useEffect(() => {
-        getFollowData()
-        
-    }, [])
+        if(!followUsersData) return
+        Modal.fire({
+            html: <Follow usersData={followUsersData} />,
+            showConfirmButton: false,
+            customClass: styles.followList,
+        })
+    }, [followUsersData])
 
     return (
         <div className="flex flex-col items-center xl:flex-row justify-between xl:items-end">
@@ -143,14 +125,11 @@ const Profile = () => {
                                 </>
                                 :
                                 <>
-                                    <div onClick={onClickFollow} style={(following.status !== false && following.status !== undefined) ? { background: "#206276", color: "white" } : {}} className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+                                    <div onClick={onClickFollow} style={(following?.status !== false ) ? { background: "#206276", color: "white" } : {}} className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
                                         {
-                                            (following.status !== true)
+                                            (following?.status !== true)
                                                 ?
                                                 <>
-                                                    {
-                                                        console.log(following)
-                                                    }
                                                     フォロー
                                                 </>
                                                 :

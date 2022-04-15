@@ -9,7 +9,7 @@ const SoundCloud = ({ userInfo }) => {
   return (
     <div>
       <AppLayout>
-        <SoundCloudContainer userInfo={userInfo} />
+        <SoundCloudContainer userId={ userInfo.id } />
       </AppLayout>
     </div>
   )

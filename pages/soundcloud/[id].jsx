@@ -4,7 +4,7 @@ import SoundCloudContainer from "../../components/soundCloud/SoundCloudContainer
 import http from "../../http"
 import { stayLoggedIn } from '../../http/stay'
 import { getUserPostList } from "../../redux/actions/post"
-import { getAnotherUserInfo } from "../../redux/actions/another"
+import { getAnotherUserInfo, getFollowData } from "../../redux/actions/another"
 import wrapper from '../../redux/store'
 import { useSelector } from "react-redux"
 
@@ -34,10 +34,11 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async (c
   }
   let queryId = context.query.id
   await store.dispatch(getAnotherUserInfo({ id: queryId }))
-  
+
   
   try {
-    await store.dispatch(getUserPostList({ id: queryId }))  
+    await store.dispatch(getUserPostList({ id: queryId })) 
+    await store.dispatch(getFollowData({ userInfo: queryId, userData: store.getState().user.data.id })) 
     return { props: { } }
   } catch (err) {
     console.error('[Error] get user data error soundcloud/[id].jsx', err)
