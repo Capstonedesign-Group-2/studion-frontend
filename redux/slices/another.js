@@ -6,7 +6,7 @@ const initialState = {
 
   getAnotherUserInfoError: null,
 
-  following: [],
+  following: null,
   getFollowUsersData: null,
   getFollowDataError: null,
 
