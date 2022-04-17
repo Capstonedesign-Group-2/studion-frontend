@@ -19,7 +19,6 @@ const Profile = ({ userId }) => {
     // dropdown
     const onClickFollow = () => {
         if (flwLoading) return;
-        console.log(following)
         if (!following) return;
         setFlwLoading(true);
         if (following.status !== true) {
