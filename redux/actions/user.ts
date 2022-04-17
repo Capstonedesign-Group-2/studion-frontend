@@ -50,9 +50,9 @@ export const getUser = createAsyncThunk<IUser, { accessToken?: string }>(
   'user/getInfo',
   async (data, thunkAPI) => {
     if (data.accessToken) { // SSR
-      axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`
-      axios.defaults.baseURL = process.env.NEXT_PUBLIC_BACK_URL || 'http://localhost:8000/api'
-      const res = await axios.get('/users/user')
+      http.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`
+      http.defaults.baseURL = process.env.NEXT_PUBLIC_BACK_URL || 'http://localhost:8000/api'
+      const res = await http.get('/users/user')
       if (res) {
         return res.data
       } else {
