@@ -1,7 +1,6 @@
 import AppLayout from "../components/common/AppLayout"
 import SoundCloudContainer from "../components/soundCloud/SoundCloudContainer"
 import { stayLoggedIn } from '../http/stay'
-import { getAnotherUserInfo } from "../redux/actions/another"
 import { getPostList } from "../redux/actions/post"
 import wrapper from '../redux/store'
 
@@ -9,7 +8,7 @@ const SoundCloud = ({ userInfo }) => {
   return (
     <div>
       <AppLayout>
-        <SoundCloudContainer userId={ userInfo.id } />
+        <SoundCloudContainer userId={userInfo.id} />
       </AppLayout>
     </div>
   )
@@ -25,6 +24,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async (c
       },
     }
   }
+
   await store.dispatch(getPostList())
   return { props: { userInfo: store.getState().user.data } }
 })
