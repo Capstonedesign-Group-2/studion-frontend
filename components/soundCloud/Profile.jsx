@@ -10,7 +10,7 @@ import Link from "next/link"
 import Follow from "./Follow"
 import { getAnotherUserInfo, getFollowData } from "../../redux/actions/another"
 
-const Profile = ({userId}) => {
+const Profile = ({ userId }) => {
     const userData = useSelector(state => state.user.data)
     const userInfo = (useSelector(state => state.another.userInfo) !== null ? useSelector(state => state.another.userInfo) : userData)
     const following = useSelector(state => state.another.following);
@@ -18,7 +18,8 @@ const Profile = ({userId}) => {
     const dispatch = useDispatch();
     // dropdown
     const onClickFollow = () => {
-        if(flwLoading) return;
+        if (flwLoading) return;
+        if (!following) return;
         setFlwLoading(true);
         if (following.status !== true) {
             http.post('/follows', {
@@ -37,7 +38,7 @@ const Profile = ({userId}) => {
         } else {
             http.delete(`/follows/${following.follow_id}`)
                 .then(res => {
-                    console.log('delete',res);
+                    console.log('delete', res);
                     dispatch(getAnotherUserInfo({ id: userInfo.id }))
                     dispatch(getFollowData({ userInfo: userInfo.id, userData: userData.id }));
                     setFlwLoading(false)
@@ -50,7 +51,7 @@ const Profile = ({userId}) => {
     // 팔로우, 팔로잉 하는 유저 정보 알기
     const onClickFollowUser = (kind) => {
         Modal.fire({
-            html: <Follow userId={userInfo.id} kind={kind}/>,
+            html: <Follow userId={userInfo.id} kind={kind} />,
             showConfirmButton: false,
             customClass: styles.followList,
         })
@@ -64,9 +65,9 @@ const Profile = ({userId}) => {
     }
 
     useEffect(() => {
-        
-        
-    }, []) 
+
+
+    }, [])
 
     return (
         <div className="flex flex-col items-center xl:flex-row justify-between xl:items-end">
@@ -124,7 +125,7 @@ const Profile = ({userId}) => {
                                 </>
                                 :
                                 <>
-                                    <div onClick={onClickFollow} style={(following?.status !== false ) ? { background: "#206276", color: "white" } : {}} className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+                                    <div onClick={onClickFollow} style={(following?.status !== false) ? { background: "#206276", color: "white" } : {}} className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
                                         {
                                             (following?.status !== true)
                                                 ?
