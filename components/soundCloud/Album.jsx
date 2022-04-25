@@ -2,16 +2,17 @@ import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import Link from "next/link"
 import { Modal } from "../common/modals";
 import PostContainer from "./PostContainer"
-
+import postSlice from "../../redux/slices/post";
+import { useDispatch } from "react-redux";
 const Album = ({ post, userId }) => {
-    
+    const dispatch = useDispatch()
     const openModal = () => {
+        dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
             html: <PostContainer post={post} userId={userId} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.post,
-            // width: '1024px'
         })
     }
     return (

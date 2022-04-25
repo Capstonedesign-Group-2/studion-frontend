@@ -73,6 +73,13 @@ const Article = ({ post, userId, onClickProfile }) => {
 
     useEffect(() => {
         callComments()
+        http.post(`likes/exist/${post.id}`, {user_id: userData.id})
+        .then(res => {
+            setLike(res.data.status)
+        })
+        .catch(err => {
+            console.error(err)
+        })
     }, [])
     // useEffect(() => {
     //     commentRef.current.scrollTop = commentRef.current.scrollHeight
@@ -160,7 +167,7 @@ const Article = ({ post, userId, onClickProfile }) => {
                             </div> :
 
                             comments?.map(comment => (
-                                <Comment comment={comment} key={comment.id} onClickProfile={onClickProfile}/>
+                                <Comment comment={comment} userData={userData} key={comment.id} onClickProfile={onClickProfile}/>
                             ))
                     }
                     {

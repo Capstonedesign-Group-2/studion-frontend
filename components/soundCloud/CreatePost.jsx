@@ -7,6 +7,7 @@ import { getUserPostList, getPostList } from "../../redux/actions/post";
 import RecodePlayer from "./RecodePlayer";
 import styles from "../../styles/soundCloud/soundCloud.module.scss";
 import Router from "next/router";
+import Loader from "../common/Loader";
 
 const CreatePost = () => {
     const dispatch = useDispatch();
@@ -99,6 +100,7 @@ const CreatePost = () => {
         }
         formData.append("user_id", post.user_id)
         formData.append("content", post.content)
+        console.log(formData)
         if (post.image.name) {
             formData.append("image", post.image)
         }
@@ -233,11 +235,20 @@ const CreatePost = () => {
                         <span className="ml-2 font-semibold mt-1">{userData.name}</span>
                     </div>
                     <div className="mt-4 w-full px-3">
+                        {/* <CKEditor 
+                            editor={ ClassicEditor }
+                        /> */}
                         <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 p-2 border-black w-full decoration-none">
 
                         </textarea>
                         <div className="cursor-pointer hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>
-                            제출
+                            { isLoading
+                                ? <Loader className="h-3" />
+                                :
+                                <>
+                                    제출
+                                </>
+                            }
                         </div>
                     </div>
                     <div className="w-full flex justify-center pt-20">

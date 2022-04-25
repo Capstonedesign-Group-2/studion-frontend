@@ -64,10 +64,6 @@ const Profile = ({ userId }) => {
         })
     }
 
-    useEffect(() => {
-        console.log('following', following)
-    }, [following])
-
     return (
         <div className="flex flex-col items-center xl:flex-row justify-between xl:items-end">
             <div className="w-full md:w-1/2">
