@@ -87,7 +87,7 @@ const Post = ({ post }) => {
     }
     const likeModal = () => {
         Modal.fire({
-            html: <LikeModal post={post.id} />,
+            html: <LikeModal postId={post.id} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.followList,
@@ -181,22 +181,23 @@ const Post = ({ post }) => {
             </div>
             <div className="px-3 text-sm">
                 {/* 좋아요 수 */}
-                <div onClick={likeModal} className="font-semibold cursor-pointer">
+                <div onClick={likeModal} className="font-semibold inline-block cursor-pointer">
                     {`LIKE ${likes}`}
                 </div>
                 {/* 글 */}
-                <div className="mt-2">
-                    <div className="font-semibold mr-1 inline-block">{`${post.user.name}`}</div>
-                    <div className="font-base inline-block w-10">{`${post.content}`}</div>
+                <div className="mt-2 flex">
+                    <div className="font-semibold mr-1">{`${post.user.name}`}</div>
+                    <div className="font-base w-20 truncate">{`${post.content}`}</div>
+                    <div className="text-gray-400 cursor-pointer" onClick={openModal}>더보기</div>
                 </div>
             </div>
             {/* 추가된 댓글 */}
             <div className="py-2 px-3 text-sm">
                 {
                     comments?.map((data, index) => 
-                        <div className="mt-2" key={index + data.post_id}>
-                            <div className="font-semibold mr-1 inline-block">{`${data.name}`}</div>
-                            <div className="font-base inline-block w-10">{`${data.content}`}</div>
+                        <div className="mt-2 flex" key={index + data.post_id}>
+                            <div className="font-semibold mr-1">{`${data.name}`}</div>
+                            <div className="font-base">{`${data.content}`}</div>
                         </div>
                     )
                 }

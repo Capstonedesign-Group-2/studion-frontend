@@ -1,11 +1,46 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import http from "../../http";
+import Loader from "../common/Loader";
 import { Modal } from "../common/modals";
+import Router from "next/router";
 const LikeModal = ({postId}) => {
+    const observerRef = useRef()
+    const [usersData, setUsersData] = useState(null);
+    const [isLoading, setLoading] = useState(false);
+    const [nextUrl, setNextUrl] = useState(null);
+
+    const observer = (node) => {
+        if (isLoading) return;
+        if (observerRef.current) observerRef.current.disconnect();
+    
+        observerRef.current = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting && nextUrl !== null) {
+            setLoading(true)
+            http.get(nextUrl)
+            .then(res => {
+                setUsersData((prev) => [
+                    ...prev,
+                    ...res.data.likes.data
+                ])
+                setNextUrl(res.data.likes.next_page_url)
+                setLoading(false)
+            })
+            .catch(err => {
+                setLoading(false)
+                console.error(err)
+            })
+          }
+        });
+    
+        node && observerRef.current.observe(node);
+      };
     useEffect(() => {
+        setLoading(true)
         http.get(`/likes/${postId}`)
         .then(res => {
-            console.log(res)
+            setUsersData(res.data.likes.data)
+            setNextUrl(res.data.likes.next_page_url)
+            setLoading(false)
         })
         .catch(err => {
             console.error(err)
@@ -24,38 +59,43 @@ const LikeModal = ({postId}) => {
             {/* 좋아요 유저 목록 */}
             <div className="mt-1 w-full overflow-y-auto">
                 <div className="w-full">
-                    <User />
-                    <User />
-                    <User />
-                    <User />
-                    <User />
-                    <User />
-                    <User />
+                    {
+                        usersData?.map((userData) => <User key={userData.id} data={userData.user} />)
+                    }
                 </div>
+                {
+                    isLoading && 
+                    <div className="w-full flex justify-center mt-20">
+                        <Loader />
+                    </div>
+                }
+                <div ref={observer} className="border-white h-2"/>
             </div>
         </div>
     )
 }
-const User = ({user}) => {
+const User = ({data}) => {
     return (
-        <div className="flex items-center py-2 pl-2 hover:bg-gray-100 cursor-pointer">
+        <div className="flex items-center py-2 pl-2 hover:bg-gray-100 cursor-pointer" 
+             onClick={() => {
+                Modal.close();
+                Router.push(`/soundcloud/${data.id}`)
+             }}>
             {/* 사진 */}
             {
-                user?.image
+                data?.image
                 ?
                 <div className=""></div>
                 :
-                <div className="w-12 h-12 bg-studion-400 rounded-full text-white flex items-center justify-center font-base text-xl">
-                    <div>
-                        PP
-                    </div>
+                <div className="w-12 h-12 uppercase bg-studion-400 rounded-full text-white flex items-center justify-center font-base text-xl">
+                    {data.name.slice(0, 2)}
                 </div>
             }
             <div className="ml-2 text-left text-base flex flex-col align-top">
             {/* 이름 */}
-                <div className="h-5 font-semibold">ppang</div>
+                <div className="h-5 font-semibold">{data.name}</div>
             {/* 이메일 */}
-                <div className="text-gray-400">ppang@gmail.com</div>
+                <div className="text-gray-400">{data.email}</div>
             </div>
         </div>
     )
