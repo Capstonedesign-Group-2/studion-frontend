@@ -1,7 +1,5 @@
 import Router from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-// import { getNextFollowUsersData, getFollowUsersData } from "../../redux/actions/another";
 import { Modal } from "../common/modals"
 import wrapper from '../../redux/store';
 import Loader from "../common/Loader";

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 const Comment = ({comment, onClickProfile, userData}) => {
-    useEffect(() => {
-        console.log(comment)
-    }, [])
+    // useEffect(() => {
+    //     console.log(comment)
+    // }, [])
     const [dropDown, setDropDown] = useState(false)
     return (
         <div className="flex relative">
