@@ -3,7 +3,7 @@ import SoundCloudContainer from "../components/soundCloud/SoundCloudContainer"
 import { stayLoggedIn } from '../http/stay'
 import { getPostList } from "../redux/actions/post"
 import wrapper from '../redux/store'
-import Profile from "../components/soundCloud/Profile"
+import ChatSection from "../components/soundCloud/ChatSection"
 import PostList from "../components/soundCloud/PostList"
 
 const SoundCloud = ({ userInfo }) => {
@@ -17,9 +17,15 @@ const SoundCloud = ({ userInfo }) => {
                         <h2 className="text-2xl font-medium mb-8">
                             サウンドくも
                         </h2>
-                        <Profile userId={userInfo.id}/>
+                        <div className="flex">
+                          <PostList />
+                          <ChatSection />
+                          {/* 채팅방 */}
+                          {/* <div className="bg-gray-100 shadow-md flex-1 mt-4 ml-3" style={{ height: '500px', width:'100px' }}>
+                            d
+                          </div> */}
+                          </div>
                         {/* <Link href="/soundcloud/1">hello</Link> */}
-                        <PostList />
                     </div>
                 </div>
             </div>

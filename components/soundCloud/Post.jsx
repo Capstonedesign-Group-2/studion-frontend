@@ -114,7 +114,7 @@ const Post = ({ post }) => {
         }
     }
     return (
-        <div className="mx-auto border bg-white shadow-md rounded-md h-full w-full max-w-3xl mt-4">
+        <div className="mx-auto border bg-white shadow-md rounded-md w-full max-w-3xl mb-4">
             {/* 프로필 */}
             <div className="w-full flex w-full border-b items-center font-semibold text-lg p-4 relative inline-block">
                 {/* 프로필 이미지 */}

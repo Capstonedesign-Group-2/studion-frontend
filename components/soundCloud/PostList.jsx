@@ -22,11 +22,13 @@ const PostList = () => {
         node && observerRef.current.observe(node);
       };
     return (
-        <div className="mt-9 w-full h-full mx-auto">
+        <div className="h-full relative">
+          <div>
             {
                 postList.map(post => <Post key={post.id} post={post}/>)
             }
             <div ref={observer} />
+          </div>
         </div>
     )    
 }

@@ -3,10 +3,16 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { IoCreateOutline } from 'react-icons/io5'
+import { AiOutlineComment } from 'react-icons/ai'
+import Router from 'next/router'
 
 import styles from '../../styles/common/layout.module.scss'
+import btnStyles from '../../styles/soundCloud/soundCloud.module.scss'
 import { RootState } from '../../redux/slices'
 import MenuBox from './MenuBox'
+import { Modal } from './modals'
+import CreatePost from '../soundCloud/CreatePost'
 
 const Header = () => {
   const router = useRouter()
@@ -33,6 +39,20 @@ const Header = () => {
           }
 
           <div className={styles.btnContainer}>
+            {/* 글 작성 버튼 */}
+            {(router.pathname === '/soundcloud') &&
+
+              <>
+              <IoCreateOutline className='w-7 h-7 mt-4 cursor-pointer' onClick={() => {
+                Modal.fire({
+                  html: <CreatePost />,
+                  showConfirmButton: false,
+                  customClass: btnStyles.post,
+                })
+              }}/>
+                <AiOutlineComment className='w-7 h-7 mt-4 cursor-pointer' onClick={() => Router.push(`/chat`)}/>
+              </>
+            }
             {/* 로그인 상태 확인 */}
             {userData
               ? <div className={styles.authBtn}>
