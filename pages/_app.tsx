@@ -8,6 +8,7 @@ import wrapper from '../redux/store'
 import { Modal } from '../components/common/modals'
 import Router from 'next/router'
 import '../styles/globals.css'
+import Socket from '../socket'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const getUserError = useSelector<RootState, string>((state) => state.user.getUserError)
@@ -24,6 +25,10 @@ function MyApp({ Component, pageProps }: AppProps) {
       })
     }
   }, [getUserError])
+
+  useEffect(() => {
+    console.log(Socket)
+  }, [])
 
   return <Component {...pageProps} />
 }
