@@ -1,4 +1,3 @@
-import Link from "next/link"
 import RecodePlayer from "./RecodePlayer";
 import { useState, useRef } from "react";
 import styles from "../../styles/soundCloud/soundCloud.module.scss"

@@ -1,8 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const Comment = ({comment, onClickProfile}) => {
+const Comment = ({comment, onClickProfile, userData}) => {
+    // useEffect(() => {
+    //     console.log(comment)
+    // }, [])
+    const [dropDown, setDropDown] = useState(false)
     return (
-        <div>
+        <div className="flex relative">
             <div className="mt-2 font-semibolds">
                 {/* 사진 / 아이디*/}
                 <div className="flex ">
@@ -29,6 +33,16 @@ const Comment = ({comment, onClickProfile}) => {
                     </div>
                 </div>
             </div>
+            {   
+                userData.id === comment.user.id &&
+                <div onClick={() => setDropDown(!dropDown)} className='absolute right-3 top-4 hover:scale-125 transition-all cursor-pointer'>
+                    <svg aria-label="옵션 더 보기" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24">
+                        <circle cx="12" cy="12" r="1.5"></circle>
+                        <circle cx="6" cy="12" r="1.5"></circle>
+                        <circle cx="18" cy="12" r="1.5"></circle>
+                    </svg>
+                </div>
+            }
         </div>
     )
 }

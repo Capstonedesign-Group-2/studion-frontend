@@ -32,7 +32,9 @@ const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    
+    deleteNextUrl(state, action) {
+      state.commentNextUrl = null
+    },
   },
   extraReducers: (builder) => {
     builder
