@@ -1,6 +1,6 @@
 const ChatListItem = () => {
     return(
-        <div className="flex px-2 py-1 hover:bg-gray-100">
+        <div className="flex px-2 py-1 hover:bg-gray-100 cursor-pointer">
             {/* 프사 */}
             <div className="w-12 h-12 bg-studion-400 rounded-full text-white flex justify-center items-center text-xls">
                 PP
