@@ -43,14 +43,14 @@ const Header = () => {
             {(router.pathname === '/soundcloud') &&
 
               <>
-              <IoCreateOutline className='w-7 h-7 mt-4 cursor-pointer' onClick={() => {
-                Modal.fire({
-                  html: <CreatePost />,
-                  showConfirmButton: false,
-                  customClass: btnStyles.post,
-                })
-              }}/>
-                <AiOutlineComment className='w-7 h-7 mt-4 cursor-pointer' onClick={() => Router.push(`/chat`)}/>
+                <IoCreateOutline className='w-7 h-7 mt-4 cursor-pointer' onClick={() => {
+                  Modal.fire({
+                    html: <CreatePost />,
+                    showConfirmButton: false,
+                    // customClass: btnStyles.post,
+                  })
+                }} />
+                <AiOutlineComment className='w-7 h-7 mt-4 cursor-pointer' onClick={() => Router.push(`/chat`)} />
               </>
             }
             {/* 로그인 상태 확인 */}
