@@ -47,7 +47,7 @@ const Header = () => {
                   Modal.fire({
                     html: <CreatePost />,
                     showConfirmButton: false,
-                    // customClass: btnStyles.post,
+                    customClass: { popup: btnStyles.post },
                   })
                 }} />
                 <AiOutlineComment className='w-7 h-7 mt-4 cursor-pointer' onClick={() => Router.push(`/chat`)} />
