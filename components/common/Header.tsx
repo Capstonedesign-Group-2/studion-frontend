@@ -66,7 +66,7 @@ const Header = () => {
                 {menu && <MenuBox menu={menu} setMenu={setMenu} />}
               </div>
               : <div className={styles.unAuthBtn}>
-                <Link href="/login"><a><button className={styles.loginBtn}>ログイン</button></a></Link>
+                <Link href="/login"><a><button className={styles.loginBtn}>ログイン2</button></a></Link>
                 <Link href="/join"><a><button className={styles.joinBtn}>会員登録</button></a></Link>
               </div>
             }
