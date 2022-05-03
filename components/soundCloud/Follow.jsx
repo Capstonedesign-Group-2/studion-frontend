@@ -58,15 +58,15 @@ const Follow = ({ userId, kind }) => {
         // dispatch(getFollowUsersData({userId: userId, kind: kind}))
     }, [])
     return (
-        <div className="w-full h-full relative">
+        <div className="w-full h-full relative flex flex-col">
             <header className="">
                 <p className="font-bold">{kind =='follower' ? 'フォロワー' : 'フォロー中'}</p>
             </header>
-            <div className="w-full h-fit text-left">
+            <div className="w-full text-left flex-1 overflow-y-auto">
                 {
                     usersData && 
                     usersData.map(userData => (
-                        <User onClickProfile={onClickProfile} kind={kind} userData={userData} key={userData.id} />
+                        <Users onClickProfile={onClickProfile} kind={kind} userData={userData} key={userData.id} />
                     ))
                 }
             </div>
@@ -80,7 +80,7 @@ const Follow = ({ userId, kind }) => {
         </div>
     )
 }
-const User = ({userData, kind, onClickProfile}) => {
+const Users = ({userData, kind, onClickProfile}) => {
     
     const {follower, following} = userData
 

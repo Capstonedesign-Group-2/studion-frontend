@@ -76,56 +76,6 @@ const Chat = () => {
       console.log(messages)
     }
   }
-  const handleOnMessage = (res) => {
-    let newMessage = {
-      flag: res.flag,
-      image: res.image,
-      name: res.name,
-      timestamp: res.timestamp,
-      user_id: res.user_id,
-      content: res.content
-    }
-    setMessages((prev) => [...prev, newMessage])
-    // console.log('messages : ' , messages)
-  }
-  // useEffect(() => {
-  //   chatRef.current.scrollTop = chatRef.current.scrollHeight
-  // }, [messages])
-  // useEffect(() => {
-  //   console.log('main : ', messages)
-  //   socket.current = io(socket_url);
-  //   register()
-  //   console.log(socket.current)
-  //   socket.current.on('user_register_on', res => {
-  //     console.log(res)
-  //   })
-  //   // socket.current.on('send_msg_on', res => {
-  //   //   console.log('send_msg_on', res)
-  //   //   console.log('user_id : ' ,selectUser)
-  //   //   setMessages([
-  //   //       ...messages,
-  //   //       {
-  //   //           user_id: selectUser.to.user_id,
-  //   //           content: res.msg
-  //   //       }
-  //   //   ])
-  //   //   console.log(messages)
-  //   // })
-  //   socket.current.on("get_chats_on", res => {
-  //     console.log('get_chats_on', typeof res.data)
-  //     setUserList(res.data)
-  //   })
-  //   socket.current.on("get_messages_on", res => {
-  //     setMessages(res);
-  //   })
-  //   socket.current.on('send_msg_on', res => handleOnMessage(res))
-  // }, [])
-  // useEffect(() => {
-  //   console.log('selectUser', selectUser)
-  //   if(selectUser) {
-  //     onClickUserList()
-  //   }
-  // }, [selectUser])
 
   return (
     <div>
@@ -138,7 +88,7 @@ const Chat = () => {
 
           {list &&
             <div className={styles.listShow}>
-              <ChatList socket={socket} userList={userList} userData={userData} setSelectUser={setSelectUser} onClickUserList={onClickUserList} />
+              <ChatList userList={userList} userData={userData} setSelectUser={setSelectUser} onClickUserList={onClickUserList} />
             </div>
           }
         </div>

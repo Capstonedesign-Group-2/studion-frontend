@@ -1,7 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit'
 import io from 'socket.io-client'
 import roomSlice from '../redux/slices/room'
-import { IMessage, IRoom, IUser } from '../types'
+import { IChat, IMessage, IRoom, IUser } from '../types'
 
 export interface JoinData {
   user: IUser,
@@ -86,6 +86,11 @@ export class Socket {
   // 합주실 정보 업데이트
   emitUpdateRoomInfo(data: IRoom) {
     this.socket.emit('update_room_info', data)
+  }
+
+  // 메세지 보내기
+  emitSendNewMessage(data: IChat) {
+    this.socket.emit('send_chat_msg', data)
   }
 }
 
