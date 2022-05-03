@@ -9,12 +9,16 @@ import { BiMessageDetail } from 'react-icons/bi'
 import Link from "next/link"
 import Follow from "./Follow"
 import { getAnotherUserInfo, getFollowData } from "../../redux/actions/another"
+import Socket from "../../socket"
+import Router from "next/router"
 
 const Profile = ({ userId }) => {
     const userData = useSelector(state => state.user.data)
+    const otherUser = useSelector(state => state.another.userInfo)
     const userInfo = (useSelector(state => state.another.userInfo) !== null ? useSelector(state => state.another.userInfo) : userData)
     const following = useSelector(state => state.another.following);
     const [flwLoading, setFlwLoading] = useState(false);
+    
     const dispatch = useDispatch();
     // dropdown
     const onClickFollow = () => {
@@ -55,6 +59,28 @@ const Profile = ({ userId }) => {
             showConfirmButton: false,
             customClass: styles.followList,
         })
+    }
+    const onClickChat = () => {
+        Socket.socket.on("create_chat_on", (res) => {
+            Router.push(`/chat/${res.id}`)
+            return () => {
+                Socket.removeAllListeners()
+              }
+        })
+        Socket.socket.emit("create_chat", [
+            // 나
+            {
+              user_id: userData.id,
+              name: userData.name,
+              image: userData.image
+            },
+            // 상대
+            {
+              user_id: otherUser.id,
+              name: otherUser.name,
+              image: otherUser.image
+            }
+          ])
     }
     const onCreatePost = () => {
         Modal.fire({
@@ -133,12 +159,8 @@ const Profile = ({ userId }) => {
                                                 </>
                                         }
                                     </div>
-                                    <div className="w-full pt-2">
-                                        <Link href="/chat">
-                                            <a className="inline-flex w-full items-center">
-                                                <BiMessageDetail className="inline-flex w-full h-6" href="/chat" />
-                                            </a>
-                                        </Link>
+                                    <div className="w-full flex items-center h-10">
+                                        <BiMessageDetail onClick={onClickChat} className="mx-auto inline-flex w-10 h-full cursor-pointer" />
                                     </div>
                                 </>
                         }

@@ -45,7 +45,8 @@ const Post = ({ post }) => {
     }
     const onKeyPress = (e) => {
         if (e.key == 'Enter') {
-            onClickSubmit()
+            if(comment !== '') onClickSubmit()
+            else return;
         }
     }
     const onClickLikeButton = () => {

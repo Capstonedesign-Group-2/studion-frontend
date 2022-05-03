@@ -1,5 +1,5 @@
 import type { AppProps } from 'next/app'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import cookie from 'react-cookies'
 
@@ -9,9 +9,11 @@ import { Modal } from '../components/common/modals'
 import Router from 'next/router'
 import '../styles/globals.css'
 import Socket from '../socket'
+import { IUser } from '../types'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const getUserError = useSelector<RootState, string>((state) => state.user.getUserError)
+  const userData = useSelector<RootState, IUser>((state) => state.user.data)
 
   useEffect(() => {
     if (getUserError === 'Request failed with status code 401') {
@@ -27,8 +29,14 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [getUserError])
 
   useEffect(() => {
-    console.log(Socket)
-  }, [])
+    if (cookie.load('accessToken') && userData) {
+      Socket.socket.on('user_register_on', (data:any) => {})
+      Socket.socket.emit('user_register', { id: userData.id })
+    }
+    else {
+      Socket.removeAllListeners();
+    }
+  }, [cookie.load('accessToken')])
 
   return <Component {...pageProps} />
 }

@@ -4,33 +4,30 @@ import Header from "../../components/soundCloud/chat/Header"
 import wrapper from '../../redux/store'
 import { useState, useEffect, useRef } from "react"
 import ChatList from "../../components/soundCloud/chat/ChatList"
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
-import io from "socket.io-client"
 import Router from 'next/router'
+import Socket from '../../socket'
+import { getAnotherUserInfo, getRoomId } from '../../redux/actions/another'
+
 const Chat = () => {
   const [list, setList] = useState(false);
   const [userList, setUserList] = useState([]);
-  const [selectUser, setSelectUser] = useState(null);
+
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+
   const socket = useRef();
-  const chatRef = useRef();
-  const userData = useSelector(state => state.user.data);
-  const socket_url = "http://localhost:5000/chat";
-  const register = () => {
-    socket.current.emit('user_register', {
-      id: userData.id
-    })
-    socket.current.emit("get_chats", userData.id)
-  }
+  const chatRef = useRef(null);
+  const userData = useSelector(state => state.user.data); 
+  const otherUser = useSelector(state => state.another.userInfo)
+  const dispatch = useDispatch()
   // 클릭 이벤트
   const onClickSend = () => {
     if (message.trim() === '') return;
-
-    socket.current.emit('send_msg', {
-      id: selectUser.to.user_id, // 상대 user_id
-      room_id: selectUser.id, // 내 방 고유번호
+    Socket.emitSendNewMessage({
+      id: otherUser.id, // 상대 user_id
+      room_id: Router.query.id, // 내 방 고유번호
       msg: {  // 나의 정보
         user_id: userData.id,
         content: message,
@@ -38,8 +35,8 @@ const Chat = () => {
         name: userData.name
       }
     })
-    setMessages([
-      ...messages,
+    setMessages((prev) => [
+      ...prev,
       {
         user_id: userData.id,
         content: message,
@@ -50,95 +47,59 @@ const Chat = () => {
     console.log('click')
     setMessage('')
   }
-  const onClickUserList = () => {
-    socket.current.emit('enter_room', {
-      data: [
-        {
-          user_id: userData.id,
-          name: userData.name,
-          image: userData.image
-        },
-        {
-          user_id: selectUser.to.user_id,
-          name: selectUser.to.name,
-          image: selectUser.to.image
-        }
-      ]
-    })
-    socket.current.emit('get_messages', {
-      room_id: selectUser.id,
-      user_id: selectUser.to.user_id
-    })
-  }
   const onKeyPress = (e) => {
     if (e.key == 'Enter') {
       onClickSend()
-      console.log(messages)
     }
   }
-  const handleOnMessage = (res) => {
-    let newMessage = {
-      flag: res.flag,
-      image: res.image,
-      name: res.name,
-      timestamp: res.timestamp,
-      user_id: res.user_id,
-      content: res.content
-    }
-    setMessages((prev) => [...prev, newMessage])
-    // console.log('messages : ' , messages)
-  }
-  // useEffect(() => {
-  //   chatRef.current.scrollTop = chatRef.current.scrollHeight
-  // }, [messages])
-  // useEffect(() => {
-  //   console.log('main : ', messages)
-  //   socket.current = io(socket_url);
-  //   register()
-  //   console.log(socket.current)
-  //   socket.current.on('user_register_on', res => {
-  //     console.log(res)
-  //   })
-  //   // socket.current.on('send_msg_on', res => {
-  //   //   console.log('send_msg_on', res)
-  //   //   console.log('user_id : ' ,selectUser)
-  //   //   setMessages([
-  //   //       ...messages,
-  //   //       {
-  //   //           user_id: selectUser.to.user_id,
-  //   //           content: res.msg
-  //   //       }
-  //   //   ])
-  //   //   console.log(messages)
-  //   // })
-  //   socket.current.on("get_chats_on", res => {
-  //     console.log('get_chats_on', typeof res.data)
-  //     setUserList(res.data)
-  //   })
-  //   socket.current.on("get_messages_on", res => {
-  //     setMessages(res);
-  //   })
-  //   socket.current.on('send_msg_on', res => handleOnMessage(res))
-  // }, [])
-  // useEffect(() => {
-  //   console.log('selectUser', selectUser)
-  //   if(selectUser) {
-  //     onClickUserList()
-  //   }
-  // }, [selectUser])
+  // 하단 고정
+  useEffect(() => {
+    if(!chatRef.current) return
+    chatRef.current.scrollTop = chatRef.current.scrollHeight
+  }, [messages])
 
+  // 소켓
+  useEffect(() => {
+    Socket.socket.on('exit_on', res => {
+      console.log(res)
+      Router.push(`/chat`)
+    })
+    Socket.socket.on('send_chat_msg_on', res => {
+      console.log('send_chat_msg_on', res)
+      setMessages((prev) => [
+        ...prev,
+        res
+      ])
+    })
+    Socket.socket.on("get_chat_data_on", async (res) => {
+      await dispatch(getAnotherUserInfo({id: res}))
+      Socket.socket.emit("get_messages", {
+        room_id: Router.query.id,
+        user_id: res
+      })
+    })
+    Socket.socket.emit("get_chat_data", {
+      room_id: Router.query.id,
+      user_id: userData.id
+    })
+    Socket.socket.on("get_messages_on", (messages) => {
+      setMessages(messages)
+    })
+    return () => { Socket.removeAllListeners() }
+  }, [])
+  
   return (
     <div>
       <Header setList={setList} list={list} />
       <div className='pt-14 h-screen max-h-screen w-full border-2'>
         <div className='flex h-full w-full relative'>
           <div className="w-full flex justify-center">
-            <ChatContainer socket={socket} message={message} selectUser={selectUser} messages={messages} setMessage={setMessage} chatRef={chatRef} onKeyPress={onKeyPress} onClickSend={onClickSend} />
+            <ChatContainer message={message} messages={messages} setMessage={setMessage} chatRef={chatRef} onKeyPress={onKeyPress} onClickSend={onClickSend} />
           </div>
 
           {list &&
             <div className={styles.listShow}>
-              <ChatList socket={socket} userList={userList} userData={userData} setSelectUser={setSelectUser} onClickUserList={onClickUserList} />
+              <ChatList />
             </div>
           }
         </div>
@@ -146,6 +107,7 @@ const Chat = () => {
     </div>
   )
 }
+
 
 export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
   await stayLoggedIn(context, store);
@@ -157,7 +119,10 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async (c
       },
     }
   }
-  // await store.dispatch(getPostList())
+  let userData = store.getState().user.data
+  let queryId = parseInt(context.query.id)
+  // await store.dispatch(getRoomId({ roomId: queryId, userId: userData.id }))
+  // await store.dispatch(getAnotherUserInfo())
   return { props: {} }
 })
 

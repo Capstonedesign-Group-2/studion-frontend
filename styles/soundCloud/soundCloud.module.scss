@@ -228,13 +228,15 @@
   to {top: 20px;}
 }
 .chatSection {
-  @apply border-y-2 rounded-md bg-gray-100 w-full h-full overflow-y-scroll text-xl;  min-width: 400px;
+  @apply border-y-2 rounded-md bg-gray-100 w-full h-full overflow-y-scroll text-xl;  
+  min-width: 400px;
   &::-webkit-scrollbar {
     display: none;
   }
 }
 .chatListMenu {
   @apply overflow-y-scroll flex-1 max-h-fit;
+  width: 300px;
   &::-webkit-scrollbar {
     display: none;
   }

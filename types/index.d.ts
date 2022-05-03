@@ -97,3 +97,17 @@ declare interface IPost {
   user_id: string
   user: IUser
 }
+
+/**
+ * components/soundCloud/Chat*
+ */
+ declare interface IChat {
+    id: number, // 상대 user_id
+    room_id: number, // 내 방 고유번호
+    msg: {  // 나의 정보
+      user_id: number,
+      content: string,
+      image: string | null,
+      name: string
+    }
+  }

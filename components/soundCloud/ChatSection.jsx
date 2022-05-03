@@ -1,25 +1,39 @@
 import { useSelector } from "react-redux";
 import ChatListItem from "./ChatListItem"
+import styles from "../../styles/soundCloud/soundCloud.module.scss"
+import { Modal } from "../common/modals";
+import Follow from "./Follow";
+import Socket from "../../socket";
+import { useEffect, useState } from "react";
+import Loader from "../common/Loader";
+
 const ChatSection = () => {
     const userData = useSelector(state => state.user.data)
+    const [userList, setUserList] = useState(null)
+    useEffect(() => {
+        Socket.socket.on("get_chats_on", res => {
+            console.log('res', res)
+            setUserList(res.data)
+        })
+        Socket.socket.emit("get_chats", userData.id)
+    }, [])
     return (
-        <div className="sticky ml-4 top-16 bg-white shadow-md rounded-md flex-1 flex flex-col" style={{ height:'700px' }}>
+        <div className="sticky ml-4 top-16 bg-white shadow-md rounded-md flex-1 flex flex-col mb-4" style={{ height:'700px' }}>
             <Profile userData={userData}/>
             <hr />
             <h1 className="text-xl p-2">トーク</h1>
             <div className="px-2 py-1 overflow-y-auto flex-1">
-                <ChatListItem />
-                <ChatListItem />
-                <ChatListItem />
-                <ChatListItem />
-                <ChatListItem />
-                <ChatListItem />
-                <ChatListItem />
-                <ChatListItem />
-                <ChatListItem />
-                <ChatListItem />
-                <ChatListItem />
-                <ChatListItem />
+            {
+                console.log('userList', userList)
+            }
+                {
+                    userList !== null
+                    ? userList.map((user) => <ChatListItem key={user.id} chatRoom={user} />)
+                    : 
+                    <div className="w-full h-full flex justify-center items-center">
+                        <Loader />
+                    </div>
+                }
                 
             </div>
         </div>        
@@ -29,6 +43,13 @@ const ChatSection = () => {
 export default ChatSection;
 
 const Profile = ({userData}) => {
+    const onClickFollowUser = (kind) => {
+        Modal.fire({
+            html: <Follow userId={userData.id} kind={kind} />,
+            showConfirmButton: false,
+            customClass: styles.followList,
+        })
+    }
     return (
         <div className="p-5 flex flex-col items-center md:items-start md:flex-row relative">
             <div className="w-40 relative">
