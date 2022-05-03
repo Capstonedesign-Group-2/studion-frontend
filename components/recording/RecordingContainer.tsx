@@ -12,7 +12,7 @@ const RecordingContainer = () => {
       <hr />
       <div className="px-5 xl:px-16 pb-8 pt-8">
         <Recorder />
-        <Controller />
+        {/* <Controller /> */}
       </div>
     </>
   )
