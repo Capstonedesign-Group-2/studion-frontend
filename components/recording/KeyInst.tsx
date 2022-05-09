@@ -1,38 +1,66 @@
-import Image from "next/image"
-import { MdArrowBackIosNew } from 'react-icons/md'
+import { useState } from "react"
 
-const KeyInst = () => {
+import DrumComponent from "./inst/drum/DrumComponent"
+import Mixer from "./inst/mixer/Mixer"
+import PianoComponent from "./inst/piano/PianoComponents"
+import InstBtn from "./InstBtn"
+
+type Props = {
+  mixerRef: React.MutableRefObject<Mixer | undefined>
+}
+
+export type Inst = {
+  id: number
+  imgPath: string
+  type: string
+}
+
+const instList: Inst[] = [
+  {
+    id: 1,
+    imgPath: '/images/recording/vocal.png',
+    type: 'vocal'
+  },
+  {
+    id: 2,
+    imgPath: '/images/recording/drum.png',
+    type: 'drum'
+  },
+  {
+    id: 3,
+    imgPath: '/images/recording/piano.png',
+    type: 'piano'
+  },
+  {
+    id: 4,
+    imgPath: '/images/recording/guitar.png',
+    type: 'guitar'
+  },
+  {
+    id: 5,
+    imgPath: '/images/recording/bass.png',
+    type: 'bass'
+  }
+]
+
+const KeyInst: React.FC<Props> = ({ mixerRef }) => {
+  const [selectedInst, setSelectedInst] = useState<string>('')
   return (
     <>
       <h3 className="text-xl font-medium mb-5">
         # Select Virtual Instrument
       </h3>
-      <div className="flex justify-between items-center px-20">
-        <div className="h-12 w-12 bg-studion-100 opacity-60 rounded-full flex justify-center items-center">
-          <MdArrowBackIosNew className="text-xl translate-x-[-2px]" />
-        </div>
-        <div className="flex gap-x-36">
-          <span className='flex justify-center items-center overflow-hidden rounded-full h-20 w-20 bg-studion-100'>
-            <Image src='/images/vocal.svg' alt="icon" width={80} height={80} />
-          </span>
-          <span className='flex justify-center items-center overflow-hidden rounded-full h-20 w-20 bg-studion-100'>
-            <Image src='/images/main/guitar_icon.png' alt="icon" width={40} height={39} />
-          </span>
-          <span className='flex justify-center items-center overflow-hidden rounded-full h-20 w-20 bg-studion-100'>
-            <Image src='/images/main/guitar_icon.png' alt="icon" width={40} height={39} />
-          </span>
-          <span className='flex justify-center items-center overflow-hidden rounded-full h-20 w-20 bg-studion-100'>
-            <Image src='/images/main/drum_icon.png' alt="icon" width={40} height={30} />
-          </span>
-          <span className='flex justify-center items-center overflow-hidden rounded-full h-20 w-20 bg-studion-100'>
-            <Image src='/images/main/piano_icon.png' alt="icon" width={40} height={20} />
-          </span>
-        </div>
-        <div className="h-12 w-12 bg-studion-100 opacity-60 rounded-full flex justify-center items-center">
-          <MdArrowBackIosNew className="text-xl rotate-180" />
-        </div>
+      <div className="grid grid-cols-5 gap-4 mt-4">
+        {
+          instList.map(inst => <InstBtn key={inst.id} inst={inst} setSelectedInst={setSelectedInst} />)
+        }
       </div>
-      <p className="text-center mt-4 text-gray-400 text-xl">Guitar</p>
+      <div style={{ display: selectedInst === 'drum' ? 'block' : 'none' }}>
+        <DrumComponent />
+      </div>
+      <div style={{ display: selectedInst === 'piano' ? 'block' : 'none' }}>
+        <PianoComponent selectedInst={selectedInst} mixerRef={mixerRef} />
+      </div>
     </>
   )
 }

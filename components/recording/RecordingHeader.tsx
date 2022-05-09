@@ -1,12 +1,8 @@
 import Link from "next/link"
 import { useSelector } from "react-redux"
+
 import { RootState } from "../../redux/slices"
 import { IRoom } from "../../types"
-
-interface Props {
-  menu: boolean
-  setMenu: React.Dispatch<React.SetStateAction<boolean>>
-}
 
 const RecordingHeader = () => {
   const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)

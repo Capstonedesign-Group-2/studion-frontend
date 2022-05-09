@@ -1,7 +1,13 @@
 import { useEffect, useRef } from "react"
 import { Stream } from "stream"
 
-const Recorder: React.FC = () => {
+import Mixer from "./inst/mixer/Mixer"
+
+type Props = {
+  mixerRef: React.MutableRefObject<Mixer | undefined>
+}
+
+const Recorder: React.FC<Props> = ({ mixerRef }) => {
   const wavesurferRef = useRef<any>()
   const waveformRef = useRef<HTMLDivElement>(null)
 
@@ -31,8 +37,9 @@ const Recorder: React.FC = () => {
         ]
       });
 
-      wavesurferRef.current.microphone.on('deviceReady', function (stream: Stream) {
+      wavesurferRef.current.microphone.on('deviceReady', function (stream: MediaStream) {
         console.log('Device ready!', stream);
+        mixerRef.current = new Mixer(stream)
       });
       wavesurferRef.current.microphone.on('deviceError', function (code: Error) {
         console.warn('Device error: ' + code);

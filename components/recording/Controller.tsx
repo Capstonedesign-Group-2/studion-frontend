@@ -5,8 +5,8 @@ import { BsFillVolumeUpFill, BsFillRecordFill } from 'react-icons/bs'
 import { FaStop, FaPlay } from 'react-icons/fa'
 import { VolumeSlider } from "../room/player/mixer/VolumeSlider"
 
-interface Props {
-  audioFile: AudioFile
+type Props = {
+  audioFile?: AudioFile
   isPlaying: boolean
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>
 }

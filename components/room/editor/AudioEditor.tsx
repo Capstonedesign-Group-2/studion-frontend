@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import audioMaker from 'audiomaker'
 import { MdReplay, MdOutlinePlayCircleFilled, MdOutlinePauseCircleFilled, MdOutlineFileDownload } from 'react-icons/md';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaShareSquare } from 'react-icons/fa';
 
 import { AudioFile } from "../player/mixer/Recorder"
 import { Modal } from "../../common/modals"
@@ -47,7 +47,13 @@ const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
     });
   }
 
+  const onPublish = () => {
+
+  }
+
   const onDelete = () => {
+    let con = confirm('音源を削除しますか。')
+    if (!con) return
     setAudioFiles((prev) => prev.filter(v => v !== audioFile))
     Modal.close()
   }
@@ -171,17 +177,24 @@ const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
           <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
             onClick={onDownload}
           >
-            <MdOutlineFileDownload />
+            <MdOutlineFileDownload className="text-xl" />
           </div>
           <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
-            onClick={onDelete}
+            onClick={onPublish}
           >
-            <FaTrash />
+            <FaShareSquare />
           </div>
         </div>
         <p className="text-gray-400">
           {(regionRef.current?.end - regionRef.current?.start).toFixed(1)}s / {wavesurferRef.current?.getDuration().toFixed(1)}s
         </p>
+        <div className="flex-1 flex flex-row-reverse">
+          <div className='flex items-center justify-center border-[1px] border-gray-200 w-8 h-8 shadow-md rounded hover:cursor-pointer'
+            onClick={onDelete}
+          >
+            <FaTrash className="text-red-500" />
+          </div>
+        </div>
       </div>
     </div>
   )
