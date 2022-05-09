@@ -22,12 +22,15 @@ const PianoComponent = ({ selectedInst, mixerRef }: Props) => {
 
   const handleVolumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
-      // mixerRef.current?.channels[Socket.socket.id]?.piano?.setGain(newValue / 120)
+      if (!mixerRef.current) return
+      mixerRef.current.piano.setGain(newValue / 120)
     }
   }, [mixerRef])
 
   const onPlayNote = useCallback((midiNumber: string) => {
-    // mixerRef.current?.channels[Socket.socket.id]?.piano?.onKey(midiNumber)
+    if (!mixerRef.current) return
+    mixerRef.current.piano.onKey(midiNumber)
+    console.log(mixerRef.current)
   }, [mixerRef])
 
   return (

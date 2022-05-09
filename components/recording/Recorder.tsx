@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react"
-import { Stream } from "stream"
 
 import Mixer from "./inst/mixer/Mixer"
 
@@ -30,8 +29,13 @@ const Recorder: React.FC<Props> = ({ mixerRef }) => {
             numberOfInputChannels: 1,
             numberOfOutputChannels: 1,
             constraints: {
+              audio: {
+                echoCancellation: false,
+                autoGainControl: false,
+                noiseSuppression: false,
+                latency: 0
+              },
               video: false,
-              audio: true
             }
           })
         ]
@@ -59,7 +63,6 @@ const Recorder: React.FC<Props> = ({ mixerRef }) => {
   return (
     <div>
       <div className='border-[1px] border-b-0 border-gray-200 rounded-t' ref={waveformRef}></div>
-      {/* <button onClick={onStartOrStop}>start / stop</button> */}
     </div>
   )
 }

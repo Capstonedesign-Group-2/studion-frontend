@@ -1,5 +1,5 @@
 import Piano from "../piano/Piano"
-import Vocal from "../vocal/vocal"
+import Vocal from "../vocal/Vocal"
 
 export default class Mixer {
   audioContext: AudioContext
@@ -11,7 +11,7 @@ export default class Mixer {
   piano: Piano
 
   constructor(
-    public stream: MediaStream
+    public stream: MediaStream,
   ) {
     this.audioContext = new AudioContext
     this.masterGainNode = this.audioContext.createGain()
