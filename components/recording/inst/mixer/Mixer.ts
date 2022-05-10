@@ -1,3 +1,4 @@
+import Drum from "../drum/drum"
 import Piano from "../piano/Piano"
 import Vocal from "../vocal/Vocal"
 
@@ -9,6 +10,7 @@ export default class Mixer {
   recorderNode: MediaStreamAudioDestinationNode
   vocal: Vocal
   piano: Piano
+  drum: Drum
 
   constructor(
     public stream: MediaStream,
@@ -28,6 +30,7 @@ export default class Mixer {
     // 악기 인스턴스 생성
     this.vocal = new Vocal(this)
     this.piano = new Piano(this)
+    this.drum  = new Drum(this)
   }
 
   setMasterGain(value: number) {

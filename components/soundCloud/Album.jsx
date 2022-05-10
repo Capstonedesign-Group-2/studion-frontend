@@ -4,12 +4,20 @@ import { Modal } from "../common/modals";
 import PostContainer from "./PostContainer"
 import postSlice from "../../redux/slices/post";
 import { useDispatch } from "react-redux";
+import  Router  from "next/router";
 const Album = ({ post, userId }) => {
     const dispatch = useDispatch()
+    const pushRecording = (audio) => {
+        Modal.close()
+        Router.push({
+            pathname: `/recording`,
+            query: audio 
+        })
+    }
     const openModal = () => {
         dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
-            html: <PostContainer post={post} userId={userId} />,
+            html: <PostContainer pushRecording={pushRecording} post={post} userId={userId} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.post,

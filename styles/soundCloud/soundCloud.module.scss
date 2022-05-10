@@ -214,7 +214,7 @@
 }
 
 .dropDown {
-  @apply w-24 absolute right-0 top-5 bg-white rounded-md;
+  @apply w-24 absolute right-0 top-5 bg-white rounded-lg;
   animation: dropDown 0.5s;
   div {
     @apply flex flex-col border-2;

@@ -58,7 +58,7 @@ const Recorder: React.FC<Props> = ({ mixerRef }) => {
       //wavesurfer.microphone.destroy();
     }
     initWaveSurfer()
-  })
+  }, [])
 
   return (
     <div>

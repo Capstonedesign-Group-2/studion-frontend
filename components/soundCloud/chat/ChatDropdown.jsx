@@ -12,11 +12,10 @@ const ChatDropdown = ({userData, otherUser}) => {
         Router.push(`/soundcloud`)
     }
     return(
-        <div>
-            <div className="cursor-pointer" onClick={onClickExit}>
-                나가기
-            </div>
-
+        <div className="">
+            <p className="cursor-pointer font-semibold  text-red-700 hover:text-red-500 text-center" onClick={onClickExit}>
+                出る
+            </p>
         </div>
     )
 }

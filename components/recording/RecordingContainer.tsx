@@ -1,10 +1,17 @@
 import { useRef, useState } from "react"
+import { AudioFile } from "../room/player/mixer/Recorder"
 import Controller from "./Controller"
 import Mixer from "./inst/mixer/Mixer"
 import KeyInst from "./KeyInst"
 import Recorder from "./Recorder"
 
-const RecordingContainer: React.FC = () => {
+interface Props
+ {
+   audioFile: AudioFile
+   isLoading: boolean
+}
+
+const RecordingContainer: React.FC<Props> = ({ audioFile, isLoading }) => {
   const mixerRef = useRef<Mixer>()
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
 
@@ -15,8 +22,8 @@ const RecordingContainer: React.FC = () => {
       </div>
       <hr />
       <div className="px-5 xl:px-16 pb-8 pt-8">
-        <Recorder mixerRef={mixerRef} />
-        <Controller audioFile={undefined} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+        <Recorder  mixerRef={mixerRef} />
+        <Controller audioFile={audioFile} isLoading={isLoading} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
       </div>
     </>
   )

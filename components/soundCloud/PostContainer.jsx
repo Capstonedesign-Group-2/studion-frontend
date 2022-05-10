@@ -4,7 +4,7 @@ import { Modal } from "../common/modals";
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import Router from "next/router";
 
-const PostContainer = ({ post, userId }) => {
+const PostContainer = ({ post, pushRecording, userId }) => {
     const closeModal = () => {
         Modal.close();
     }
@@ -25,7 +25,7 @@ const PostContainer = ({ post, userId }) => {
             <div className="mx-auto h-full lg:flex justify-center">
                 {/* 뮤직플레이어/사진 */}
                 <div className="flex h-full items-center justify-center w-full max-screen-w-lg" style={(post.audios.length || post.images.length) ? { display: "flex" } : { display: "none" }}>
-                    <Player audio={post.audios} image={post.images} />
+                    <Player pushRecording={pushRecording} audio={post.audios} image={post.images} />
                 </div>
 
                 {/* 컨텐츠, 코멘트 */}
