@@ -23,6 +23,7 @@ const Footer = () => {
                 <ul>
                   <li><Link href="/play"><a>スサシオン</a></Link></li>
                   <li><Link href="/soundcloud"><a>サウンドくも</a></Link></li>
+                  <li><Link href="/recording"><a>レコーディング</a></Link></li>
                 </ul>
               </article>
 

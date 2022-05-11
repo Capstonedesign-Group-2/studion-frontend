@@ -1,12 +1,26 @@
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
-import Link from "next/link"
 import { Modal } from "../common/modals";
 import PostContainer from "./PostContainer"
 import postSlice from "../../redux/slices/post";
-import { useDispatch } from "react-redux";
+
 const Album = ({ post, userId }) => {
     const dispatch = useDispatch()
+    const router = useRouter()
+
     const openModal = () => {
+        if (!userId) {
+            Modal.fire({
+                icon: 'error',
+                title: 'ログインしてください！',
+                text: 'ログインが必要なサービスです。',
+                footer: <p onClick={() => router.push('login')} className="text-studion-400 hover:cursor-pointer">ログイン →</p>,
+                showConfirmButton: false,
+            })
+            return
+        }
         dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
             html: <PostContainer post={post} userId={userId} />,

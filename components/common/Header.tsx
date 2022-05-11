@@ -34,7 +34,8 @@ const Header = () => {
           {!(router.pathname === '/login' || router.pathname === '/join') &&
             <div className={styles.link}>
               <Link href="/play"><a>スタジオン</a></Link>
-              <Link href="/soundcloud"><a href="">サウンドくも</a></Link>
+              <Link href="/soundcloud"><a>サウンドくも</a></Link>
+              <Link href="/recording"><a>レコーディング</a></Link>
             </div>
           }
 

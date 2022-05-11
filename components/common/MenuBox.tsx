@@ -32,8 +32,8 @@ const MenuBox = ({ menu, setMenu }: Props) => {
   return (
     <div ref={menuRef} className={styles.userOption}>
       <div className={styles.optionList}>
-        <a>Edit Profile</a>
-        <a onClick={onLogout}>Log Out</a>
+        <a>プロフィール編集</a>
+        <a onClick={onLogout}>ログアウト</a>
       </div>
     </div>
   )

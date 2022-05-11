@@ -1,98 +1,32 @@
 // 메인 섹션
-.mainContainer {
-  @apply flex flex-col mb-32 md:mb-40 items-center justify-center min-h-screen bg-gray-50;
-}
+// .joinSection {
+//   @apply relative px-4 sm: px-6 lg:px-8;
 
-.joinSection {
-  @apply relative px-4 sm:px-6 lg:px-8;
+//   article {
+//     @apply mx-auto max-w-screen-xl;
 
-  article {
-    @apply mx-auto max-w-screen-xl;
+//     h1 {
+//       @apply text-5xl tracking-tight leading-tight font-semibold text-gray-800 sm: text-5xl md:text-6xl relative text-center pt-40;
+//     }
 
-    h1 {
-      @apply text-5xl tracking-tight leading-tight font-semibold text-gray-800 sm:text-5xl md:text-6xl relative text-center pt-40;
-    }
+//     .joinDiv {
+//       @apply relative z-10;
 
-    .joinDiv {
-      @apply relative z-10;
+//       p {
+//         @apply text-gray-800 text-xl text-center lg: mt-8 mt-12 mb-7 lg:mb-12;
+//       }
 
-      p {
-        @apply text-gray-800 text-xl text-center lg:mt-8 mt-12 mb-7 lg:mb-12;
-      }
+//       .joinBtn {
+//         @apply flex justify-center w-full;
 
-      .joinBtn {
-        @apply flex justify-center w-full;
-
-        a {
-          @apply inline-flex items-center justify-center px-5 py-3 border-transparent text-base hover:bg-studion-600 hover:text-white leading-6 rounded-md text-gray-800 bg-transparent border-2 border-studion-600 transition duration-150 ease-in-out md:text-lg md:px-6;
-          margin-bottom: 14vw;
-        }
-      }
-    }
-  }
-}
-
-.infoSection {
-  @apply bottom-60 text-center text-white bg-studion-600 w-screen flex-1 px-4 sm:px-6 lg:px-8;
-
-  article {
-    @apply text-3xl font-medium mb-2;
-
-    h2 {
-      @apply text-3xl font-medium mb-2;
-    }
-
-    h5 {
-      @apply text-xl;
-    }
-  }
-}
-
-.slider {
-  @apply px-4 sm:px-8 lg:px-10 mb-14;
-}
-
-.slideContent {
-  @apply grid grid-cols-1 lg:grid-cols-2 text-left max-w-screen-lg mx-auto gap-20 xl:gap-10;
-
-  .cardContainer {
-    @apply relative flex justify-center h-64 max-w-lg w-full lg:max-w-none mx-auto;
-
-    .mainCard {
-      @apply h-4/5 w-full rounded-md shadow-md bg-studion-300;
-    }
-
-    .subCard {
-      @apply absolute bottom-0 h-2/5 w-11/12 rounded-lg shadow-lg bg-white;
-    }
-  }
-
-  .infoContainer {
-    @apply flex flex-col;
-
-    h3 {
-      @apply text-white text-4xl font-medium mb-4;
-    }
-
-    .instList {
-      @apply flex gap-4 mb-4;
-
-      span {
-        @apply rounded-full bg-white shadow h-12 w-12;
-      }
-    }
-
-    ul {
-      @apply mb-4;
-      flex-direction: column;
-    }
-
-    .details {
-      @apply text-white bg-studion-300 duration-150 p-2.5 shadow-md cursor-pointer hover:bg-studion-200 transition-colors py-1.5 pt-2 flex items-center rounded-md;
-    }
-  }
-}
-
+//         a {
+//           @apply inline-flex items-center justify-center px-5 py-3 border-transparent text-base hover: bg-studion-600 hover:text-white leading-6 rounded-md text-gray-800 bg-transparent border-2 border-studion-600 transition duration-150 ease-in-out md:text-lg md:px-6;
+//           margin-bottom: 14vw;
+//         }
+//       }
+//     }
+//   }
+// }
 .customShapeDividerBottom1640840584 {
   position: absolute;
   width: 100vw;

@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { FC, useState } from 'react'
-import { IPost } from '../../types'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/slices'
+import { IPost, IUser } from '../../types'
 import Album from '../soundCloud/Album'
 
 interface Props {
@@ -8,7 +10,8 @@ interface Props {
 }
 
 const SoundcloudSection: FC<Props> = ({ rank }) => {
-  const [selectedDate, setSelectDate] = useState('week')
+  const [selectedDate, setSelectDate] = useState('month')
+  const userData = useSelector<RootState, IUser>((state) => state.user.data)
 
   return (
     <div className="mt-28 mb-40 lg:mb-56">
@@ -38,11 +41,25 @@ const SoundcloudSection: FC<Props> = ({ rank }) => {
       </div>
       <div className='px-4 sm:px-6 lg:px-8'>
         <div className="lg:mx-auto grid grid-cols-1 lg:grid-cols-3 place-items-center gap-12 lg:gap-10 lg:max-w-screen-xl">
-          {(rank[(`${selectedDate}` as 'week' || 'month')]).map(post => (
-            <div className='w-96 -translate-x-[12%] lg:translate-x-0 lg:w-full lg:pr-[25%]' key={post.id}>
-              <Album post={post} userId={undefined} />
-            </div>
-          ))}
+          {
+            (rank[(`${selectedDate}` as 'week' || 'month')]).length
+              ? (rank[(`${selectedDate}` as 'week' || 'month')]).map(post => (
+                <div className='w-96 -translate-x-[12%] lg:translate-x-0 lg:w-full lg:pr-[25%]' key={post.id}>
+                  <Album post={post} userId={userData?.id} />
+                </div>
+              ))
+              : (
+                <>
+                  <div></div>
+                  <div className='py-10'>
+                    <p>
+                      {selectedDate === 'week' ? '今週の' : '今月の'}トップ音源がありません。
+                    </p>
+                  </div>
+                  <div></div>
+                </>
+              )
+          }
         </div>
       </div>
       <div className='mt-24'>
