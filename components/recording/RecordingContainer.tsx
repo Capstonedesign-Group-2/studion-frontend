@@ -22,8 +22,8 @@ const RecordingContainer: React.FC<Props> = ({ audioFile, isLoading }) => {
       </div>
       <hr />
       <div className="px-5 xl:px-16 pb-8 pt-8">
-        <Recorder  mixerRef={mixerRef} />
-        <Controller audioFile={audioFile} isLoading={isLoading} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+        <Recorder mixerRef={mixerRef} />
+        <Controller mixerRef={mixerRef} audioFile={audioFile} isLoading={isLoading} setIsPlaying={setIsPlaying} />
       </div>
     </>
   )

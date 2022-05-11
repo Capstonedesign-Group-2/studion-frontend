@@ -27,6 +27,9 @@ export default class Mixer {
     this.masterAnalyser.connect(this.recorderNode) // 마지막 노드에 recorderNode 연결
     this.masterAnalyser.connect(this.audioContext.destination)
 
+    this.masterGainNode.gain.value = 100 / 120
+    // this.masterMuteNode.gain.value = 100 / 120
+
     // 악기 인스턴스 생성
     this.vocal = new Vocal(this)
     this.piano = new Piano(this)

@@ -11,7 +11,7 @@ interface Props {
 }
 
 const Track = ({ user, channel }: Props) => {
-  const [valume, setValume] = useState<number>(100)
+  const [volume, setVolume] = useState<number>(100)
   const [solo, setSolo] = useState<boolean>(false)
   const [mute, setMute] = useState<boolean>(false)
 
@@ -38,11 +38,11 @@ const Track = ({ user, channel }: Props) => {
     }
   }, [mute])
 
-  const handleValumeChange = useCallback((event: Event, newValue: number | number[]) => {
+  const handleVolumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
       if (!channel) return
       channel.setGain(newValue / 120)
-      setValume(newValue);
+      setVolume(newValue);
     }
   }, [channel, user])
 
@@ -97,11 +97,11 @@ const Track = ({ user, channel }: Props) => {
       <Box className='h-72'>
         <VolumeSlider
           valueLabelDisplay="auto"
-          aria-label="valume slider"
-          value={valume}
+          aria-label="volume slider"
+          value={volume}
           max={120}
           orientation="vertical"
-          onChange={handleValumeChange}
+          onChange={handleVolumeChange}
         />
       </Box>
     </div >

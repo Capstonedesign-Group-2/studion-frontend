@@ -1,27 +1,42 @@
-import { useEffect, useRef, useState } from "react"
+import { MutableRefObject, useCallback, useEffect, useRef, useState } from "react"
 import audioMaker from 'audiomaker'
 import { AudioFile } from "../room/player/mixer/Recorder"
-import { BsFillVolumeUpFill, BsFillRecordFill } from 'react-icons/bs'
+import { BsFillVolumeUpFill, BsFillRecordFill, BsFillVolumeMuteFill } from 'react-icons/bs'
 import { FaStop, FaPlay } from 'react-icons/fa'
 import { VolumeSlider } from "../room/player/mixer/VolumeSlider"
 import Loader from "../common/Loader"
+import Mixer from './inst/mixer/Mixer'
 
 type Props = {
   audioFile: AudioFile
-  isPlaying: boolean
   isLoading: boolean
+  mixerRef: MutableRefObject<Mixer | undefined>
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>
 }
-
-const Controller: React.FC<Props> = ({ audioFile, isLoading }) => {
+type GetTime = {
+  (ref: any, now: number) : any,
+  (ref: any, now: number, end: number) : any,
+}
+const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef }) => {
   const wavesurferRef = useRef<any>()
   const waveformRef = useRef<HTMLDivElement>(null)
   const audioMakerRef = useRef<any>()
   const startRef = useRef<any>()
   const endRef = useRef<any>()  
-  // const [timeSet, setTimeSet] = useState<{ start: number, end: number }>({ start: 0, end: 0 })
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
+  const [isMute, setMute] = useState<boolean>(true)
 
+  const handleVolumeChange = (event: Event, newValue: number | number[]) => {
+    if(typeof newValue === 'number') {
+      mixerRef.current?.setMasterGain(newValue / 120)
+    }
+  }
+  // const onKeyPress = (e: React.KeyboardEvent<HTMLElement>) => {
+  //   console.log(e.key)
+  //   if(e.keyCode === 32) {
+  //     onClickPlay()
+  //   }
+  // }
   const onClickPlay = () => {
     setIsPlaying((prev) => !prev)
     {
@@ -32,8 +47,18 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading }) => {
         wavesurferRef.current.pause()
     }
   }
+  const onClickMute = () => {
+    // false -> mute / true -> on
+    setMute((prev) => !prev)
+    mixerRef.current?.setMasterMute(isMute);
+  }
   useEffect(() => {
-    console.log(audioFile)
+    let blobUrl = ''
+    console.log(audioFile?.blob.arrayBuffer())
+    if(audioFile) {
+      blobUrl = window.URL.createObjectURL(audioFile.blob)      
+    }
+
     if(isLoading) return
     const initWaveSurfer = async () => {
       const WaveSurfer = await require('wavesurfer.js')
@@ -48,7 +73,7 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading }) => {
 
       wavesurferRef.current.on('ready', () => {
         var endTime = wavesurferRef.current.getDuration()
-        time(endRef, endTime)
+        getTime(endRef, endTime)
         // setTimeSet({
         //   start: 0,
         //   end: wavesurferRef.current.getDuration()
@@ -69,7 +94,8 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading }) => {
           // document.querySelector(".msg").innerText = 'Audio Process ' + ;
           var now = wavesurferRef.current.getCurrentTime()
           // 0:00 / 0:00
-          time(startRef, now);
+          getTime(startRef, now);
+          getTime(endRef, now, endTime);
         });
       })
       
@@ -84,12 +110,18 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading }) => {
       wavesurferRef.current.destroy()
     }
   }, [isLoading])
-  const time = (ref:any, time:any) => {
-    let total = Math.floor(time);
+
+  const getTime: GetTime = (ref, now, end?:number) => {
+    let total = 0
+    if(end) {
+      total = Math.floor(end) - Math.floor(now)
+    } else {
+      total = Math.floor(now);
+    }
     let second = String(total).padStart(2,'0')
     let minute = String(Math.floor(total / 60)).padStart(2, '0');
     if (total !== 0 && total % 60 >= 0) {
-        second = String(total - (parseInt(minute) * 60)).padStart(2,'0')
+      second = String(total - (parseInt(minute) * 60)).padStart(2,'0')
     }
     return ref.current.innerText = `${minute} : ${second}`
   }
@@ -103,7 +135,8 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading }) => {
         }
       <div className='shadow-lg border-[1px] border-gray-200 rounded-b'
         ref={waveformRef}
-      ></div>
+      >
+      </div>
       <div className="flex justify-around items-center my-4">
         <div className="flex justify-between items-center">
           <div className="w-8 h-8 flex justify-center items-center mr-4 hover:cursor-pointer" onClick={() => onClickPlay()}>
@@ -121,15 +154,19 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading }) => {
         <div className="text-gray-400 text-xl">Music - title</div>
         <div ref={endRef}>-00 : 00</div>
         <div className=" relative group hover:cursor-pointer">
-          <BsFillVolumeUpFill className=" text-3xl group-hover:text-studion-100" />
-          <div className=" absolute bottom-8 -translate-x-5 hidden group-hover:flex h-48 w-16 bg-white rounded-md shadow-md p-4 justify-center border-[1px] border-gray-300 z-10">
+          {
+            isMute
+              ? <BsFillVolumeUpFill className=" text-3xl group-hover:text-studion-100" onClick={onClickMute} />
+              : <BsFillVolumeMuteFill className=" text-3xl group-hover:text-studion-100" onClick={onClickMute} />
+          }
+          <div className=" absolute bottom-8 hidden -translate-x-5 group-hover:flex h-48 w-16 bg-white rounded-md shadow-md p-4 justify-center border-[1px] border-gray-300 z-10">
             <VolumeSlider
               valueLabelDisplay="auto"
-              aria-label="valume slider"
-              value={100}
+              aria-label="volume slider"
+              defaultValue={100}
               max={120}
               orientation="vertical"
-            // onChange={handleVolumeChange}
+              onChange={handleVolumeChange}
             />
           </div>
         </div>
