@@ -56,7 +56,7 @@ const KeyInst: React.FC<Props> = ({ mixerRef }) => {
         }
       </div>
       <div style={{ display: selectedInst === 'drum' ? 'block' : 'none' }}>
-        <DrumComponent />
+        <DrumComponent selectedInst={selectedInst} mixerRef={mixerRef} />
       </div>
       <div style={{ display: selectedInst === 'piano' ? 'block' : 'none' }}>
         <PianoComponent selectedInst={selectedInst} mixerRef={mixerRef} />

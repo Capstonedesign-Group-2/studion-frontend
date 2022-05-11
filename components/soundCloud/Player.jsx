@@ -1,13 +1,13 @@
 import RecodePlayer from "./RecodePlayer";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import wrapper from "../../redux/store";
-const Player = ({ audio, image }) => {
+const Player = ({ audio, image, pushRecording }) => {
     const [toggle, setToggle] = useState(false)
     const toggleRef = useRef();
+    
     const onToggle = () => {
         setToggle(!toggle)
-        // toggleRef.style.transform
     }
     return (
         <div className="max-w-xl w-full h-full flex flex-col">
@@ -34,10 +34,10 @@ const Player = ({ audio, image }) => {
                 {
                     (audio.length !== 0)
                     &&
-                    <div className="bg-studion-400 absolute left-0 top-3 cursor-pointer rounded-lg text-white hover:bg-studion-300 text-base w-24">
-                        <a href="/relay">
-                            録音リレー
-                        </a>
+                    <div onClick={() => pushRecording(audio[0])}>
+                        <a className="bg-studion-400 absolute left-0 top-3 cursor-pointer rounded-lg text-white hover:bg-studion-300 text-base w-24"> 
+                             録音リレー
+                         </a>
                     </div>
                 }
                 {

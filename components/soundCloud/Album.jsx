@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/router";
+import Router from "next/router";
 
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import { Modal } from "../common/modals";
@@ -8,8 +8,13 @@ import postSlice from "../../redux/slices/post";
 
 const Album = ({ post, userId }) => {
     const dispatch = useDispatch()
-    const router = useRouter()
-
+    const pushRecording = (audio) => {
+        Modal.close()
+        Router.push({
+            pathname: `/recording`,
+            query: audio
+        })
+    }
     const openModal = () => {
         if (!userId) {
             Modal.fire({
@@ -23,7 +28,7 @@ const Album = ({ post, userId }) => {
         }
         dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
-            html: <PostContainer post={post} userId={userId} />,
+            html: <PostContainer pushRecording={pushRecording} post={post} userId={userId} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.post,

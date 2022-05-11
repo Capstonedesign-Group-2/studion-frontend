@@ -9,7 +9,7 @@ interface Props {
 }
 
 const MasterTrack = ({ mixerRef }: Props) => {
-  const [valume, setValume] = useState<number>(100)
+  const [volume, setVolume] = useState<number>(100)
   const [mute, setMute] = useState<boolean>(false)
 
   const onMute = useCallback(() => {
@@ -32,11 +32,11 @@ const MasterTrack = ({ mixerRef }: Props) => {
     }
   }, [mute])
 
-  const handleValumeChange = useCallback((event: Event, newValue: number | number[]) => {
-    if (typeof newValue === 'number') {
+  const handleVolumeChange = useCallback((event: Event, newVolume: number | number[]) => {
+    if (typeof newVolume === 'number') {
       if (!mixerRef.current) return
-      mixerRef.current.setMasterGain(newValue / 120)
-      setValume(newValue);
+      mixerRef.current.setMasterGain(newVolume / 120)
+      setVolume(newVolume);
     }
   }, [mixerRef])
 
@@ -46,10 +46,10 @@ const MasterTrack = ({ mixerRef }: Props) => {
         <VolumeSlider
           valueLabelDisplay="auto"
           aria-label="valume slider"
-          value={valume}
+          value={volume}
           orientation="vertical"
           max={120}
-          onChange={handleValumeChange}
+          onChange={handleVolumeChange}
           sx={{
             color: '#f87171',
             '& .MuiSlider-valueLabel': {

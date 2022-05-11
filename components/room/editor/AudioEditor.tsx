@@ -36,7 +36,7 @@ const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
   }
 
   const onDownload = () => {
-    if (!audioMakerRef.current) return
+    if (!audioMakerRef.current || !audioFile) return
     audioMakerRef.current.trim(audioFile.blob, regionRef.current.start, regionRef.current.end).then((blob: Blob) => {
       const path = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
@@ -139,6 +139,7 @@ const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
         })
       })
 
+      if (!audioFile) return
       wavesurferRef.current.loadBlob(audioFile.blob)
     }
     initWaveSurfer()

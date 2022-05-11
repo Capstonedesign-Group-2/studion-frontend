@@ -9,6 +9,7 @@ import Link from "next/link"
 import PostContainer from "./PostContainer"
 import Dropdown from "./DropDown"
 import LikeModal from "./LikeModal"
+import Router from "next/router"
 
 const Post = ({ post }) => {
     const userData = useSelector(state => state.user.data)
@@ -77,10 +78,18 @@ const Post = ({ post }) => {
             })
         }
     }
+    const pushRecording = (post) => {
+        Modal.close()
+        
+        Router.push({
+            pathname: `/recording`,
+            query: { post_id: post.post_id}
+        })
+    }
     const openModal = () => {
         // dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
-            html: <PostContainer post={post} userId={post.user.id} />,
+            html: <PostContainer pushRecording={pushRecording} post={post} userId={post.user.id} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.post,

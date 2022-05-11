@@ -6,11 +6,11 @@ import { RootState } from "../../../../redux/slices"
 import { Modal } from "../../../common/modals"
 import AudioEditor from "../../editor/AudioEditor"
 
-export interface AudioFile {
+export type AudioFile = {
   label: string,
   url: string,
   blob: Blob
-}
+} | undefined
 
 interface Props {
   mixerRef: React.MutableRefObject<Mixer | undefined>
@@ -133,12 +133,12 @@ const Recorder = ({ mixerRef }: Props) => {
       <div className="flex flex-col gap-2 overflow-y-auto max-h-96">
         {audioFiles.length !== 0
           ? audioFiles.map((audioFile) => (
-            <div key={audioFile.label}>
+            <div key={audioFile?.label}>
               <div className="flex justify-between text-gray-300">
-                <label className="text-lg"># {audioFile.label}</label>
+                <label className="text-lg"># {audioFile?.label}</label>
                 <button onClick={() => onEditAudio(audioFile)}>edit 🛠</button>
               </div>
-              <audio src={audioFile.url} controls className="w-full mt-1 rounded" />
+              <audio src={audioFile?.url} controls className="w-full mt-1 rounded" />
             </div>
           ))
           : <div className="text-gray-300 text-center">録音してください！</div>}

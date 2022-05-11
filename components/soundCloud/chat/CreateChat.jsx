@@ -1,14 +1,16 @@
 import { Modal } from "../../common/modals";
 import { useEffect, useState, useRef } from "react"
 import http from "../../../http";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import wrapper from '../../../redux/store';
 import Loader from "../../common/Loader";
 import Router from "next/router";
-
+import { getAnotherUserInfo } from "../../../redux/actions/another";
+import Socket from "../../../socket/index";
 const CreateChat = () => {
     const observerRef = useRef()
     const userData = useSelector(state => state.user.data)
+    
     const [nextUrl, setNextUrl] = useState(null);
     const [isLoading, setLoading] = useState(false);
     const [usersData, setUsersData] = useState([]);
@@ -83,17 +85,42 @@ const CreateChat = () => {
 }
 
 const User = ({data}) => {
+    const userData = useSelector(state => state.user.data)
+    const dispatch = useDispatch()
+    const onClick = () => {
+        Modal.close();
+        dispatch(getAnotherUserInfo({id: data.id}))
+        Socket.socket.on("create_chat_on", (res) => {
+            Router.push(`/chat/${res.id}`)
+            return () => {
+                Socket.removeAllListeners()
+              }
+        })
+        Socket.socket.emit("create_chat", [
+            {
+                user_id: userData.id,
+                name: userData.name,
+                image: userData.image
+            },
+            {
+                user_id: data.id,
+                name: data.name,
+                image: data.image
+            }
+        ])
+    }
     return (
         <div className="flex items-center py-2 pl-2 hover:bg-gray-100 cursor-pointer" 
-        onClick={() => {
-            Modal.close();
-            dispatch(getAnotherUserInfo({id: listInfo.to.user_id}))
-            Socket.socket.emit("get_messages", {
-                room_id: listInfo.id,
-                user_id: data.id
-            })
-            Router.push(`/chat/${data.id}`)
-        }}>
+        onClick={onClick
+            // (data) => {
+            // console.log(data)
+            
+            // // Socket.socket.emit("get_messages", {
+            // //     room_id: listInfo.id,
+            // //     user_id: data.id
+            // // })
+            // Router.push(`/chat/${data.id}`)
+        }>
             {/* 사진 */}
             {
                 data?.image
