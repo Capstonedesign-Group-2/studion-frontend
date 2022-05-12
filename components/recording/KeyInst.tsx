@@ -1,8 +1,9 @@
 import { useState } from "react"
 
+import Recorder from "./Recorder"
 import DrumComponent from "./inst/drum/DrumComponent"
-import Mixer from "./inst/mixer/Mixer"
 import PianoComponent from "./inst/piano/PianoComponents"
+import Mixer from "./inst/mixer/Mixer"
 import InstBtn from "./InstBtn"
 
 type Props = {
@@ -19,7 +20,7 @@ const instList: Inst[] = [
   {
     id: 1,
     imgPath: '/images/recording/vocal.png',
-    type: 'vocal'
+    type: 'mic'
   },
   {
     id: 2,
@@ -54,6 +55,9 @@ const KeyInst: React.FC<Props> = ({ mixerRef }) => {
         {
           instList.map(inst => <InstBtn key={inst.id} inst={inst} setSelectedInst={setSelectedInst} />)
         }
+      </div>
+      <div style={{ display: selectedInst === 'mic' ? 'block' : 'none' }}>
+        <Recorder selectedInst={selectedInst} mixerRef={mixerRef} />
       </div>
       <div style={{ display: selectedInst === 'drum' ? 'block' : 'none' }}>
         <DrumComponent selectedInst={selectedInst} mixerRef={mixerRef} />

@@ -45,7 +45,7 @@ const Recording = () => {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <RecordingHeader />
-      <RecordingContainer audioFile={audioFile} isLoading={isLoading} />
+      <RecordingContainer audioFile={audioFile} setAudioFile={setAudioFile} isLoading={isLoading} />
     </div>
   )
 }
