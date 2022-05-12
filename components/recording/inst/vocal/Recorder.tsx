@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { AudioFile } from "../room/player/mixer/Recorder"
-import { VolumeSlider } from "../room/player/mixer/VolumeSlider"
+import { AudioFile } from "../../../room/player/mixer/Recorder"
+import { VolumeSlider } from "../../../room/player/mixer/VolumeSlider"
 
-import Mixer from "./inst/mixer/Mixer"
+
+import Mixer from "../mixer/Mixer"
 
 type Props = {
   mixerRef: React.MutableRefObject<Mixer | undefined>

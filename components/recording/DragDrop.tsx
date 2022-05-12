@@ -20,17 +20,12 @@ const DragDrop: React.FC<Props> = ({setAudioFile}) => {
         console.log(e.type)
         if(e.type === "drop") {
             selectFile = e.dataTransfer.files[0]
-
-            console.log(selectFile)
         } else {
-
             selectFile = e.target.files[0]
-            console.log(selectFile)
         }
         blobURL = window.URL.createObjectURL(selectFile)
-        console.log(blobURL)
         setAudioFile({
-            label : 'original',
+            label : selectFile.name,
             url   : blobURL,
             blob  : selectFile
         })

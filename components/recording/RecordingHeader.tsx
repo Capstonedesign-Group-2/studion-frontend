@@ -1,12 +1,20 @@
-import { useSelector } from "react-redux"
+// import { useSelector } from "react-redux"
 import Router from "next/router"
 
 import { RootState } from "../../redux/slices"
-import { IRoom } from "../../types"
+// import { IRoom } from "../../types"
+import { AudioFile } from "../room/player/mixer/Recorder"
+import { AiOutlineMenuFold } from "react-icons/ai"
+import { useState } from "react"
+import Navbar from "./Navbar"
 
-const RecordingHeader = () => {
-  const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
+type Props = {
+  audioFiles: AudioFile[]
+}
 
+const RecordingHeader: React.FC<Props> = ({audioFiles}) => {
+  // const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
+  const [isNav, setNav] = useState<boolean>(false)
   return (
     <header className="bg-studion-600 z-20 fixed w-full h-14 py-2 shadow-md px-4 xl:pl-16 flex justify-between items-center">
       <div onClick={() => Router.back()}>
@@ -15,8 +23,13 @@ const RecordingHeader = () => {
         </svg>
       </div>
       <div className="text-gray-100 text-2xl">
-        {roomData && roomData.title}
+        {/* {roomData && roomData.title} */}
       </div>
+      <AiOutlineMenuFold className="w-8 h-8 cursor-pointer absolute right-5 fill-gray-100" onClick={() => setNav((prev) => !prev)} />
+      {
+        isNav &&
+        <Navbar audioFiles={audioFiles} setNav={setNav}/>
+      }
     </header>
   )
 }

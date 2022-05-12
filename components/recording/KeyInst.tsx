@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import Recorder from "./Recorder"
+import Recorder from "./inst/vocal/Recorder"
 import DrumComponent from "./inst/drum/DrumComponent"
 import PianoComponent from "./inst/piano/PianoComponents"
 import Mixer from "./inst/mixer/Mixer"

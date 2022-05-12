@@ -6,6 +6,7 @@ import http from "../http";
 
 const Recording = () => {
   const [audioFile, setAudioFile] = useState<AudioFile>()
+  const [audioFiles, setAudioFiles] = useState<AudioFile[]>([])
   const [isLoading, setLoading] = useState<boolean>(false)
   function getUrlParams() :any {     
     var params:any = {};  
@@ -44,8 +45,8 @@ const Recording = () => {
   }, [])
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <RecordingHeader />
-      <RecordingContainer audioFile={audioFile} setAudioFile={setAudioFile} isLoading={isLoading} />
+      <RecordingHeader audioFiles={audioFiles}/>
+      <RecordingContainer audioFile={audioFile} setAudioFile={setAudioFile} audioFiles={audioFiles} setAudioFiles={setAudioFiles} isLoading={isLoading} />
     </div>
   )
 }

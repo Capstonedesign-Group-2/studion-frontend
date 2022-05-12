@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useCallback, useEffect, useRef, useState } from "react"
+import React, { Dispatch, MutableRefObject, SetStateAction, useCallback, useEffect, useRef, useState } from "react"
 import audioMaker from 'audiomaker'
 import { AudioFile } from "../room/player/mixer/Recorder"
 import { BsFillVolumeUpFill, BsFillRecordFill, BsFillVolumeMuteFill } from 'react-icons/bs'
@@ -8,22 +8,23 @@ import Loader from "../common/Loader"
 import Mixer from './inst/mixer/Mixer'
 import { Wave } from "./Wave"
 import DragDrop from "./DragDrop"
-import { red } from "@mui/material/colors"
 import { Router } from "next/router"
 
 
 type Props = {
-  audioFile: AudioFile | undefined
-  setAudioFile: Function
+  audioFile: AudioFile
+  setAudioFile: Dispatch<SetStateAction<AudioFile>>
+  audioFiles: AudioFile[]
+  setAudioFiles: Dispatch<SetStateAction<AudioFile[]>>
   isLoading: boolean
   mixerRef: MutableRefObject<Mixer | undefined>
-  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>
+  setIsPlaying: React.Dispatch<SetStateAction<boolean>>
 }
 type GetTime = {
   (ref: any, now: number) : any,
   (ref: any, now: number, end: number) : any,
 }
-const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioFile }) => {
+const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioFile, audioFiles, setAudioFiles }) => {
   // make wavesurfer 
   const wavesurferRef = useRef<any>()
   const waveformRef = useRef<HTMLDivElement>(null)
@@ -46,7 +47,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
   const recorderRef = useRef<MediaRecorder>()
   const recorderBtnRef = useRef<any>(null)
   const audioChunksRef = useRef<Blob[]>([])
-  const [audioFiles, setAudioFiles] = useState<AudioFile[]>([])
   const fileNumber = useRef<number>(0)
   // const isLoading = useSelector<RootState, boolean>(state => state.room.isLoading)
   const [isRecording, setIsRecording] = useState<boolean>(false)
@@ -143,8 +143,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
   
   useEffect(() => {
     let blobUrl = ''
-    // console.log(Router.query)
-    console.log('audioFile', audioFile)
     if(mixerRef.current && audioFile) {
       blobUrl = window.URL.createObjectURL(audioFile.blob)
       const audio = new Audio(blobUrl)
@@ -202,8 +200,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
       wavesurferRef.current.destroy()
     }
   }, [isLoading, audioFile])
-
-  
   return (
     <div>
       {
@@ -229,17 +225,11 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
             }
           </div>
           <div>
-            {
-              isRecording?
-              'true':
-              'false'
-            }
-              <BsFillRecordFill id="recordBtn" className="text-3xl text-red-100 hover:cursor-pointer" onClick={onRecording}/>
+              <BsFillRecordFill style={{ color: isRecording ? 'rgb(239 68 68)' : 'rgb(254 202 202)' }} className="text-3xl text-red-100 hover:cursor-pointer" onClick={onRecording}/>
           </div>
         </div>
-        {console.log(audioFiles)}
         <div ref={startRef}>00 : 00</div>
-        <div className="text-gray-400 text-xl">Music - title</div>
+        <div className="text-gray-400 text-xl">{audioFile?.label}</div>
         <div ref={endRef}>-00 : 00</div>
         <div className=" relative group hover:cursor-pointer">
           {
@@ -260,8 +250,8 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
         </div>
       </div>
       <div className="flex flex-col gap-2 overflow-y-auto max-h-40 max-">
-        {audioFiles.length !== 0
-          ? audioFiles.map((audioFile) => (
+        {audioFiles?.length !== 0
+          ? audioFiles?.map((audioFile) => (
             <div key={audioFile?.label}>
               <div className="flex justify-between text-gray-300">
                 <label className="text-lg"># {audioFile?.label}</label>
