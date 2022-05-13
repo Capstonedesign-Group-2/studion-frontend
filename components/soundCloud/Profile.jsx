@@ -3,10 +3,9 @@ import Image from "next/image"
 import { Modal } from "../common/modals"
 import CreatePost from "./CreatePost"
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import http from "../../http"
 import { BiMessageDetail } from 'react-icons/bi'
-import Link from "next/link"
 import Follow from "./Follow"
 import { getAnotherUserInfo, getFollowData } from "../../redux/actions/another"
 import Socket from "../../socket"
@@ -15,7 +14,7 @@ import Router from "next/router"
 const Profile = ({ userId }) => {
     const userData = useSelector(state => state.user.data)
     const otherUser = useSelector(state => state.another.userInfo)
-    const userInfo = (useSelector(state => state.another.userInfo) !== null ? useSelector(state => state.another.userInfo) : userData)
+    const userInfo = (useSelector(state => state.another.userInfo) || userData)
     const following = useSelector(state => state.another.following);
     const [flwLoading, setFlwLoading] = useState(false);
     

@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
+import Navbar from "../components/recording/Navbar";
 import RecordingContainer from "../components/recording/RecordingContainer"
 import RecordingHeader from "../components/recording/RecordingHeader"
 import { AudioFile } from "../components/room/player/mixer/Recorder";
 import http from "../http";
+import wrapper from "../redux/store";
+import {stayLoggedIn} from "../http/stay";
 
 const Recording = () => {
   const [audioFile, setAudioFile] = useState<AudioFile>()
+  const [audioFiles, setAudioFiles] = useState<AudioFile[]>([])
+  const [isNav, setNav] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
+  
   function getUrlParams() :any {     
     var params:any = {};  
     
@@ -14,10 +20,11 @@ const Recording = () => {
     	function(str, key, value) : any { 
         	params[key] = value; 
         }
-    );     
+    );    
     
     return params; 
-}
+  }
+
   useEffect(() => {
     let params = getUrlParams()
     if(!params.post_id) return
@@ -44,10 +51,27 @@ const Recording = () => {
   }, [])
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      <RecordingHeader />
-      <RecordingContainer audioFile={audioFile} isLoading={isLoading} />
+      {
+        isNav &&
+        <Navbar setNav={setNav} audioFiles={audioFiles} />
+      }
+      <RecordingHeader setNav={setNav} isNav={isNav}/>
+      <RecordingContainer audioFile={audioFile} setAudioFile={setAudioFile} audioFiles={audioFiles} setAudioFiles={setAudioFiles} isLoading={isLoading} />
     </div>
   )
 }
+
+export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
+  await stayLoggedIn(context, store)
+  if (!store.getState().user.data) { // 유저 데이터가 없으면 '/login'으로 리다이렉트
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    }
+  }
+  return { props: {} }
+})
 
 export default Recording
