@@ -6,6 +6,7 @@ import Follow from "./Follow";
 import Socket from "../../socket";
 import { useEffect, useState } from "react";
 import Loader from "../common/Loader";
+import Image from "next/image";
 
 const ChatSection = () => {
     const userData = useSelector(state => state.user.data)

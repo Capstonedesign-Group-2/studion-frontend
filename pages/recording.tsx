@@ -4,6 +4,8 @@ import RecordingContainer from "../components/recording/RecordingContainer"
 import RecordingHeader from "../components/recording/RecordingHeader"
 import { AudioFile } from "../components/room/player/mixer/Recorder";
 import http from "../http";
+import wrapper from "../redux/store";
+import {stayLoggedIn} from "../http/stay";
 
 const Recording = () => {
   const [audioFile, setAudioFile] = useState<AudioFile>()
@@ -58,5 +60,18 @@ const Recording = () => {
     </div>
   )
 }
+
+export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
+  await stayLoggedIn(context, store)
+  if (!store.getState().user.data) { // 유저 데이터가 없으면 '/login'으로 리다이렉트
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    }
+  }
+  return { props: {} }
+})
 
 export default Recording

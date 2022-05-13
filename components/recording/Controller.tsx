@@ -189,7 +189,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
           getTime(endRef, now, endTime);
         });
       })
-      
 
       wavesurferRef.current.loadBlob(audioFile ? audioFile.blob : new Blob())
     }

@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { AudioFile } from "../../../room/player/mixer/Recorder"
 import { VolumeSlider } from "../../../room/player/mixer/VolumeSlider"
-
 
 import Mixer from "../mixer/Mixer"
 
@@ -70,6 +68,12 @@ const Recorder: React.FC<Props> = ({ mixerRef }) => {
       //wavesurfer.microphone.destroy();
     }
     initWaveSurfer()
+
+    return () => {
+      if(wavesurferRef.current) {
+        wavesurferRef.current.destroy()
+      }
+    }
   }, [])
 
   return (
