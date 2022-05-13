@@ -250,19 +250,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-2 overflow-y-auto max-h-40 max-">
-        {audioFiles?.length !== 0
-          ? audioFiles?.map((audioFile) => (
-            <div key={audioFile?.label}>
-              <div className="flex justify-between text-gray-300">
-                <label className="text-lg"># {audioFile?.label}</label>
-                {/* <button onClick={() => onEditAudio(audioFile)}>edit 🛠</button> */}
-              </div>
-              <audio src={audioFile?.url} controls className="w-full mt-1 rounded" />
-            </div>
-          ))
-          : <div className="text-gray-300 text-center">録音してください！</div>}
-      </div>
     </div>
   )
 }
