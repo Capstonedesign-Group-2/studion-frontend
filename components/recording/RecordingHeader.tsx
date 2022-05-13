@@ -1,12 +1,19 @@
-import { useSelector } from "react-redux"
+// import { useSelector } from "react-redux"
 import Router from "next/router"
-
 import { RootState } from "../../redux/slices"
-import { IRoom } from "../../types"
+import { AudioFile } from "../room/player/mixer/Recorder"
+import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai"
+import { Dispatch, SetStateAction, useState } from "react"
+import Navbar from "./Navbar"
 
-const RecordingHeader = () => {
-  const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
+type Props = {
+  isNav: boolean
+  setNav: Dispatch<SetStateAction<boolean>>
+}
 
+const RecordingHeader: React.FC<Props> = ({setNav, isNav}) => {
+  // const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
+  
   return (
     <header className="bg-studion-600 z-20 fixed w-full h-14 py-2 shadow-md px-4 xl:pl-16 flex justify-between items-center">
       <div onClick={() => Router.back()}>
@@ -15,7 +22,16 @@ const RecordingHeader = () => {
         </svg>
       </div>
       <div className="text-gray-100 text-2xl">
-        {roomData && roomData.title}
+        {/* {roomData && roomData.title} */}
+      </div>
+      <div className="cursor-pointer absolute right-5" onClick={() => setNav((prev) => !prev)}>
+        {
+          isNav 
+          ? <AiOutlineMenuUnfold className="w-8 h-8 fill-gray-100" />
+          : <AiOutlineMenuFold className="w-8 h-8 fill-gray-100"  />
+        }
+
+
       </div>
     </header>
   )
