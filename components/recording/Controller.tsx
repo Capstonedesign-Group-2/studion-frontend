@@ -155,10 +155,11 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
 
       wavesurferRef.current = WaveSurfer.create({
         container: waveformRef.current,
-        height: 70,
+        height: 110,
         waveColor: '#007E8E',
         progressColor: '#34D399',
         cursorColor: '#34D399',
+        // barHeight: 2,
       })
 
       wavesurferRef.current.on('ready', () => {
