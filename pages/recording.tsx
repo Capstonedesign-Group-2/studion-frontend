@@ -56,7 +56,15 @@ const Recording = () => {
         <Navbar setNav={setNav} audioFiles={audioFiles} />
       }
       <RecordingHeader setNav={setNav} isNav={isNav}/>
-      <RecordingContainer audioFile={audioFile} setAudioFile={setAudioFile} audioFiles={audioFiles} setAudioFiles={setAudioFiles} isLoading={isLoading} />
+      <RecordingContainer 
+        audioFile={audioFile} 
+        setNav={setNav} 
+        setAudioFile={setAudioFile} 
+        audioFiles={audioFiles} 
+        setAudioFiles={setAudioFiles} 
+        isLoading={isLoading} 
+        setLoading={setLoading}
+        />
     </div>
   )
 }

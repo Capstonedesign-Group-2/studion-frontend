@@ -25,12 +25,13 @@ export class Wave {
             }
         }
     }
-    onPlay () {
+    onPlay (time: number) {
+        this.audio.currentTime = time
         this.audio.play()
     }
-    onStop() {
+    onStop(time: number) {
+        this.audio.currentTime = time
         this.audio.pause()
-        this.audio.currentTime = 0
     }
     setMute(value: boolean) {
         this.gainNode.gain.value = 0
