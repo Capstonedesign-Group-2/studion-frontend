@@ -14,10 +14,8 @@ interface Props {
 
 const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles, setAudioFiles, setNav, isLoading}) => {
     const recorderRef = useRef<MediaRecorder>()
-    // const recorderBtnRef = useRef<any>(null)
     const audioChunksRef = useRef<Blob[]>([])
     const fileNumber = useRef<number>(0)
-    const [isPlaying, setIsPlaying] = useState<boolean>(false)
     const [isRecording, setIsRecording] = useState<boolean>(false)
     const [clock, setClock] = useState<number>(0)
     const clockRef = useRef<number>(0)
@@ -59,7 +57,7 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles
           recorderRef.current.ondataavailable = (evt) => {
             audioChunksRef.current.push(evt.data)
           }
-    
+          console.log(recorderRef)
           recorderRef.current.onstop = async () => {
             let blob = new Blob(audioChunksRef.current, { 'type': 'audio/mp3; codecs=opus' })
             try {
@@ -75,7 +73,7 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles
             }
           }
         }
-      }, [isLoading, mixerRef])
+      }, [isLoading, mixerRef, audioFile])
     return (
         <div className="flex flex-col overflow-hidden gap-4">
             <h3 className="font-bold text-xl">

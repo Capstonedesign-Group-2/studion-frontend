@@ -17,16 +17,13 @@ type Props = {
   audioFiles: AudioFile[]
   setAudioFiles: Dispatch<SetStateAction<AudioFile[]>>
   isLoading: boolean
-  setLoading: Dispatch<SetStateAction<boolean>>
   mixerRef: MutableRefObject<Mixer | undefined>
-  setIsPlaying: React.Dispatch<SetStateAction<boolean>>
-  setNav: Dispatch<SetStateAction<boolean>>
 }
 type GetTime = {
   (ref: any, now: number) : any,
   (ref: any, now: number, end: number) : any,
 }
-const Controller: React.FC<Props> = ({ audioFile, isLoading, setLoading, mixerRef, setAudioFile, audioFiles, setAudioFiles, setNav }) => {
+const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioFile }) => {
   // make wavesurfer 
   const wavesurferRef = useRef<any>()
   const waveformRef = useRef<HTMLDivElement>(null)
@@ -45,15 +42,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, setLoading, mixerRe
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [isMute, setMute] = useState<boolean>(true)
 
-  // recording
-  const recorderRef = useRef<MediaRecorder>()
-  // const recorderBtnRef = useRef<any>(null)
-  const audioChunksRef = useRef<Blob[]>([])
-  const fileNumber = useRef<number>(0)
-  // const isLoading = useSelector<RootState, boolean>(state => state.room.isLoading)
-  const [isRecording, setIsRecording] = useState<boolean>(false)
-  const timerInterval = useRef<number>()
-  
   const handleVolumeChange = (event: Event, newValue: number | number[]) => {
     if(typeof newValue === 'number') {
       mixerRef.current?.setMasterGain(newValue / 120)
@@ -100,31 +88,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, setLoading, mixerRe
     waveRef.current?.setGain(!isMute)
   }
 
-  useEffect(() => {
-    if (!isLoading && mixerRef.current) {
-      recorderRef.current = new MediaRecorder(mixerRef.current.recorderNode.stream as MediaStream)
-      recorderRef.current.ondataavailable = (evt) => {
-        audioChunksRef.current.push(evt.data)
-      }
-
-      recorderRef.current.onstop = async () => {
-        let blob = new Blob(audioChunksRef.current, { 'type': 'audio/mp3; codecs=opus' })
-        try {
-          const audioFile = {
-            label: 'Track_' + fileNumber.current,
-            url: URL.createObjectURL(blob),
-            blob
-          }
-          setAudioFiles((prev) => [...prev, audioFile])
-          fileNumber.current += 1
-        } catch (err) {
-          console.error('Array buffer error', err)
-        }
-      }
-    }
-  }, [isLoading, mixerRef, audioFile])
-
-  
   useEffect(() => {
     let blobUrl = ''
     if(mixerRef.current && audioFile) {
@@ -197,7 +160,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, setLoading, mixerRe
         ? <div className='shadow-lg border-[1px] border-gray-200 rounded-b'ref={waveformRef}></div>
         : <DragDrop setAudioFile={setAudioFile} />
       }
-      {console.log('waveform',waveformRef)}
       <div className="flex justify-around items-center mt-6">
         <div className="flex justify-between items-center">
           <div className="w-8 h-8 flex justify-center items-center mr-4 hover:cursor-pointer" onClick={() => onClickPlay()}>
