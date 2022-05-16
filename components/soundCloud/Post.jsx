@@ -20,6 +20,7 @@ const Post = ({ post }) => {
     const [likes, setLikes] = useState(post.likes);
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([])
+    const [toggle, setToggle] = useState(false)
     const onCommentChange = (e) => {
         setComment(e.target.value)
     }
@@ -170,11 +171,14 @@ const Post = ({ post }) => {
                 }
             </div>
             {/* 이미지 */}
-            {   post?.images[0] &&
+            {   post?.images[0] && !toggle &&
                 <div className="w-full flex justify-center items-center" style={{ height: '700px' }}>
-                    
                     <img src={post.images[0].link} alt="" className="h-full"/>
                 </div>
+            }
+            {/* 음악 */}
+            {
+                console.log('post 음악에서', post)
             }
             {/* 아이콘 */}
             <div className="py-2 px-1">

@@ -86,15 +86,18 @@ const CreatePost = ({ audioFile }) => {
         }
         formData.append("user_id", post.user_id)
         formData.append("content", post.content)
-        console.log(formData)
         if (post.image.name) {
             formData.append("image", post.image)
         }
-        if (post.audio.name) {
+        if (post.audio.blob) {
+            formData.append("audio", post.audio.blob)
+            console.log('formdata', formData)
+        } else if(post.audio.name) {
             formData.append("audio", post.audio)
         }
         http.post('/posts', formData, config)
             .then(res => {
+                console.log('formdata res', res)
                 if(userInfo !== undefined) {
                     dispatch(getUserPostList({id: userData.id}));
                     Router.push(`/soundcloud`)
@@ -124,18 +127,15 @@ const CreatePost = ({ audioFile }) => {
     }, [])
 
     useEffect(() => {
-        console.log(post)
-        console.log(audioFile)
         if (((post.image.size && toggle) || (post.image.size && !post.audio.name && !toggle))) {
             let imgEl = document.querySelector(".img_box");
             var reader = new FileReader();
             reader.readAsDataURL(post.image);
             reader.onload = (e) => (imgEl.src = e.target.result);
-            console.log(post.image)
         }
-        if (post.audio.size) {
-            console.log(post.audio)
-        }
+        // if (post.audio.size) {
+        //     console.log(post.audio)
+        // }
 
     }, [post.image, post.audio, toggle])
 
@@ -143,7 +143,6 @@ const CreatePost = ({ audioFile }) => {
     return (
         <div className="max-w-screen-xl mx-auto h-full">
             {/* 나가기 버튼 */}
-            {console.log(post)}
             <div className="absolute cursor-pointer top-2 right-2" onClick={onClickCancel}>
                 <svg className="w-10 h-10" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -201,10 +200,8 @@ const CreatePost = ({ audioFile }) => {
 
                     {/* 오디오 */}
                     {/* <input type="file" id="inputAudio" accept="audio/*" className="hidden" onChange={onAudioChange} /> */}
-                    {console.log(post.audio)}
                     {(post.audio.name && toggle !== true) &&
                         <div className="w-full md:max-w-xl lg:max-w-2xl relative">
-                            {console.log('post', post)}
                             <RecodePlayer audio={post.audio}/>
                         {/* 유저 추가하기
                             <div className="cursor-pointer">
