@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df6e6204-95c5-4cac-ac04-51c7a6ce02df" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/components/recording/Controller.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/recording/Controller.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/recording/inst/vocal/Recorder.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/recording/inst/vocal/Recorder.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/soundCloud/ChatSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/soundCloud/ChatSection.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/soundCloud/Profile.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/soundCloud/Profile.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/recording.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/recording.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +34,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "yarn",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "/Users/mac/vscode/capstone/studion-frontend/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -50,7 +47,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1652417144576</updated>
-      <workItem from="1652417148009" duration="1633000" />
+      <workItem from="1652417148009" duration="2365000" />
     </task>
     <servers />
   </component>
