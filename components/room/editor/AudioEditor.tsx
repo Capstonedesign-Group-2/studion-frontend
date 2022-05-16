@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react"
 import audioMaker from 'audiomaker'
 import { MdReplay, MdOutlinePlayCircleFilled, MdOutlinePauseCircleFilled, MdOutlineFileDownload } from 'react-icons/md';
 import { FaTrash, FaShareSquare } from 'react-icons/fa';
-
+import styled from "../../../styles/soundCloud/soundcloud.module.scss"
 import { AudioFile } from "../player/mixer/Recorder"
 import { Modal } from "../../common/modals"
+import CreatePost from "../../soundCloud/CreatePost";
 
 interface Props {
   audioFile: AudioFile
@@ -48,7 +49,12 @@ const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
   }
 
   const onPublish = () => {
-
+    Modal.close()
+    Modal.fire({
+      html: <CreatePost audioFile={audioFile} />,
+      showConfirmButton: false,
+      customClass: { popup: styled.post },
+    })
   }
 
   const onDelete = () => {

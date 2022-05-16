@@ -41,7 +41,6 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles
         setIsRecording(false)
         clearInterval(timerInterval.current)
     }
-
     const startTimer = () => {
         const now = Date.now()
         setClock(0)

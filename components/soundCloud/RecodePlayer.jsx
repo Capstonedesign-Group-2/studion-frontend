@@ -33,12 +33,12 @@ const RecodePlayer = ({audio}) => {
             cursorColor: '#34D399',
             // fillParent: true,
         })
-
-        if(audio.type) {
-            wavesurferRef.current.load(window.URL.createObjectURL(audio));
-        }
-        else if(audio.link) {
+        
+        if(audio.link) {
             wavesurferRef.current.load(audio.link);
+        }
+        else if(audio.type) {
+            wavesurferRef.current.load(window.URL.createObjectURL(audio));
         }
 
         wavesurferRef.current.on('ready', () => {
