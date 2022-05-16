@@ -6,6 +6,8 @@ import styled from "../../../styles/soundCloud/soundcloud.module.scss"
 import { AudioFile } from "../player/mixer/Recorder"
 import { Modal } from "../../common/modals"
 import CreatePost from "../../soundCloud/CreatePost";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/slices";
 
 interface Props {
   audioFile: AudioFile
@@ -18,6 +20,7 @@ const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
   const regionRef = useRef<any>()
   const audioMakerRef = useRef<any>()
   const [timeSet, setTimeSet] = useState<{ start: number, end: number }>({ start: 0, end: 0 })
+  const users = useSelector<RootState, { id: string, name: string }>((state) => state.room.users)
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
 
   const onPlay = () => {
@@ -51,7 +54,7 @@ const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
   const onPublish = () => {
     Modal.close()
     Modal.fire({
-      html: <CreatePost audioFile={audioFile} />,
+      html: <CreatePost audioFile={audioFile} users={users} />,
       showConfirmButton: false,
       customClass: { popup: styled.post },
     })
