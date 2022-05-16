@@ -10,6 +10,8 @@ import PostContainer from "./PostContainer"
 import Dropdown from "./DropDown"
 import LikeModal from "./LikeModal"
 import Router from "next/router"
+import RecodePlayer from "./RecodePlayer"
+import { GrPrevious, GrNext } from "react-icons/gr"
 
 const Post = ({ post }) => {
     const userData = useSelector(state => state.user.data)
@@ -170,14 +172,31 @@ const Post = ({ post }) => {
                     )
                 }
             </div>
-            {/* 이미지 */}
-            {   post?.images[0] && !toggle &&
-                <div className="w-full flex justify-center items-center" style={{ height: '700px' }}>
-                    <img src={post.images[0].link} alt="" className="h-full"/>
-                </div>
+            {
+                (post?.images[0] || post?.audios[0]) &&
+                <div className="w-full flex justify-center items-center p-4 relative" style={{ height: '700px' }}>
+                {/* 이미지 */}
+                {   post?.images[0] && !toggle &&                
+                        <img src={post.images[0].link} alt="" className="h-full"/>
+                }
+                {/* 음악 */}
+                {
+                    post?.audios[0] && toggle &&
+                        <RecodePlayer audio={post.audios[0]} />
+                }
+                {/* 좌우 버튼 */}
+                {
+                    (post?.images[0] && post?.audios[0]) && toggle
+                    ? <div className="absolute top-50% left-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
+                        <GrPrevious className="w-7 h-7"/>
+                    </div>
+                    : <div className="absolute top-50% right-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
+                        <GrNext className="w-7 h-7"/>
+                    </div>
+                }
+            </div>
             }
-            {/* 음악 */}
-
+            
             {/* 아이콘 */}
             <div className="py-2 px-1">
                 <div onClick={onClickLikeButton} className="mx-2 inline-block cursor-pointer">
