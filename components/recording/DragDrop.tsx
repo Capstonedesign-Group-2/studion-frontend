@@ -1,7 +1,8 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react"
 import { boolean } from "yup"
 import { AiOutlineCloudUpload } from "react-icons/ai"
 import { IoCloudUploadOutline } from "react-icons/io5"
+import Loader from "../common/Loader"
 interface Filetype {
     id: number
     object: File
@@ -12,13 +13,11 @@ type Props = {
 
 const DragDrop: React.FC<Props> = ({setAudioFile}) => {
     const [isDragging, setIsDragging] = useState<boolean>(false)
-    const [file, setFile] = useState<Filetype>()
     const dragRef = useRef<HTMLLabelElement | null>(null)
 
     const onChangeFile = useCallback((e: ChangeEvent<HTMLInputElement> | any): void => {
         let selectFile: File
         let blobURL: String
-        console.log(e.type)
         if(e.type === "drop") {
             selectFile = e.dataTransfer.files[0]
         } else {
@@ -92,13 +91,13 @@ const DragDrop: React.FC<Props> = ({setAudioFile}) => {
                 id="fileUpload"
                 style={{  display: "none" }}
                 onChange={onChangeFile}
-             />
+                />
 
-             <label
+            <label
                 className={isDragging ? "DragDrop-File-Dragging" : "DragDrop-File"}
                 // htmlFor="fileUpload"
                 ref={dragRef}
-             >
+            >
                 <div className="border-dashed justify-center items-center border-2 border-gray-300 flex" style={isDragging ? { border: "dashed 2px rgb(52, 211, 153)", background: "rgba(52, 211, 153, 0.2)" } : { }}>
                     <div className="flex flex-col items-center opacity-100 py-4">
                         {/* <AiOutlineCloudUpload className="w-16 h-16" /> */}

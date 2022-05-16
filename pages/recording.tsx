@@ -34,7 +34,6 @@ const Recording = () => {
         const res = await http.get(`/posts/show/${params.post_id}`)
         if(!res.data.post.audios[0].link) throw new Error('Can not get audio link!')
         const audio = await fetch(res.data.post.audios[0].link)
-        console.log('fetch', audio)
         const blob = await audio.blob()
         setAudioFile({
           label: 'original',
@@ -53,10 +52,18 @@ const Recording = () => {
     <div className="h-screen flex flex-col overflow-hidden">
       {
         isNav &&
-        <Navbar setNav={setNav} audioFiles={audioFiles} />
+        <Navbar setAudioFiles={setAudioFiles} audioFiles={audioFiles} />
       }
       <RecordingHeader setNav={setNav} isNav={isNav}/>
-      <RecordingContainer audioFile={audioFile} setAudioFile={setAudioFile} audioFiles={audioFiles} setAudioFiles={setAudioFiles} isLoading={isLoading} />
+      <RecordingContainer 
+        audioFile={audioFile} 
+        setNav={setNav} 
+        setAudioFile={setAudioFile} 
+        audioFiles={audioFiles} 
+        setAudioFiles={setAudioFiles} 
+        isLoading={isLoading} 
+        setLoading={setLoading}
+        />
     </div>
   )
 }

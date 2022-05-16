@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import Recorder from "./inst/vocal/Recorder"
+import Mic from "./inst/vocal/Mic"
 import DrumComponent from "./inst/drum/DrumComponent"
 import PianoComponent from "./inst/piano/PianoComponents"
 import Mixer from "./inst/mixer/Mixer"
@@ -57,7 +57,7 @@ const KeyInst: React.FC<Props> = ({ mixerRef }) => {
         }
       </div>
       <div style={{ display: selectedInst === 'mic' ? 'block' : 'none' }}>
-        <Recorder selectedInst={selectedInst} mixerRef={mixerRef} />
+        <Mic selectedInst={selectedInst} mixerRef={mixerRef} />
       </div>
       <div style={{ display: selectedInst === 'drum' ? 'block' : 'none' }}>
         <DrumComponent selectedInst={selectedInst} mixerRef={mixerRef} />

@@ -33,12 +33,12 @@ const RecodePlayer = ({audio}) => {
             cursorColor: '#34D399',
             // fillParent: true,
         })
-
-        if(audio.type) {
-            wavesurferRef.current.load(window.URL.createObjectURL(audio));
-        }
-        else if(audio.link) {
+        
+        if(audio.link) {
             wavesurferRef.current.load(audio.link);
+        }
+        else if(audio.type) {
+            wavesurferRef.current.load(window.URL.createObjectURL(audio));
         }
 
         wavesurferRef.current.on('ready', () => {
@@ -124,11 +124,11 @@ const RecodePlayer = ({audio}) => {
             </div> 
             <div className="relative w-full">
                 <div ref={waveformRef} className="w-full cursor-pointer"></div>
-                <div className="relative w-full h-8">
-                    <div ref={timeRef} className="absolute left-0">
+                <div className="relative w-full h-8 flex justify-between px-3">
+                    <div ref={timeRef} className="">
                         00 : 00
                     </div>
-                    <div ref={allTimeRef} className="absolute right-0">
+                    <div ref={allTimeRef} className="">
                         00 : 00
                     </div>
                 </div>

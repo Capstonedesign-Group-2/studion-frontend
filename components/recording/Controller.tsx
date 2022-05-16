@@ -2,7 +2,7 @@ import React, { Dispatch, MutableRefObject, SetStateAction, useCallback, useEffe
 import audioMaker from 'audiomaker'
 import { AudioFile } from "../room/player/mixer/Recorder"
 import { BsFillVolumeUpFill, BsFillRecordFill, BsFillVolumeMuteFill } from 'react-icons/bs'
-import { FaStop, FaPlay } from 'react-icons/fa'
+import { FaStop, FaPlay, FaPause } from 'react-icons/fa'
 import { VolumeSlider } from "../room/player/mixer/VolumeSlider"
 import Loader from "../common/Loader"
 import Mixer from './inst/mixer/Mixer'
@@ -18,13 +18,12 @@ type Props = {
   setAudioFiles: Dispatch<SetStateAction<AudioFile[]>>
   isLoading: boolean
   mixerRef: MutableRefObject<Mixer | undefined>
-  setIsPlaying: React.Dispatch<SetStateAction<boolean>>
 }
 type GetTime = {
   (ref: any, now: number) : any,
   (ref: any, now: number, end: number) : any,
 }
-const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioFile, audioFiles, setAudioFiles }) => {
+const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioFile }) => {
   // make wavesurfer 
   const wavesurferRef = useRef<any>()
   const waveformRef = useRef<HTMLDivElement>(null)
@@ -43,15 +42,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [isMute, setMute] = useState<boolean>(true)
 
-  // recording
-  const recorderRef = useRef<MediaRecorder>()
-  const recorderBtnRef = useRef<any>(null)
-  const audioChunksRef = useRef<Blob[]>([])
-  const fileNumber = useRef<number>(0)
-  // const isLoading = useSelector<RootState, boolean>(state => state.room.isLoading)
-  const [isRecording, setIsRecording] = useState<boolean>(false)
-  const timerInterval = useRef<number>()
-  
   const handleVolumeChange = (event: Event, newValue: number | number[]) => {
     if(typeof newValue === 'number') {
       mixerRef.current?.setMasterGain(newValue / 120)
@@ -76,13 +66,19 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
   }
   const onClickPlay = () => {
     setIsPlaying((prev) => !prev)
-    {
-      !isPlaying
-      ?
-        wavesurferRef.current.play()
-      :
-        wavesurferRef.current.pause()
+    if(!isPlaying && audioFile) {
+      wavesurferRef.current.play()
+      waveRef.current?.onPlay(wavesurferRef.current.getCurrentTime())
+    } else {
+      wavesurferRef.current?.pause()
+      waveRef.current?.onStop(wavesurferRef.current?.getCurrentTime())
+
     }
+  }
+  const onClickStop = () => {
+    if(isPlaying) setIsPlaying((prev) => !prev)
+    wavesurferRef.current?.stop()
+    waveRef.current?.onStop(wavesurferRef.current?.getCurrentTime())
   }
   const onClickMute = () => {
     // false -> mute / true -> on
@@ -92,55 +88,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
     waveRef.current?.setGain(!isMute)
   }
 
-  const onRecording = async () => {
-    if (!recorderRef.current) return
-      if(!isRecording) {
-        setIsRecording(true)
-        // startTimer()
-        audioChunksRef.current = []
-        recorderRef.current.start()
-        wavesurferRef.current.play(0)
-        waveRef.current?.onPlay()
-      } else {
-        onStop()
-        wavesurferRef.current.stop()
-        waveRef.current?.onStop()
-      }
-    }
-
-  const onStop = () => {
-    if (isRecording && recorderRef.current) {
-      recorderRef.current.stop()
-    }
-    setIsRecording(false)
-    clearInterval(timerInterval.current)
-  }
-  useEffect(() => {
-    if (!isLoading && mixerRef.current) {
-      recorderRef.current = new MediaRecorder(mixerRef.current.recorderNode.stream as MediaStream)
-      recorderRef.current.ondataavailable = (evt) => {
-        audioChunksRef.current.push(evt.data)
-      }
-
-      recorderRef.current.onstop = async () => {
-        let blob = new Blob(audioChunksRef.current, { 'type': 'audio/mp3; codecs=opus' })
-        try {
-          const audioFile = {
-            label: 'Track_' + fileNumber.current,
-            url: URL.createObjectURL(blob),
-            blob
-          }
-          setAudioFiles((prev) => [...prev, audioFile])
-          fileNumber.current += 1
-        } catch (err) {
-          console.error('Array buffer error', err)
-        }
-      }
-    }
-    console.log(recorderRef)
-  }, [isLoading, mixerRef, audioFile])
-
-  
   useEffect(() => {
     let blobUrl = ''
     if(mixerRef.current && audioFile) {
@@ -201,31 +148,29 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
     }
   }, [isLoading, audioFile])
   return (
-    <div>
+    <div className="col-span-4 flex flex-col justify-center">
       {
         isLoading &&
         <div className="flex justify-center">
           <Loader />
         </div>
-        }
-        {
-          audioFile
-          ? <div className='shadow-lg border-[1px] border-gray-200 rounded-b'ref={waveformRef}></div>
-          : <DragDrop setAudioFile={setAudioFile} />
-          
-        }
-          {console.log('waveform',waveformRef)}
-      <div className="flex justify-around items-center my-4">
+      }
+      {
+        audioFile
+        ? <div className='shadow-lg border-[1px] border-gray-200 rounded-b'ref={waveformRef}></div>
+        : <DragDrop setAudioFile={setAudioFile} />
+      }
+      <div className="flex justify-around items-center mt-6">
         <div className="flex justify-between items-center">
           <div className="w-8 h-8 flex justify-center items-center mr-4 hover:cursor-pointer" onClick={() => onClickPlay()}>
             {
-              isPlaying
-                ? <FaStop className="text-2xl text-studion-100" />
+              isPlaying && audioFile
+                ? <FaPause className="text-2xl text-studion-100" />
                 : <FaPlay className="text-xl text-studion-100" />
             }
           </div>
-          <div>
-              <BsFillRecordFill style={{ color: isRecording ? 'rgb(239 68 68)' : 'rgb(254 202 202)' }} className="text-3xl text-red-100 hover:cursor-pointer" onClick={onRecording}/>
+          <div onClick={() => onClickStop()}>
+              <FaStop className="text-2xl text-studion-100 hover:cursor-pointer" />
           </div>
         </div>
         <div ref={startRef}>00 : 00</div>

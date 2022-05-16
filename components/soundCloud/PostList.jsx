@@ -22,7 +22,7 @@ const PostList = () => {
         node && observerRef.current.observe(node);
       };
     return (
-        <div className="h-full relative">
+        <div className="h-full relative flex-1">
           <div>
             {
                 postList.map(post => <Post key={post.id} post={post}/>)

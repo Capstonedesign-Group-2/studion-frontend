@@ -8,7 +8,7 @@ type Props = {
   selectedInst: String
 }
 
-const Recorder: React.FC<Props> = ({ mixerRef }) => {
+const Mic: React.FC<Props> = ({ mixerRef }) => {
   const wavesurferRef = useRef<any>()
   const waveformRef = useRef<HTMLDivElement>(null)
   
@@ -98,4 +98,4 @@ const Recorder: React.FC<Props> = ({ mixerRef }) => {
   )
 }
 
-export default Recorder
+export default Mic

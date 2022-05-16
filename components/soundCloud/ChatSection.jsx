@@ -13,20 +13,16 @@ const ChatSection = () => {
     const [userList, setUserList] = useState(null)
     useEffect(() => {
         Socket.socket.on("get_chats_on", res => {
-            console.log('res', res)
             setUserList(res.data)
         })
         Socket.socket.emit("get_chats", userData.id)
     }, [])
     return (
-        <div className="sticky ml-4 top-16 bg-white shadow-md rounded-md flex-1 flex flex-col mb-4" style={{ height:'700px' }}>
+        <div className="sticky ml-4 top-16 bg-white shadow-md rounded-md flex flex-col mb-4" style={{ height:'700px' }}>
             <Profile userData={userData}/>
             <hr />
             <h1 className="text-xl p-2">トーク</h1>
             <div className="px-2 py-1 overflow-y-auto flex-1">
-            {
-                console.log('userList', userList)
-            }
                 {
                     userList !== null
                     ? userList.map((user) => <ChatListItem key={user.id} chatRoom={user} />)
@@ -35,7 +31,6 @@ const ChatSection = () => {
                         <Loader />
                     </div>
                 }
-                
             </div>
         </div>        
     )
