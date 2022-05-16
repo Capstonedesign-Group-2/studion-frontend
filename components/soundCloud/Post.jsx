@@ -177,9 +177,7 @@ const Post = ({ post }) => {
                 </div>
             }
             {/* 음악 */}
-            {
-                console.log('post 음악에서', post)
-            }
+
             {/* 아이콘 */}
             <div className="py-2 px-1">
                 <div onClick={onClickLikeButton} className="mx-2 inline-block cursor-pointer">

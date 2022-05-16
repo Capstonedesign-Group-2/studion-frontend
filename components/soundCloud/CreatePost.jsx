@@ -91,13 +91,11 @@ const CreatePost = ({ audioFile }) => {
         }
         if (post.audio.blob) {
             formData.append("audio", post.audio.blob)
-            console.log('formdata', formData)
         } else if(post.audio.name) {
             formData.append("audio", post.audio)
         }
         http.post('/posts', formData, config)
             .then(res => {
-                console.log('formdata res', res)
                 if(userInfo !== undefined) {
                     dispatch(getUserPostList({id: userData.id}));
                     Router.push(`/soundcloud`)
