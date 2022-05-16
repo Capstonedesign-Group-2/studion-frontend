@@ -9,7 +9,7 @@ import styles from "../../styles/soundCloud/soundCloud.module.scss";
 import Router from "next/router";
 import Loader from "../common/Loader";
 
-const CreatePost = ({ audioFile, users }) => {
+const CreatePost = ({ audioFile }) => {
     const dispatch = useDispatch();
     const userData = useSelector(state => state.user.data);
     const userInfo = useSelector(state => state.another.userInfo);
