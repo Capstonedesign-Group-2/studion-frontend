@@ -1,15 +1,19 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
+import { useRouter } from 'next/router'
 
 import Mixer from "./Mixer"
 import { RootState } from "../../../../redux/slices"
 import { Modal } from "../../../common/modals"
 import AudioEditor from "../../editor/AudioEditor"
+import Socket from "../../../../socket"
+import { IUser } from "../../../../types"
 
 export type AudioFile = {
   label: string,
   url: string,
-  blob: Blob
+  blob: Blob,
+  users?: IUser[]
 } | undefined
 
 interface Props {
@@ -17,11 +21,13 @@ interface Props {
 }
 
 const Recorder = ({ mixerRef }: Props) => {
+  const router = useRouter()
   const recorderRef = useRef<MediaRecorder>()
   const audioChunksRef = useRef<Blob[]>([])
 
   const isLoading = useSelector<RootState, boolean>(state => state.room.isLoading)
   const [isRecording, setIsRecording] = useState<boolean>(false)
+  const usersRef = useRef<IUser[]>([])
 
   const [audioFiles, setAudioFiles] = useState<AudioFile[]>([])
   const [clock, setClock] = useState<number>(0)
@@ -38,11 +44,7 @@ const Recorder = ({ mixerRef }: Props) => {
   }
 
   const onStop = () => {
-    if (isRecording && recorderRef.current) {
-      recorderRef.current.stop()
-    }
-    setIsRecording(false)
-    clearInterval(timerInterval.current)
+    Socket.socket.emit('people_recording', router.query.id)
   }
 
   const startTimer = () => {
@@ -63,6 +65,29 @@ const Recorder = ({ mixerRef }: Props) => {
     })
   }
 
+  const handlePeopleRecording = useCallback((data: Array<any>) => {
+    if (isRecording && recorderRef.current) {
+      if (data.length !== 0) {
+        console.log(data)
+        usersRef.current = []
+        data.forEach((v) => {
+          usersRef.current.push(v.user as IUser)
+        })
+        console.log(usersRef.current)
+      }
+      recorderRef.current.stop()
+    }
+    setIsRecording(false)
+    clearInterval(timerInterval.current)
+  }, [isRecording])
+
+  useEffect(() => {
+    Socket.socket.on('people_recording_on', handlePeopleRecording)
+    return () => {
+      Socket.socket.off('people_recording_on', handlePeopleRecording)
+    }
+  }, [handlePeopleRecording])
+
   useEffect(() => {
     if (!isLoading && mixerRef.current) {
       recorderRef.current = new MediaRecorder(mixerRef.current?.recorderNode.stream as MediaStream)
@@ -71,13 +96,14 @@ const Recorder = ({ mixerRef }: Props) => {
         audioChunksRef.current.push(evt.data)
       }
 
-      recorderRef.current.onstop = async () => {
+      recorderRef.current.onstop = async (dd) => {
         let blob = new Blob(audioChunksRef.current, { 'type': 'audio/mp3; codecs=opus' })
         try {
           const audioFile = {
             label: 'Track_' + fileNumber.current,
             url: URL.createObjectURL(blob),
-            blob
+            blob,
+            users: usersRef.current
           }
           setAudioFiles((prev) => [...prev, audioFile])
           fileNumber.current += 1

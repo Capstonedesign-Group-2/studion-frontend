@@ -8,18 +8,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import Router from 'next/router'
 import Socket from '../../socket'
-import { getAnotherUserInfo, getRoomId } from '../../redux/actions/another'
+import { getAnotherUserInfo } from '../../redux/actions/another'
 
 const Chat = () => {
   const [list, setList] = useState(false);
-  const [userList, setUserList] = useState([]);
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
-  const socket = useRef();
   const chatRef = useRef(null);
-  const userData = useSelector(state => state.user.data); 
+  const userData = useSelector(state => state.user.data);
   const otherUser = useSelector(state => state.another.userInfo)
   const dispatch = useDispatch()
   // 클릭 이벤트
@@ -54,11 +52,20 @@ const Chat = () => {
   }
   // 하단 고정
   useEffect(() => {
-    if(!chatRef.current) return
+    if (!chatRef.current) return
     chatRef.current.scrollTop = chatRef.current.scrollHeight
   }, [messages])
 
   // 소켓
+  // useEffect(() => {
+  //   if (cookie.load('accessToken') && userData) {
+  //     Socket.socket.on('user_register_on', (data:any) => {})
+  //     Socket.socket.emit('user_register', { id: userData.id })
+  //   }
+  //   else {
+  //     Socket.removeAllListeners();
+  //   }
+  // }, [cookie.load('accessToken')])
   useEffect(() => {
     Socket.socket.on('exit_on', res => {
       console.log(res)
@@ -72,22 +79,30 @@ const Chat = () => {
       ])
     })
     Socket.socket.on("get_chat_data_on", async (res) => {
-      await dispatch(getAnotherUserInfo({id: res}))
+      await dispatch(getAnotherUserInfo({ id: res }))
       Socket.socket.emit("get_messages", {
         room_id: Router.query.id,
         user_id: res
       })
     })
+    Socket.socket.on("get_messages_on", (messages) => {
+      setMessages(messages)
+    })
+    Socket.socket.on('user_register_on', (data) => {
+      console.log(data)
+    })
+
     Socket.socket.emit("get_chat_data", {
       room_id: Router.query.id,
       user_id: userData.id
     })
-    Socket.socket.on("get_messages_on", (messages) => {
-      setMessages(messages)
-    })
-    return () => { Socket.removeAllListeners() }
+    Socket.socket.emit('user_register', { id: userData.id })
+
+    return () => {
+      Socket.removeAllListeners()
+    }
   }, [])
-  
+
   return (
     <div>
       <Header setList={setList} list={list} />
@@ -119,10 +134,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async (c
       },
     }
   }
-  let userData = store.getState().user.data
-  let queryId = parseInt(context.query.id)
-  // await store.dispatch(getRoomId({ roomId: queryId, userId: userData.id }))
-  // await store.dispatch(getAnotherUserInfo())
   return { props: {} }
 })
 
