@@ -90,6 +90,7 @@ const CreatePost = ({ audioFile }) => {
             formData.append("image", post.image)
         }
         if (post.audio.blob) {
+            console.log(post.audio.blob)
             formData.append("audio", post.audio.blob)
         } else if (post.audio.name) {
             formData.append("audio", post.audio)

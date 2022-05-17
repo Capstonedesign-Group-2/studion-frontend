@@ -176,25 +176,32 @@ const Post = ({ post }) => {
                 (post?.images[0] || post?.audios[0]) &&
                 <div className="w-full flex justify-center items-center p-4 relative" style={{ height: '700px' }}>
                 {/* 이미지 */}
-                {   post?.images[0] && !toggle &&                
+                {   post?.images[0] && !toggle &&
+                    <>
                         <img src={post.images[0].link} alt="" className="h-full"/>
+                        {
+                            (post.images[0] && post.audios[0]) &&
+                            <div className="absolute top-50% right-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
+                                <GrNext className="w-7 h-7"/>
+                            </div>
+                        }
+                    </>
                 }
                 {/* 음악 */}
                 {
-                    post?.audios[0] && toggle &&
+                    ((post?.audios[0] && toggle) || (!post?.images[0] && post?.audios[0])) &&
+                    <>
                         <RecodePlayer audio={post.audios[0]} />
+                        {
+                            (post.images[0] && post.audios[0]) &&
+                            <div className="absolute top-50% left-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
+                                <GrPrevious className="w-7 h-7"/>
+                            </div>
+                        }
+                    </>
                 }
                 {/* 좌우 버튼 */}
-                {
-                    (post?.images[0] && post?.audios[0]) && toggle
-                    ? <div className="absolute top-50% left-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
-                        <GrPrevious className="w-7 h-7"/>
-                    </div>
-                    : <div className="absolute top-50% right-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
-                        <GrNext className="w-7 h-7"/>
-                    </div>
-                }
-            </div>
+                </div>
             }
             
             {/* 아이콘 */}

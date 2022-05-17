@@ -58,7 +58,7 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles
           }
           console.log(recorderRef)
           recorderRef.current.onstop = async () => {
-            let blob = new Blob(audioChunksRef.current, { 'type': 'audio/mp3; codecs=opus' })
+            let blob = new Blob(audioChunksRef.current, { 'type': 'audio/wav' })
             try {
               const audioFile = {
                 label: 'Track_' + fileNumber.current,

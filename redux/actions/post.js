@@ -20,7 +20,6 @@ export const getNextPostList = createAsyncThunk(
 export const getUserPostList = createAsyncThunk(
   'post/getUserPostList',
   async (data, thunkAPI) => {
-    console.log('data', data);
     const res = await http.get(`/posts/${data.id}`)
     return res.data.posts
   }
