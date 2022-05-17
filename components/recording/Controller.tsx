@@ -51,7 +51,6 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
   }
   const handleKeyDown = (event: KeyboardEvent) => {
     if(event.key === " ") {
-      console.log('click spacebar')
       onClickPlay()
     }
   }

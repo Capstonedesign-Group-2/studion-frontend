@@ -9,13 +9,15 @@ import Loader from '../common/Loader';
 import { getCommentList, getNextCommentList } from '../../redux/actions/post';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 
-const Article = ({ post, userId, onClickProfile }) => {
+const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsLike }) => {
     const [comment, setComment] = useState('');
-    const [isLike, setLike] = useState(false);
     const userData = useSelector(state => state.user.data);
     const comments = useSelector(state => state.post.commentList);
     const nextUrl = useSelector(state => state.post.commentNextUrl);
     
+    const [like, setLike] = useState(isLike)
+    const [likeCount, setLikeCount] = useState(likes)
+    const [likeLoading, setLikeLoading] = useState(false)
     const isLoading = useSelector(state => state.post.getCommentListLoading)
     const getNextCommentListLoading = useSelector(state => state.post.getNextCommentListLoading)
     const dispatch = useDispatch();
@@ -25,6 +27,35 @@ const Article = ({ post, userId, onClickProfile }) => {
 
     const onCommentChange = (e) => {
         setComment(e.target.value)
+    }
+    const onClickLike = () => {
+        if(likeLoading) return
+        if(!like) {
+            http.post(`/likes/${post.id}`, { user_id : userData.id })
+            .then(res => {
+                setLikes((prev) => prev + 1)
+                setLikeCount((prev) => prev + 1)
+                setLike(true)
+                setIsLike(true)
+                setLikeLoading(false)
+            })
+            .catch(err => {
+                console.error(err)
+            })
+        } else {
+            http.delete(`/likes/${post.id}`, { data: {user_id : userData.id} })
+            .then(res => {
+                setLikes((prev) => prev - 1)
+                setLikeCount((prev) => prev - 1)
+                setLike(false)
+                setIsLike(false)
+                setLikeLoading(false)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+        // onClickLikeButton()
     }
     const onClickSubmit = () => {
         let commentData = {
@@ -39,40 +70,16 @@ const Article = ({ post, userId, onClickProfile }) => {
             }).catch(err => {
                 console.log(err);
             })
-    }
+    }   
     const onKeyPress = (e) => {
         if (e.key == 'Enter') {
             onClickSubmit()
         }
     }
-    const onClickLikeButton = () => {
-        // 좋아요 하는 것
-        if(isLike !== true) {
-            http.post(`/likes/${post.id}`, { user_id : userData.id })
-            .then(res => {
-                setLike(true)
-            })
-            .catch(err => {
-                console.error(err)
-            })
-        }
-        // 좋아요 취소
-        else {
-            http.delete(`/likes/${post.id}`, { data: {user_id : userData.id} })
-            .then(res => {
-                setLike(false)
-            })
-            .catch(err => {
-                console.log(err)
-            })
-        }
-    }
     const callComments = () => {
         dispatch(getCommentList({id: post.id}))
     }
-
     useEffect(() => {
-        callComments()
         http.post(`likes/exist/${post.id}`, {user_id: userData.id})
         .then(res => {
             setLike(res.data.status)
@@ -80,7 +87,7 @@ const Article = ({ post, userId, onClickProfile }) => {
         .catch(err => {
             console.error(err)
         })
-    }, [])
+    }, [like])
     // useEffect(() => {
     //     commentRef.current.scrollTop = commentRef.current.scrollHeight
     // }, [comments])
@@ -96,6 +103,11 @@ const Article = ({ post, userId, onClickProfile }) => {
     
         node && observerRef.current.observe(node);
       };
+    const checkIfClickedOutside = ({ target }) => {
+        if (dropDown && ref.current && !ref.current.contains(target)) {
+            setDropDown(false);
+        }
+    }
     // 바깥 클릭 시 드롭다운 사라짐
     useEffect(() => {
         window.addEventListener("click", checkIfClickedOutside)
@@ -103,11 +115,9 @@ const Article = ({ post, userId, onClickProfile }) => {
             window.removeEventListener("click", checkIfClickedOutside)
         }
     }, [dropDown])
-    const checkIfClickedOutside = ({ target }) => {
-        if (dropDown && ref.current && !ref.current.contains(target)) {
-            setDropDown(false);
-        }
-    }
+    useEffect(() => {
+        
+    }, [])
     return (
         <div className="flex flex-col h-full relative overflow-hidden">
             {/* 글쓴이 정보 */}
@@ -180,17 +190,20 @@ const Article = ({ post, userId, onClickProfile }) => {
             </div>
             <div className='w-full'>
                 <div className='flex'>
-                    <span onClick={onClickLikeButton} >
+                    <span onClick={onClickLike} className="cursor-pointer">
                         {
-                            isLike ?
+                            like ?
                             <AiFillHeart className='text-red-500 text-2xl'/> :
                             <AiOutlineHeart className='text-2xl inline'/> 
                         }
                     </span>
                 </div>
+                <span className="font-semibold flex cursor-pointer">
+                    {`LIKE ${likeCount}`}
+                </span>
                 <div className='flex w-full'>
-                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...' className='pl-2 w-11/12 h-full outline-studion-400 caret-studion-400 py-2' />
-                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-2/12 h-full items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150 py-2'>
+                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...' className='border-studion-400 border-2 rounded-md flex-1 h-full outline-none caret-studion-400 py-2' />
+                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-20 items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150 py-2'>
                         게시
                     </div>
                 </div>

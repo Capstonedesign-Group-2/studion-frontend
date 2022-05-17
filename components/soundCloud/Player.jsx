@@ -23,6 +23,7 @@ const Player = ({ audio, image, pushRecording }) => {
                         <div className='mt-2 absolute bottom-0 text-left left-0'>
                             <div>with</div>
                             <div className='flex'>
+                                {/* {console.log(post)} */}
                                 <BandMember />
                                 <BandMember />
                                 <BandMember />

@@ -57,12 +57,12 @@ const Post = ({ post }) => {
         // 좋아요 하는 것
         if(isLoading) return;
         setLoading(true);
-        if(isLike !== true) {
+        if(!isLike) {
             http.post(`/likes/${post.id}`, { user_id : userData.id })
             .then(res => {
                 setLikes((prev) => prev + 1)
                 setLike(true)
-                setLoading(false)
+                setLoading(false)   
             })
             .catch(err => {
                 console.error(err)
@@ -92,7 +92,7 @@ const Post = ({ post }) => {
     const openModal = () => {
         // dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
-            html: <PostContainer pushRecording={pushRecording} post={post} userId={post.user.id} />,
+            html: <PostContainer setLikes={setLikes} onClickLikeButton={onClickLikeButton} likes={likes} setLike={setLike} isLike={isLike} pushRecording={pushRecording} post={post} userId={post.user.id} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.post,
@@ -114,7 +114,7 @@ const Post = ({ post }) => {
         .catch(err => {
             console.error(err)
         })
-    },[])
+    }, [isLike])
     useEffect(() => {
         window.addEventListener("click", checkIfClickedOutside)
         return () => {
@@ -200,13 +200,12 @@ const Post = ({ post }) => {
                         }
                     </>
                 }
-                {/* 좌우 버튼 */}
                 </div>
             }
             
             {/* 아이콘 */}
             <div className="py-2 px-1">
-                <div onClick={onClickLikeButton} className="mx-2 inline-block cursor-pointer">
+                <div onClick={() => onClickLikeButton()} className="mx-2 inline-block cursor-pointer">
                     {
                         isLike ?
                         <AiFillHeart className='text-red-500 text-2xl'/> :

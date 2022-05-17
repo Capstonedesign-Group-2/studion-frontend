@@ -51,7 +51,6 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles
         }, 50)
     }
     useEffect(() => {
-        console.log(mixerRef.current)
         if (!isLoading && mixerRef.current) {
           recorderRef.current = new MediaRecorder(mixerRef.current.recorderNode.stream as MediaStream)
           recorderRef.current.ondataavailable = (evt) => {

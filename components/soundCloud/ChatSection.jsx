@@ -16,6 +16,7 @@ const ChatSection = () => {
             setUserList(res.data)
         })
         Socket.socket.emit("get_chats", userData.id)
+        return () => {}
     }, [])
     return (
         <div className="sticky ml-4 top-16 bg-white shadow-md rounded-md flex flex-col mb-4" style={{ height:'700px' }}>

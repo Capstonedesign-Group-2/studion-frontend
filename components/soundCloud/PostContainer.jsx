@@ -4,7 +4,7 @@ import { Modal } from "../common/modals";
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import Router from "next/router";
 
-const PostContainer = ({ post, pushRecording, userId }) => {
+const PostContainer = ({ post, pushRecording, setLike, setLikes, likes, isLike, userId, onClickLikeButton }) => {
     const closeModal = () => {
         Modal.close();
     }
@@ -30,7 +30,7 @@ const PostContainer = ({ post, pushRecording, userId }) => {
 
                 {/* 컨텐츠, 코멘트 */}
                 <div className="max-w-xl mx-auto pl-2 md:pt-5 lg:max-w-lg lg:mx-0 w-full">
-                    <Article userId={userId} post={post} onClickProfile={onClickProfile} />
+                    <Article setLikes={setLikes} likes={likes} onClickLikeButton={onClickLikeButton} setIsLike={setLike} isLike={isLike} userId={userId} post={post} onClickProfile={onClickProfile} />
                 </div>
             </div>
         </div>

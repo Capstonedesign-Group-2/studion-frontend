@@ -68,12 +68,11 @@ const Recorder = ({ mixerRef }: Props) => {
   const handlePeopleRecording = useCallback((data: Array<any>) => {
     if (isRecording && recorderRef.current) {
       if (data.length !== 0) {
-        console.log(data)
         usersRef.current = []
         data.forEach((v) => {
           usersRef.current.push(v.user as IUser)
         })
-        console.log(usersRef.current)
+        
       }
       recorderRef.current.stop()
     }

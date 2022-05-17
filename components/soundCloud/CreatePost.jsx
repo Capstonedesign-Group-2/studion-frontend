@@ -200,17 +200,27 @@ const CreatePost = ({ audioFile }) => {
                     {/* 오디오 */}
                     {/* <input type="file" id="inputAudio" accept="audio/*" className="hidden" onChange={onAudioChange} /> */}
                     {(post.audio.name && toggle !== true) &&
-                        <div className="w-full md:max-w-xl lg:max-w-2xl relative">
-                            <RecodePlayer audio={post.audio} />
-                            {/* 유저 추가하기
-                            <div className="cursor-pointer">
-                                <svg style={{ width: "24px", height: "24px" }} viewBox="0 0 24 24">
-                                    <path fill="currentColor" d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
-                                </svg>
-                            </div> */}
-                            {/* 추가된 유저 */}
-                        </div>
-
+                        <>
+                            <div className="w-full md:max-w-xl lg:max-w-2xl relative">
+                                <RecodePlayer audio={post.audio} />     
+                            </div>
+                            <div className="w-full flex flex-col justify-start items-start">
+                                <h1>COMPOSER</h1>
+                                <div className="flex text-white">
+                                    {audioFile.users.map((user) => {
+                                        return(
+                                            user.image 
+                                                ? <img key={user.id} className="w-10 h-10 rounded-full" src={user.image} />
+                                            
+                                                : <div key={user.id} className="w-10 h-10 rounded-full bg-studion-400 flex items-center justify-center mr-2">
+                                                    {user.name.slice(0, 2).toUpperCase()}
+                                                </div>  
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        </>
+                        
                     }
                     {/* <div className="flex h-full items-center justify-center w-full max-screen-w-lg" style={ (post.audios || post.images) ? {display: "flex"} : {display: "none"}}>
                         <Player audio={post.audios} image={post.images} />
@@ -220,7 +230,7 @@ const CreatePost = ({ audioFile }) => {
 
 
                 {/* 컨탠츠 */}
-                <div className="w-full mx-auto pt-5 max-w-3xl lg:max-w-lg pl-2">
+                <div className="w-full mx-auto pt-5 max-w-3xl lg:max-w-lg pl-2 flex flex-col">
                     <div className="ml-3 flex mt-3">
                         {
                             userData.image
@@ -238,9 +248,10 @@ const CreatePost = ({ audioFile }) => {
                         {/* <CKEditor 
                             editor={ ClassicEditor }
                         /> */}
-                        <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 p-2 border-black w-full decoration-none">
+                        <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 p-2 border-black w-full h-40 decoration-none">
 
                         </textarea>
+                        
                         <div className="cursor-pointer flex justify-center hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>
                             {isLoading
                                 ?
@@ -253,7 +264,7 @@ const CreatePost = ({ audioFile }) => {
                             }
                         </div>
                     </div>
-                    <div className="w-full flex justify-center pt-20">
+                    <div className="flex justify-center pt-20">
                         <label htmlFor="inputFiles" className="cursor-pointer" style={!(post.image.size || post.audio.name) ? { display: "none" } : { display: "block" }}>
                             <svg aria-label="이미지나 동영상과 같은 미디어를 나타내는 아이콘" className="_8-yf5 " color="#262626" fill="#262626" height="200" role="img" viewBox="0 0 97.6 77.3" width="300">
                                 <path d="M16.3 24h.3c2.8-.2 4.9-2.6 4.8-5.4-.2-2.8-2.6-4.9-5.4-4.8s-4.9 2.6-4.8 5.4c.1 2.7 2.4 4.8 5.1 4.8zm-2.4-7.2c.5-.6 1.3-1 2.1-1h.2c1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1-1.7 0-3.1-1.4-3.1-3.1 0-.8.3-1.5.8-2.1z" fill="currentColor"></path>
