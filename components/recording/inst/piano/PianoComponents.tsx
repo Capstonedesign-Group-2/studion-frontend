@@ -30,7 +30,7 @@ const PianoComponent = ({ selectedInst, mixerRef }: Props) => {
   const onPlayNote = useCallback((midiNumber: string) => {
     if (!mixerRef.current) return
     mixerRef.current.piano.onKey(midiNumber)
-    console.log(mixerRef.current)
+    // console.log(mixerRef.current)
   }, [mixerRef])
 
   return (
