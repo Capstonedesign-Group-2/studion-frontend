@@ -49,6 +49,12 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
       wavesurferRef.current.setVolume(newValue / 120)
     }
   }
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if(event.key === " ") {
+      console.log('click spacebar')
+      onClickPlay()
+    }
+  }
 
   const getTime: GetTime = (ref, now, end?:number) => {
     let total = 0
@@ -141,12 +147,18 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
     }
     initWaveSurfer()
     audioMakerRef.current = new audioMaker()
-
+    
     return () => {
       if (!wavesurferRef.current) return
       wavesurferRef.current.destroy()
     }
   }, [isLoading, audioFile])
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isPlaying])
   return (
     <div className="col-span-4 flex flex-col justify-center">
       {
