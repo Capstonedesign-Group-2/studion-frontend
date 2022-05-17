@@ -79,7 +79,7 @@ const Room = () => {
 				if (!(mixerRef.current && Socket.socket && localStreamRef.current)) return
 
 				new Channel(userData?.name, Socket.socket.id, localStreamRef.current, mixerRef.current)
-				dispatch(roomSlice.actions.addUser({ id: Socket.socket.id, name: userData.name, user_id: userData.id }))
+				dispatch(roomSlice.actions.addUser({ id: Socket.socket.id, name: userData?.name }))
 
 				getAudios()
 

@@ -17,7 +17,7 @@ interface Props {
 
 const RecordingContainer: React.FC<Props> = ({ audioFile, setAudioFile, audioFiles, setAudioFiles, isLoading, setLoading, setNav }) => {
   const mixerRef = useRef<Mixer>()
-  const [isPlaying, setIsPlaying] = useState<boolean>(false)
+
   return (
     <>
       <div className="pb-20 pt-20 px-5 xl:px-16 flex-1 overflow-y-scroll">

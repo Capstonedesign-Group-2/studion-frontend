@@ -15,18 +15,6 @@ const Recording = () => {
   const [isLoading, setLoading] = useState<boolean>(false)
   const router = useRouter()
 
-  function getUrlParams(): any {
-    var params: any = {};
-
-    window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,
-      function (str, key, value): any {
-        params[key] = value;
-      }
-    );
-
-    return params;
-  }
-
   async function getAudio(postId: string) {
     setLoading(true)
     try {
@@ -53,6 +41,7 @@ const Recording = () => {
       getAudio(postId)
     }
   }, [])
+
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {
