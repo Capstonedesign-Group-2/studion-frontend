@@ -217,7 +217,7 @@
   @apply w-24 absolute right-0 top-5 bg-white rounded-lg;
   animation: dropDown 0.5s;
   div {
-    @apply flex flex-col border-2;
+    @apply flex flex-col border-2 z-10;
   }
   button:hover {
     @apply bg-gray-100;

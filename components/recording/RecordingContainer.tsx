@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
+import { Dispatch, SetStateAction, useRef, useState } from "react"
 import { AudioFile } from "../room/player/mixer/Recorder"
 import Controller from "./Controller"
 import Mixer from "./inst/mixer/Mixer"
@@ -8,18 +8,14 @@ import Recorder from "./Recorder"
 interface Props {
   audioFile: AudioFile
   setAudioFile: Dispatch<SetStateAction<AudioFile>>
-  // audioFiles: AudioFile[]
   setAudioFiles: Dispatch<SetStateAction<AudioFile[]>>
   setNav: Dispatch<SetStateAction<boolean>>
   isLoading: boolean
-  // setLoading: Dispatch<SetStateAction<boolean>>
 }
 
 const RecordingContainer: React.FC<Props> = ({ audioFile, setAudioFile, setAudioFiles, isLoading, setNav }) => {
   const mixerRef = useRef<Mixer>()
-  useEffect(() => {
-    console.log(mixerRef)
-  }, [])
+  
   return (
     <>
       <div className="pb-20 pt-20 px-5 xl:px-16 flex-1 overflow-y-scroll">

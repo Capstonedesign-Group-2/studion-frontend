@@ -197,18 +197,27 @@ const CreatePost = ({ audioFile }) => {
                                 <RecodePlayer audio={post.audio} />     
                             </div>
                             <div className="w-full flex flex-col justify-start items-start">
-                                <h1>COMPOSER</h1>
+                                {
+                                    post.audio.users
+                                    ? <>
+                                    <h1>COMPOSER</h1>
+                                        {audio.users.map((user) => {
+                                            return(
+                                                user.image 
+                                                    ? <img key={user.id} className="w-10 h-10 rounded-full" src={user.image} />
+                                                
+                                                    : <div key={user.id} className="w-10 h-10 rounded-full bg-studion-400 flex items-center justify-center mr-2">
+                                                        {user.name.slice(0, 2).toUpperCase()}
+                                                    </div>  
+                                            )
+                                        })}
+                                    </>
+                                    :
+                                    <></>
+
+                                }
                                 <div className="flex text-white">
-                                    {audioFile.users.map((user) => {
-                                        return(
-                                            user.image 
-                                                ? <img key={user.id} className="w-10 h-10 rounded-full" src={user.image} />
-                                            
-                                                : <div key={user.id} className="w-10 h-10 rounded-full bg-studion-400 flex items-center justify-center mr-2">
-                                                    {user.name.slice(0, 2).toUpperCase()}
-                                                </div>  
-                                        )
-                                    })}
+                                    
                                 </div>
                             </div>
                         </>
