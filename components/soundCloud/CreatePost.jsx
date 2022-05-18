@@ -23,23 +23,6 @@ const CreatePost = ({ audioFile }) => {
         content: '',
         image: {},
         audio: {},
-        with: [
-            {
-                id: 3,
-                name: 'dong',
-                image: '',
-            },
-            {
-                id: 4,
-                name: 'joon',
-                image: '',
-            },
-            {
-                id: 5,
-                name: 'hong',
-                image: '',
-            },
-        ]
     })
     const onChange = (e) => {
         if (e.target.files.length) {
@@ -90,16 +73,28 @@ const CreatePost = ({ audioFile }) => {
             formData.append("image", post.image)
         }
         if (post.audio.blob) {
-            console.log(post.audio.blob)
             formData.append("audio", post.audio.blob)
         } else if (post.audio.name) {
             formData.append("audio", post.audio)
+        }
+        if(post.audio.users) {
+            post.audio.users.map((user, index) => {
+                formData.append(`composers[${index}]`, user.id)
+            })
         }
         http.post('/posts', formData, config)
             .then(res => {
                 if (userInfo !== undefined) {
                     dispatch(getUserPostList({ id: userData.id }));
-                    Router.push(`/soundcloud`)
+                    if(Router.pathname === "/room/[id]" || Router.pathname === "/recording") {
+                        let link = document.createElement("a")
+                        link.target = "_blank"
+                        link.href = "/soundcloud"
+                        link.click()
+                        link.remove()
+                    } else {
+                        Router.push(`/soundcloud`)
+                    }
                 }
                 else
                     dispatch(getPostList());
@@ -120,6 +115,7 @@ const CreatePost = ({ audioFile }) => {
                     name: audioFile.label,
                     link: audioFile.url,
                     blob: audioFile.blob,
+                    users: audioFile.users
                 }
             })
         }
@@ -132,10 +128,6 @@ const CreatePost = ({ audioFile }) => {
             reader.readAsDataURL(post.image);
             reader.onload = (e) => (imgEl.src = e.target.result);
         }
-        // if (post.audio.size) {
-        //     console.log(post.audio)
-        // }
-
     }, [post.image, post.audio, toggle])
 
 
@@ -248,7 +240,7 @@ const CreatePost = ({ audioFile }) => {
                         {/* <CKEditor 
                             editor={ ClassicEditor }
                         /> */}
-                        <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 p-2 border-black w-full h-40 decoration-none">
+                        <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 p-2 border-black w-full decoration-none">
 
                         </textarea>
                         

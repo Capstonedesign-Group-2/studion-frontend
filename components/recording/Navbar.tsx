@@ -10,6 +10,7 @@ type Props = {
 
 const Navbar: React.FC<Props> = ({audioFiles, setAudioFiles}) => {
     const onEditAudio = (audioFile: AudioFile) => {
+        console.log(audioFile)
         Modal.fire({
           title: 'オーディオ編集',
           showConfirmButton: false,

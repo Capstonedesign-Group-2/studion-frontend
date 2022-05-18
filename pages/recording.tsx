@@ -7,12 +7,14 @@ import http from "../http";
 import wrapper from "../redux/store";
 import { stayLoggedIn } from "../http/stay";
 import { useRouter } from "next/router";
+import { IUser } from "../types";
 
 const Recording = () => {
   const [audioFile, setAudioFile] = useState<AudioFile>()
   const [audioFiles, setAudioFiles] = useState<AudioFile[]>([])
   const [isNav, setNav] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
+  // const [composers, setComposers] = useState<IUser[]>([])
   const router = useRouter()
 
   async function getAudio(postId: string) {
@@ -20,13 +22,16 @@ const Recording = () => {
     try {
       const res = await http.get(`/posts/show/${postId}`)
       const audioLink = res.data.post.audios[0].link
+      let composers: Array<IUser> = new Array
+      res.data.post.audios[0].composers.map((data:any) => composers.push(data.user))
       if (!audioLink) throw new Error('Can not get audio link!')
       const audio = await fetch(audioLink)
       const blob = await audio.blob()
       setAudioFile({
         label: 'original',
         url: audioLink as string,
-        blob
+        blob,
+        users: composers
       })
       setLoading(false)
     } catch (err) {
@@ -53,10 +58,8 @@ const Recording = () => {
         audioFile={audioFile}
         setNav={setNav}
         setAudioFile={setAudioFile}
-        audioFiles={audioFiles}
         setAudioFiles={setAudioFiles}
         isLoading={isLoading}
-        setLoading={setLoading}
       />
     </div>
   )

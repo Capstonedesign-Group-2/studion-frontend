@@ -198,12 +198,12 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
                         }
                     </span>
                 </div>
-                <span className="font-semibold flex cursor-pointer">
+                <span className="font-semibold flex pb-1">
                     {`LIKE ${likeCount}`}
                 </span>
                 <div className='flex w-full'>
-                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...' className='border-studion-400 border-2 rounded-md flex-1 h-full outline-none caret-studion-400 py-2' />
-                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-20 items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150 py-2'>
+                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...' className='border-studion-400 border-2 rounded-md flex-1 h-full outline-none caret-studion-400 py-1' />
+                    <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-20 items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150 py-1'>
                         게시
                     </div>
                 </div>

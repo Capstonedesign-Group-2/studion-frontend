@@ -8,14 +8,12 @@ import Loader from "../common/Loader"
 import Mixer from './inst/mixer/Mixer'
 import { Wave } from "./Wave"
 import DragDrop from "./DragDrop"
-import { Router } from "next/router"
 
 
 type Props = {
   audioFile: AudioFile
   setAudioFile: Dispatch<SetStateAction<AudioFile>>
-  audioFiles: AudioFile[]
-  setAudioFiles: Dispatch<SetStateAction<AudioFile[]>>
+  // setAudioFiles: Dispatch<SetStateAction<AudioFile[]>>
   isLoading: boolean
   mixerRef: MutableRefObject<Mixer | undefined>
 }

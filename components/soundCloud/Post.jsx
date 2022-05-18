@@ -89,10 +89,14 @@ const Post = ({ post }) => {
             query: { post_id: post.post_id}
         })
     }
+    const onClickUser = (id) => {
+        Modal.close()
+        Router.push(`/soundcloud/${id}`)
+    }   
     const openModal = () => {
         // dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
-            html: <PostContainer setLikes={setLikes} onClickLikeButton={onClickLikeButton} likes={likes} setLike={setLike} isLike={isLike} pushRecording={pushRecording} post={post} userId={post.user.id} />,
+            html: <PostContainer setLikes={setLikes} onClickLikeButton={onClickLikeButton} likes={likes} setLike={setLike} isLike={isLike} pushRecording={pushRecording} onClickUser={onClickUser} post={post} userId={post.user.id} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.post,

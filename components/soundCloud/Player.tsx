@@ -1,10 +1,37 @@
 import RecodePlayer from "./RecodePlayer";
+import {useRouter} from "next/router"
 import { useState, useRef, useEffect } from "react";
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import wrapper from "../../redux/store";
-const Player = ({ audio, image, pushRecording }) => {
+import { IUser } from "../../types";
+import { Modal } from "../common/modals";
+
+
+type Composer = {
+    id: number,
+    user_id: number,
+    audio_id: number,
+    user: IUser
+}
+type Audio = {
+    id: number,
+        user_id: number,
+        post_id: number,
+        link: string,
+        composers: Composer[]
+}
+type Props = {
+    audio?: Audio,
+    image?: {
+        link: string
+    },
+    pushRecording: (audio: Audio) => void
+    onClickUser: (id: number) => void
+}
+
+const Player:React.FC<Props> = ({ audio, image, pushRecording, onClickUser }) => {
     const [toggle, setToggle] = useState(false)
-    const toggleRef = useRef();
+    const toggleRef = useRef<any>();
     
     const onToggle = () => {
         setToggle(!toggle)
@@ -13,39 +40,38 @@ const Player = ({ audio, image, pushRecording }) => {
         <div className="max-w-xl w-full h-full flex flex-col">
             <div className="flex flex-col h-full justify-center items-center relative w-full">
                 {
-                    (audio.length !== 0 && !toggle)
+                    (audio && !toggle)
                     &&
                     <div className="w-full h-full relative flex items-center">
                         <div className="w-full">
-                            <RecodePlayer audio={audio[0]} />
+                            <RecodePlayer audio={audio} />
 
                         </div>
                         <div className='mt-2 absolute bottom-0 text-left left-0'>
                             <div>with</div>
                             <div className='flex'>
-                                {/* {console.log(post)} */}
-                                <BandMember />
-                                <BandMember />
-                                <BandMember />
-                                <BandMember />
+                                {
+                                    audio?.composers &&
+                                    audio.composers.map((composer) => <BandMember key={composer.id} composerData={composer.user} onClickUser={onClickUser} />)
+                                }
                             </div>
                         </div>
                     </div>
                 }
                 {
-                    (audio.length !== 0)
+                    (audio)
                     &&
-                    <div onClick={() => pushRecording(audio[0])}>
+                    <div onClick={() => pushRecording(audio)}>
                         <a className="bg-studion-400 absolute left-0 top-3 cursor-pointer rounded-lg text-white hover:bg-studion-300 text-base w-24"> 
                              録音リレー
                          </a>
                     </div>
                 }
                 {
-                    ((image.length !== 0 && toggle) || (image.length !== 0 && !audio.length && !toggle))
+                    ((image && toggle) || (image && !audio && !toggle))
                     &&
                     <div className="shrink" style={{ height: "680px" }}>
-                        <img src={image[0].link} alt="" className="h-full w-full object-contain" />
+                        <img src={image.link} alt="" className="h-full w-full object-contain" />
                     </div>
                 }
 
@@ -62,7 +88,7 @@ const Player = ({ audio, image, pushRecording }) => {
                 } */}
                 {/* 토글박스 */}
                 {
-                    (image.length !== 0 && audio.length !== 0)
+                    (image && audio)
                     && (
                         <div className={styles.toggleBox} onClick={onToggle}>
                             <div className="text-xs text-white">
@@ -89,10 +115,23 @@ const Player = ({ audio, image, pushRecording }) => {
         </div>
     )
 }
-const BandMember = () => {
+
+type MemberProps = {
+    composerData: IUser
+    onClickUser: (id: number) => void
+}
+
+const BandMember = ({ composerData, onClickUser } : MemberProps) => {
     return (
         <div>
-            <div className='rounded-full w-9 h-9 border-black border-2 mr-1 cursor-pointer '>
+            <div className="rounded-full bg-studion-400 mr-1 w-9 h-9 cursor-pointer flex justify-center items-center" onClick={() => onClickUser(composerData.id)}>
+            {
+                composerData.image 
+                ? <img className='' src={composerData.image} />
+                : <div className='text-white' >
+                    {composerData.name.slice(0, 2).toUpperCase()}
+                </div>
+            }
             </div>
         </div>
     )
