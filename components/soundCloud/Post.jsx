@@ -57,12 +57,12 @@ const Post = ({ post }) => {
         // 좋아요 하는 것
         if(isLoading) return;
         setLoading(true);
-        if(isLike !== true) {
+        if(!isLike) {
             http.post(`/likes/${post.id}`, { user_id : userData.id })
             .then(res => {
                 setLikes((prev) => prev + 1)
                 setLike(true)
-                setLoading(false)
+                setLoading(false)   
             })
             .catch(err => {
                 console.error(err)
@@ -89,10 +89,14 @@ const Post = ({ post }) => {
             query: { post_id: post.post_id}
         })
     }
+    const onClickUser = (id) => {
+        Modal.close()
+        Router.push(`/soundcloud/${id}`)
+    }   
     const openModal = () => {
         // dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
-            html: <PostContainer pushRecording={pushRecording} post={post} userId={post.user.id} />,
+            html: <PostContainer setLikes={setLikes} onClickLikeButton={onClickLikeButton} likes={likes} setLike={setLike} isLike={isLike} pushRecording={pushRecording} onClickUser={onClickUser} post={post} userId={post.user.id} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.post,
@@ -114,7 +118,7 @@ const Post = ({ post }) => {
         .catch(err => {
             console.error(err)
         })
-    },[])
+    }, [isLike])
     useEffect(() => {
         window.addEventListener("click", checkIfClickedOutside)
         return () => {
@@ -174,7 +178,7 @@ const Post = ({ post }) => {
             </div>
             {
                 (post?.images[0] || post?.audios[0]) &&
-                <div className="w-full flex justify-center items-center p-4 relative" style={{ height: '700px' }}>
+                <div className="w-full flex justify-center items-center p-5 relative" style={{ height: '700px' }}>
                 {/* 이미지 */}
                 {   post?.images[0] && !toggle &&
                     <>
@@ -182,7 +186,7 @@ const Post = ({ post }) => {
                         {
                             (post.images[0] && post.audios[0]) &&
                             <div className="absolute top-50% right-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
-                                <GrNext className="w-7 h-7"/>
+                                <GrNext size="24" className="text-studion-100" />
                             </div>
                         }
                     </>
@@ -195,18 +199,17 @@ const Post = ({ post }) => {
                         {
                             (post.images[0] && post.audios[0]) &&
                             <div className="absolute top-50% left-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
-                                <GrPrevious className="w-7 h-7"/>
+                                <GrPrevious size="24" />
                             </div>
                         }
                     </>
                 }
-                {/* 좌우 버튼 */}
                 </div>
             }
             
             {/* 아이콘 */}
             <div className="py-2 px-1">
-                <div onClick={onClickLikeButton} className="mx-2 inline-block cursor-pointer">
+                <div onClick={() => onClickLikeButton()} className="mx-2 inline-block cursor-pointer">
                     {
                         isLike ?
                         <AiFillHeart className='text-red-500 text-2xl'/> :
@@ -226,7 +229,7 @@ const Post = ({ post }) => {
                 <div className="mt-2 flex">
                     <div className="font-semibold mr-1">{`${post.user.name}`}</div>
                     <div className="font-base w-20 truncate">{`${post.content}`}</div>
-                    <div className="text-gray-400 cursor-pointer" onClick={openModal}>더보기</div>
+                    <div className="text-gray-400 cursor-pointer" onClick={openModal}>もっと</div>
                 </div>
             </div>
             {/* 추가된 댓글 */}
@@ -243,7 +246,9 @@ const Post = ({ post }) => {
             {/* 댓글작성 */}
             <div className="px-3 py-2 flex">
                 <input onKeyPress={onKeyPress} value={comment} onChange={onCommentChange} type="text" className="flex-1 pl-1 outline-studion-400 caret-studion-400" placeholder="コメント..."/>
-                <button onClick={onClickSubmit} className="bg-studion-400 hover:bg-studion-500 rounded-lg ml-2 py-1 px-2 text-white">보내기</button>
+                <button onClick={onClickSubmit} className="bg-studion-400 px-5 hover:bg-studion-500 rounded-lg ml-2 py-1 px-2 text-white">
+                    転送
+                </button>
             </div>
         </div>
     )

@@ -8,14 +8,12 @@ import Loader from "../common/Loader"
 import Mixer from './inst/mixer/Mixer'
 import { Wave } from "./Wave"
 import DragDrop from "./DragDrop"
-import { Router } from "next/router"
 
 
 type Props = {
   audioFile: AudioFile
   setAudioFile: Dispatch<SetStateAction<AudioFile>>
-  audioFiles: AudioFile[]
-  setAudioFiles: Dispatch<SetStateAction<AudioFile[]>>
+  // setAudioFiles: Dispatch<SetStateAction<AudioFile[]>>
   isLoading: boolean
   mixerRef: MutableRefObject<Mixer | undefined>
 }
@@ -47,6 +45,11 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
       mixerRef.current?.setMasterGain(newValue / 120)
       waveRef.current?.setGain(newValue / 120)
       wavesurferRef.current.setVolume(newValue / 120)
+    }
+  }
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if(event.key === " ") {
+      onClickPlay()
     }
   }
 
@@ -141,12 +144,18 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
     }
     initWaveSurfer()
     audioMakerRef.current = new audioMaker()
-
+    
     return () => {
       if (!wavesurferRef.current) return
       wavesurferRef.current.destroy()
     }
   }, [isLoading, audioFile])
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isPlaying])
   return (
     <div className="col-span-4 flex flex-col justify-center">
       {

@@ -23,23 +23,6 @@ const CreatePost = ({ audioFile }) => {
         content: '',
         image: {},
         audio: {},
-        with: [
-            {
-                id: 3,
-                name: 'dong',
-                image: '',
-            },
-            {
-                id: 4,
-                name: 'joon',
-                image: '',
-            },
-            {
-                id: 5,
-                name: 'hong',
-                image: '',
-            },
-        ]
     })
     const onChange = (e) => {
         if (e.target.files.length) {
@@ -90,16 +73,28 @@ const CreatePost = ({ audioFile }) => {
             formData.append("image", post.image)
         }
         if (post.audio.blob) {
-            console.log(post.audio.blob)
             formData.append("audio", post.audio.blob)
         } else if (post.audio.name) {
             formData.append("audio", post.audio)
+        }
+        if(post.audio.users) {
+            post.audio.users.map((user, index) => {
+                formData.append(`composers[${index}]`, user.id)
+            })
         }
         http.post('/posts', formData, config)
             .then(res => {
                 if (userInfo !== undefined) {
                     dispatch(getUserPostList({ id: userData.id }));
-                    Router.push(`/soundcloud`)
+                    if(Router.pathname === "/room/[id]" || Router.pathname === "/recording") {
+                        let link = document.createElement("a")
+                        link.target = "_blank"
+                        link.href = "/soundcloud"
+                        link.click()
+                        link.remove()
+                    } else {
+                        Router.push(`/soundcloud`)
+                    }
                 }
                 else
                     dispatch(getPostList());
@@ -120,6 +115,7 @@ const CreatePost = ({ audioFile }) => {
                     name: audioFile.label,
                     link: audioFile.url,
                     blob: audioFile.blob,
+                    users: audioFile.users
                 }
             })
         }
@@ -132,10 +128,6 @@ const CreatePost = ({ audioFile }) => {
             reader.readAsDataURL(post.image);
             reader.onload = (e) => (imgEl.src = e.target.result);
         }
-        // if (post.audio.size) {
-        //     console.log(post.audio)
-        // }
-
     }, [post.image, post.audio, toggle])
 
 
@@ -158,7 +150,7 @@ const CreatePost = ({ audioFile }) => {
                                 <path d="M84.7 18.4L58 16.9l-.2-3c-.3-5.7-5.2-10.1-11-9.8L12.9 6c-5.7.3-10.1 5.3-9.8 11L5 51v.8c.7 5.2 5.1 9.1 10.3 9.1h.6l21.7-1.2v.6c-.3 5.7 4 10.7 9.8 11l34 2h.6c5.5 0 10.1-4.3 10.4-9.8l2-34c.4-5.8-4-10.7-9.7-11.1zM7.2 10.8C8.7 9.1 10.8 8.1 13 8l34-1.9c4.6-.3 8.6 3.3 8.9 7.9l.2 2.8-5.3-.3c-5.7-.3-10.7 4-11 9.8l-.6 9.5-9.5 10.7c-.2.3-.6.4-1 .5-.4 0-.7-.1-1-.4l-7.8-7c-1.4-1.3-3.5-1.1-4.8.3L7 49 5.2 17c-.2-2.3.6-4.5 2-6.2zm8.7 48c-4.3.2-8.1-2.8-8.8-7.1l9.4-10.5c.2-.3.6-.4 1-.5.4 0 .7.1 1 .4l7.8 7c.7.6 1.6.9 2.5.9.9 0 1.7-.5 2.3-1.1l7.8-8.8-1.1 18.6-21.9 1.1zm76.5-29.5l-2 34c-.3 4.6-4.3 8.2-8.9 7.9l-34-2c-4.6-.3-8.2-4.3-7.9-8.9l2-34c.3-4.4 3.9-7.9 8.4-7.9h.5l34 2c4.7.3 8.2 4.3 7.9 8.9z" fill="currentColor"></path>
                                 <path d="M78.2 41.6L61.3 30.5c-2.1-1.4-4.9-.8-6.2 1.3-.4.7-.7 1.4-.7 2.2l-1.2 20.1c-.1 2.5 1.7 4.6 4.2 4.8h.3c.7 0 1.4-.2 2-.5l18-9c2.2-1.1 3.1-3.8 2-6-.4-.7-.9-1.3-1.5-1.8zm-1.4 6l-18 9c-.4.2-.8.3-1.3.3-.4 0-.9-.2-1.2-.4-.7-.5-1.2-1.3-1.1-2.2l1.2-20.1c.1-.9.6-1.7 1.4-2.1.8-.4 1.7-.3 2.5.1L77 43.3c1.2.8 1.5 2.3.7 3.4-.2.4-.5.7-.9.9z" fill="currentColor"></path>
                             </svg>
-                            클릭하세요
+                            ファイルを選択
                         </label>
                     </div>
                     {/* 토글 */}
@@ -200,17 +192,36 @@ const CreatePost = ({ audioFile }) => {
                     {/* 오디오 */}
                     {/* <input type="file" id="inputAudio" accept="audio/*" className="hidden" onChange={onAudioChange} /> */}
                     {(post.audio.name && toggle !== true) &&
-                        <div className="w-full md:max-w-xl lg:max-w-2xl relative">
-                            <RecodePlayer audio={post.audio} />
-                            {/* 유저 추가하기
-                            <div className="cursor-pointer">
-                                <svg style={{ width: "24px", height: "24px" }} viewBox="0 0 24 24">
-                                    <path fill="currentColor" d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" />
-                                </svg>
-                            </div> */}
-                            {/* 추가된 유저 */}
-                        </div>
+                        <>
+                            <div className="w-full md:max-w-xl lg:max-w-2xl relative">
+                                <RecodePlayer audio={post.audio} />     
+                            </div>
+                            <div className="w-full flex flex-col justify-start items-start">
+                                {
+                                    post.audio.users
+                                    ? <>
+                                    <h1>COMPOSER</h1>
+                                        {audio.users.map((user) => {
+                                            return(
+                                                user.image 
+                                                    ? <img key={user.id} className="w-10 h-10 rounded-full" src={user.image} />
+                                                
+                                                    : <div key={user.id} className="w-10 h-10 rounded-full bg-studion-400 flex items-center justify-center mr-2">
+                                                        {user.name.slice(0, 2).toUpperCase()}
+                                                    </div>  
+                                            )
+                                        })}
+                                    </>
+                                    :
+                                    <></>
 
+                                }
+                                <div className="flex text-white">
+                                    
+                                </div>
+                            </div>
+                        </>
+                        
                     }
                     {/* <div className="flex h-full items-center justify-center w-full max-screen-w-lg" style={ (post.audios || post.images) ? {display: "flex"} : {display: "none"}}>
                         <Player audio={post.audios} image={post.images} />
@@ -220,7 +231,7 @@ const CreatePost = ({ audioFile }) => {
 
 
                 {/* 컨탠츠 */}
-                <div className="w-full mx-auto pt-5 max-w-3xl lg:max-w-lg pl-2">
+                <div className="w-full mx-auto pt-5 max-w-3xl lg:max-w-lg pl-2 flex flex-col">
                     <div className="ml-3 flex mt-3">
                         {
                             userData.image
@@ -238,9 +249,10 @@ const CreatePost = ({ audioFile }) => {
                         {/* <CKEditor 
                             editor={ ClassicEditor }
                         /> */}
-                        <textarea onChange={onContentChange} id="" rows="10" placeholder="글 작성.." className="placeholder:italic placeholder:text-slate-400 resize-none border-2 p-2 border-black w-full decoration-none">
+                        <textarea onChange={onContentChange} id="" rows="10" placeholder="内容を入力してください。" className="placeholder:italic placeholder:text-slate-400 resize-none border-2 p-2 border-black w-full decoration-none">
 
                         </textarea>
+                        
                         <div className="cursor-pointer flex justify-center hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>
                             {isLoading
                                 ?
@@ -249,18 +261,18 @@ const CreatePost = ({ audioFile }) => {
                                     <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
                                 </svg>
                                 :
-                                <div className="my-1">제출</div>
+                                <div className="my-1">作成</div>
                             }
                         </div>
                     </div>
-                    <div className="w-full flex justify-center pt-20">
+                    <div className="flex justify-center pt-20">
                         <label htmlFor="inputFiles" className="cursor-pointer" style={!(post.image.size || post.audio.name) ? { display: "none" } : { display: "block" }}>
                             <svg aria-label="이미지나 동영상과 같은 미디어를 나타내는 아이콘" className="_8-yf5 " color="#262626" fill="#262626" height="200" role="img" viewBox="0 0 97.6 77.3" width="300">
                                 <path d="M16.3 24h.3c2.8-.2 4.9-2.6 4.8-5.4-.2-2.8-2.6-4.9-5.4-4.8s-4.9 2.6-4.8 5.4c.1 2.7 2.4 4.8 5.1 4.8zm-2.4-7.2c.5-.6 1.3-1 2.1-1h.2c1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1-1.7 0-3.1-1.4-3.1-3.1 0-.8.3-1.5.8-2.1z" fill="currentColor"></path>
                                 <path d="M84.7 18.4L58 16.9l-.2-3c-.3-5.7-5.2-10.1-11-9.8L12.9 6c-5.7.3-10.1 5.3-9.8 11L5 51v.8c.7 5.2 5.1 9.1 10.3 9.1h.6l21.7-1.2v.6c-.3 5.7 4 10.7 9.8 11l34 2h.6c5.5 0 10.1-4.3 10.4-9.8l2-34c.4-5.8-4-10.7-9.7-11.1zM7.2 10.8C8.7 9.1 10.8 8.1 13 8l34-1.9c4.6-.3 8.6 3.3 8.9 7.9l.2 2.8-5.3-.3c-5.7-.3-10.7 4-11 9.8l-.6 9.5-9.5 10.7c-.2.3-.6.4-1 .5-.4 0-.7-.1-1-.4l-7.8-7c-1.4-1.3-3.5-1.1-4.8.3L7 49 5.2 17c-.2-2.3.6-4.5 2-6.2zm8.7 48c-4.3.2-8.1-2.8-8.8-7.1l9.4-10.5c.2-.3.6-.4 1-.5.4 0 .7.1 1 .4l7.8 7c.7.6 1.6.9 2.5.9.9 0 1.7-.5 2.3-1.1l7.8-8.8-1.1 18.6-21.9 1.1zm76.5-29.5l-2 34c-.3 4.6-4.3 8.2-8.9 7.9l-34-2c-4.6-.3-8.2-4.3-7.9-8.9l2-34c.3-4.4 3.9-7.9 8.4-7.9h.5l34 2c4.7.3 8.2 4.3 7.9 8.9z" fill="currentColor"></path>
                                 <path d="M78.2 41.6L61.3 30.5c-2.1-1.4-4.9-.8-6.2 1.3-.4.7-.7 1.4-.7 2.2l-1.2 20.1c-.1 2.5 1.7 4.6 4.2 4.8h.3c.7 0 1.4-.2 2-.5l18-9c2.2-1.1 3.1-3.8 2-6-.4-.7-.9-1.3-1.5-1.8zm-1.4 6l-18 9c-.4.2-.8.3-1.3.3-.4 0-.9-.2-1.2-.4-.7-.5-1.2-1.3-1.1-2.2l1.2-20.1c.1-.9.6-1.7 1.4-2.1.8-.4 1.7-.3 2.5.1L77 43.3c1.2.8 1.5 2.3.7 3.4-.2.4-.5.7-.9.9z" fill="currentColor"></path>
                             </svg>
-                            클릭하세요
+                            ファイルを選択
                         </label>
                     </div>
                 </div>

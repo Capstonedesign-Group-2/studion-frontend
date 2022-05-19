@@ -2,7 +2,7 @@ import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import tonearm from "../../public/images/tonearm.svg"
 import Image from "next/image"
 import Loader from '../common/Loader'
-import { useState, useRef } from "react"
+import { useState, useRef, useCallback } from "react"
 import { useEffect } from "react"
 import { URL } from "url"
 
@@ -13,7 +13,7 @@ const RecodePlayer = ({audio}) => {
     const timeRef = useRef()
     const allTimeRef = useRef()
     // const [isLoaded, setLoaded] = useState(false)
-
+    
     const onPlay = () => {
         setClick(!click);
         {
@@ -74,10 +74,10 @@ const RecodePlayer = ({audio}) => {
     }
     useEffect(() => {
         initWaveSurfer()
-        
+
         return () => {
-          if (!wavesurferRef.current) return
-          wavesurferRef.current.destroy()
+            if (!wavesurferRef.current) return
+            wavesurferRef.current.destroy()
         }
     }, [audio])
 

@@ -13,7 +13,6 @@ const DrumComponent = ({ selectedInst, mixerRef}: Props) => {
 
   const handleVolumeChange = useCallback((event: Event, newValue: number | number[]) => {
     if(typeof newValue === 'number') {
-      console.log(mixerRef.current)
       mixerRef.current?.drum?.setGain(newValue / 120)
     }
   }, [mixerRef])
@@ -30,7 +29,6 @@ const DrumComponent = ({ selectedInst, mixerRef}: Props) => {
     }, 100)
   }
   useEffect(() => {
-    
     if(selectedInst === 'drum') {
       document.addEventListener('keydown', handleKeyDown)
     }

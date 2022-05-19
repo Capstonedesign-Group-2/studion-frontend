@@ -7,6 +7,7 @@ import Socket from "../../socket";
 import { useEffect, useState } from "react";
 import Loader from "../common/Loader";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const ChatSection = () => {
     const userData = useSelector(state => state.user.data)
@@ -16,6 +17,7 @@ const ChatSection = () => {
             setUserList(res.data)
         })
         Socket.socket.emit("get_chats", userData.id)
+        return () => {}
     }, [])
     return (
         <div className="sticky ml-4 top-16 bg-white shadow-md rounded-md flex flex-col mb-4" style={{ height:'700px' }}>
@@ -39,6 +41,7 @@ const ChatSection = () => {
 export default ChatSection;
 
 const Profile = ({userData}) => {
+    const router = useRouter()
     const onClickFollowUser = (kind) => {
         Modal.fire({
             html: <Follow userId={userData.id} kind={kind} />,
@@ -48,7 +51,7 @@ const Profile = ({userData}) => {
     }
     return (
         <div className="p-5 flex flex-col items-center md:items-start md:flex-row relative">
-            <div className="w-40 relative">
+            <div className="w-40 relative cursor-pointer" onClick={() => router.push(`/soundcloud/${userData.id}`)}>
                 {userData?.image
                     ? <Image className="w-full rounded-full" src='/' layout="fill" alt="profile image" />
                     : <div className='flex w-full aspect-square rounded-full bg-studion-400 justify-center items-center text-white text-7xl md:text-4xl xl:text-5xl'>

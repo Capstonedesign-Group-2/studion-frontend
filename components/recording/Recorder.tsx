@@ -1,18 +1,20 @@
 import { Dispatch, MutableRefObject, SetStateAction, useEffect, useRef, useState } from "react"
+import { useSelector } from "react-redux"
+import { RootState } from "../../redux/slices"
+import { IUser } from "../../types"
 import { AudioFile } from "../room/player/mixer/Recorder"
 import Mixer from "./inst/mixer/Mixer"
 
 interface Props {
     mixerRef: MutableRefObject<Mixer | undefined>    
     audioFile: AudioFile
-    setAudioFile: Dispatch<SetStateAction<AudioFile>>
-    audioFiles: AudioFile[]
     setAudioFiles: Dispatch<SetStateAction<AudioFile[]>>
     setNav: Dispatch<SetStateAction<boolean>>
     isLoading: boolean
 }
 
-const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles, setAudioFiles, setNav, isLoading}) => {
+const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFiles, setNav, isLoading}) => {
+    const userData = useSelector<RootState, IUser>(state => state.user.data)
     const recorderRef = useRef<MediaRecorder>()
     const audioChunksRef = useRef<Blob[]>([])
     const fileNumber = useRef<number>(0)
@@ -22,6 +24,9 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles
     const timerInterval = useRef<number>()
 
     const onRecording = async () => {
+        // console.log('onClick')
+        // console.log(recorderRef.current)
+        // console.log(isRecording)
         if (!recorderRef.current || isRecording) return
         if(!isRecording) {
             setIsRecording(true)
@@ -51,6 +56,8 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles
         }, 50)
     }
     useEffect(() => {
+        // console.log('isLoading',isLoading)
+        // console.log('mixer', mixerRef)
         if (!isLoading && mixerRef.current) {
           recorderRef.current = new MediaRecorder(mixerRef.current.recorderNode.stream as MediaStream)
           recorderRef.current.ondataavailable = (evt) => {
@@ -59,13 +66,24 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles
           console.log(recorderRef)
           recorderRef.current.onstop = async () => {
             let blob = new Blob(audioChunksRef.current, { 'type': 'audio/wav' })
+            let check = false
+            let composers = audioFile?.users
             try {
-              const audioFile = {
+                if(audioFile?.users){
+                    for(let i = 0; i < audioFile.users.length ; i ++) {
+                        if(audioFile.users[i].id === userData.id)
+                            check = true
+                    }
+                    if(!check)
+                        composers?.push(userData)
+                }                
+              const audio = {
                 label: 'Track_' + fileNumber.current,
                 url: URL.createObjectURL(blob),
-                blob
+                blob,
+                users: composers
               }
-              setAudioFiles((prev) => [...prev, audioFile])
+              setAudioFiles((prev) => [...prev, audio])
               fileNumber.current += 1
             } catch (err) {
               console.error('Array buffer error', err)
@@ -79,7 +97,7 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles
                 🎙️ Recorder
             </h3>
             <div className=" font-mono text-3xl bg-gray-900 text-studion-100 rounded-lg py-4 px-3">
-                {(clock / 1000).toFixed(1)}s
+                {(clock / 1000).toFixed(1)}
             </div>
             <div className="w-full grid grid-cols-2 gap-2">
 
@@ -94,7 +112,7 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFile, audioFiles
 
                 {/* 녹음 버튼 */}
                 <button
-                onClick={onRecording}
+                    onClick={onRecording}
                 >
                 <div className="flex justify-center items-center bg-gray-300 border-b-4 border-studion-100 rounded-sm h-11"
                     style={isRecording ? {} : { borderColor: 'rgb(156 163 175)' }}
