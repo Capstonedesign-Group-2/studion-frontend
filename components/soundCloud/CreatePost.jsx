@@ -200,17 +200,19 @@ const CreatePost = ({ audioFile }) => {
                                 {
                                     post.audio.users
                                     ? <>
-                                    <h1>COMPOSER</h1>
-                                        {audio.users.map((user) => {
+                                    <h1>with</h1>
+                                    <div className="flex">
+                                        {post.audio.users.map((user) => {
                                             return(
                                                 user.image 
                                                     ? <img key={user.id} className="w-10 h-10 rounded-full" src={user.image} />
                                                 
-                                                    : <div key={user.id} className="w-10 h-10 rounded-full bg-studion-400 flex items-center justify-center mr-2">
+                                                    : <div key={user.id} className="w-10 h-10 rounded-full bg-studion-400 flex items-center justify-center mr-2 text-white ">
                                                         {user.name.slice(0, 2).toUpperCase()}
                                                     </div>  
                                             )
                                         })}
+                                        </div>
                                     </>
                                     :
                                     <></>
