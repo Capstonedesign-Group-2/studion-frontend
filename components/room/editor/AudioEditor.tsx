@@ -49,12 +49,22 @@ const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
   }
 
   const onPublish = () => {
-    Modal.close()
-    Modal.fire({
-      html: <CreatePost audioFile={audioFile} />,
-      showConfirmButton: false,
-      customClass: { popup: styled.post },
-    })
+    if (!audioMakerRef.current || !audioFile) return
+    audioMakerRef.current.trim(audioFile.blob, regionRef.current.start, regionRef.current.end).then((blob: Blob) => {
+      const path = window.URL.createObjectURL(blob)
+      let trimedAudioFile: AudioFile = {
+        ...audioFile,
+        url: path,
+        blob
+      }
+      console.log(blob, audioFile.blob, trimedAudioFile)
+      Modal.close()
+      Modal.fire({
+        html: <CreatePost audioFile={trimedAudioFile} />,
+        showConfirmButton: false,
+        customClass: { popup: styled.post },
+      })
+    });
   }
 
   const onDelete = () => {

@@ -21,7 +21,7 @@ const Album = ({ post, userId }) => {
                 icon: 'error',
                 title: 'ログインしてください！',
                 text: 'ログインが必要なサービスです。',
-                footer: <p onClick={() => router.push('login')} className="text-studion-400 hover:cursor-pointer">ログイン →</p>,
+                footer: <p onClick={() => Router.push('login')} className="text-studion-400 hover:cursor-pointer">ログイン →</p>,
                 showConfirmButton: false,
             })
             return
