@@ -49,7 +49,7 @@ const KeyInst: React.FC<Props> = ({ mixerRef }) => {
   return (
     <>
       <h3 className="text-xl font-medium mb-5">
-        # Select Virtual Instrument
+        🎸Select Instrument
       </h3>
       <div className="grid grid-cols-5 gap-4 mt-4">
         {

@@ -229,7 +229,7 @@ const Post = ({ post }) => {
                 <div className="mt-2 flex">
                     <div className="font-semibold mr-1">{`${post.user.name}`}</div>
                     <div className="font-base w-20 truncate">{`${post.content}`}</div>
-                    <div className="text-gray-400 cursor-pointer" onClick={openModal}>もっと…</div>
+                    <div className="text-gray-400 cursor-pointer" onClick={openModal}>もっと</div>
                 </div>
             </div>
             {/* 추가된 댓글 */}
@@ -246,8 +246,8 @@ const Post = ({ post }) => {
             {/* 댓글작성 */}
             <div className="px-3 py-2 flex">
                 <input onKeyPress={onKeyPress} value={comment} onChange={onCommentChange} type="text" className="flex-1 pl-1 outline-studion-400 caret-studion-400" placeholder="コメント..."/>
-                <button onClick={onClickSubmit} className="bg-studion-400 hover:bg-studion-500 rounded-lg ml-2 py-1 px-2 text-white">
-                    
+                <button onClick={onClickSubmit} className="bg-studion-400 px-5 hover:bg-studion-500 rounded-lg ml-2 py-1 px-2 text-white">
+                    転送
                 </button>
             </div>
         </div>
