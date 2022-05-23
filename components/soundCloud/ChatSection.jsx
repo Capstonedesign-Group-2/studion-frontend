@@ -20,7 +20,7 @@ const ChatSection = () => {
         return () => {}
     }, [])
     return (
-        <div className="sticky ml-4 top-16 bg-white shadow-md rounded-md flex flex-col mb-4" style={{ height:'700px' }}>
+        <div className="border sticky ml-4 top-16 bg-white shadow-md rounded-md flex flex-col mb-4" style={{ height:'700px' }}>
             <Profile userData={userData}/>
             <hr />
             <h1 className="text-xl p-2">トーク</h1>

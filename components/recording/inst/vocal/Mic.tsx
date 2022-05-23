@@ -1,14 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react"
 import { VolumeSlider } from "../../../room/player/mixer/VolumeSlider"
 
 import Mixer from "../mixer/Mixer"
 
 type Props = {
   mixerRef: React.MutableRefObject<Mixer | undefined>
+  setMixerLoading: Dispatch<SetStateAction<boolean>>
   selectedInst: String
 }
 
-const Mic: React.FC<Props> = ({ mixerRef }) => {
+const Mic: React.FC<Props> = ({ mixerRef, setMixerLoading }) => {
   const wavesurferRef = useRef<any>()
   const waveformRef = useRef<HTMLDivElement>(null)
   
@@ -54,9 +55,11 @@ const Mic: React.FC<Props> = ({ mixerRef }) => {
       wavesurferRef.current.microphone.on('deviceReady', function (stream: MediaStream) {
         console.log('Device ready!', stream);
         mixerRef.current = new Mixer(stream)
+        setMixerLoading(false)
       });
       wavesurferRef.current.microphone.on('deviceError', function (code: Error) {
         console.warn('Device error: ' + code);
+        setMixerLoading(false)
       });
 
       wavesurferRef.current.microphone.start();

@@ -10,10 +10,11 @@ interface Props {
     audioFile: AudioFile
     setAudioFiles: Dispatch<SetStateAction<AudioFile[]>>
     setNav: Dispatch<SetStateAction<boolean>>
+    mixerLoading: boolean
     isLoading: boolean
 }
 
-const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFiles, setNav, isLoading}) => {
+const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFiles, setNav, isLoading, mixerLoading}) => {
     const userData = useSelector<RootState, IUser>(state => state.user.data)
     const recorderRef = useRef<MediaRecorder>()
     const audioChunksRef = useRef<Blob[]>([])
@@ -56,8 +57,9 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFiles, setNav, i
         }, 50)
     }
     useEffect(() => {
-        // console.log('isLoading',isLoading)
-        // console.log('mixer', mixerRef)
+        console.log('isLoading',isLoading)
+        console.log('mixer', mixerRef)
+        if(mixerLoading) return;
         if (!isLoading && mixerRef.current) {
           recorderRef.current = new MediaRecorder(mixerRef.current.recorderNode.stream as MediaStream)
           recorderRef.current.ondataavailable = (evt) => {
@@ -90,7 +92,7 @@ const Recorder:React.FC<Props> = ({mixerRef, audioFile, setAudioFiles, setNav, i
             }
           }
         }
-      }, [isLoading, mixerRef, audioFile])
+      }, [isLoading, mixerRef, audioFile, mixerLoading])
     return (
         <div className="flex flex-col overflow-hidden gap-4">
             <h3 className="font-bold text-xl">

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 
 import Mic from "./inst/vocal/Mic"
 import DrumComponent from "./inst/drum/DrumComponent"
@@ -8,6 +8,7 @@ import InstBtn from "./InstBtn"
 
 type Props = {
   mixerRef: React.MutableRefObject<Mixer | undefined>
+  setMixerLoading: Dispatch<SetStateAction<boolean>>
 }
 
 export type Inst = {
@@ -44,7 +45,7 @@ const instList: Inst[] = [
   }
 ]
 
-const KeyInst: React.FC<Props> = ({ mixerRef }) => {
+const KeyInst: React.FC<Props> = ({ mixerRef, setMixerLoading }) => {
   const [selectedInst, setSelectedInst] = useState<string>('')
   return (
     <>
@@ -57,7 +58,7 @@ const KeyInst: React.FC<Props> = ({ mixerRef }) => {
         }
       </div>
       <div style={{ display: selectedInst === 'mic' ? 'block' : 'none' }}>
-        <Mic selectedInst={selectedInst} mixerRef={mixerRef} />
+        <Mic selectedInst={selectedInst} mixerRef={mixerRef} setMixerLoading={setMixerLoading}/>
       </div>
       <div style={{ display: selectedInst === 'drum' ? 'block' : 'none' }}>
         <DrumComponent selectedInst={selectedInst} mixerRef={mixerRef} />

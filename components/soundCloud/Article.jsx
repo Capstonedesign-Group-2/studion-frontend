@@ -8,6 +8,7 @@ import Dropdown from './DropDown';
 import Loader from '../common/Loader';
 import { getCommentList, getNextCommentList } from '../../redux/actions/post';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
+import Router from 'next/router';
 
 const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsLike }) => {
     const [comment, setComment] = useState('');
@@ -18,6 +19,7 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
     const [like, setLike] = useState(isLike)
     const [likeCount, setLikeCount] = useState(likes)
     const [likeLoading, setLikeLoading] = useState(false)
+
     const isLoading = useSelector(state => state.post.getCommentListLoading)
     const getNextCommentListLoading = useSelector(state => state.post.getNextCommentListLoading)
     const dispatch = useDispatch();
@@ -33,11 +35,17 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
         if(!like) {
             http.post(`/likes/${post.id}`, { user_id : userData.id })
             .then(res => {
-                setLikes((prev) => prev + 1)
-                setLikeCount((prev) => prev + 1)
-                setLike(true)
-                setIsLike(true)
-                setLikeLoading(false)
+                if(Router.pathname === '/soundcloud/[id]') {
+                    setLike(true)
+                    setLikeCount((prev) => prev + 1)
+                }
+                else {
+                    setLikes((prev) => prev + 1)
+                    setLikeCount((prev) => prev + 1)
+                    setLike(true)
+                    setIsLike(true)
+                    setLikeLoading(false)
+                }
             })
             .catch(err => {
                 console.error(err)
@@ -45,11 +53,17 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
         } else {
             http.delete(`/likes/${post.id}`, { data: {user_id : userData.id} })
             .then(res => {
-                setLikes((prev) => prev - 1)
-                setLikeCount((prev) => prev - 1)
-                setLike(false)
-                setIsLike(false)
-                setLikeLoading(false)
+                if(Router.pathname === '/soundcloud/[id]') {
+                    setLike(false)
+                    setLikeCount((prev) => prev - 1)
+                }
+                else {
+                    setLikes((prev) => prev - 1)
+                    setLikeCount((prev) => prev - 1)
+                    setLike(false)
+                    setIsLike(false)
+                    setLikeLoading(false)
+                }
             })
             .catch(err => {
                 console.log(err)
@@ -88,6 +102,15 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
             console.error(err)
         })
     }, [like])
+    useEffect(() => {
+        http.get(`likes/${post.id}`)
+        .then(res => {
+            setLikeCount(res.data.likes.total)
+        })
+        .catch(err => {
+            console.error(err)
+        })
+    }, [])
     // useEffect(() => {
     //     commentRef.current.scrollTop = commentRef.current.scrollHeight
     // }, [comments])
@@ -116,7 +139,7 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
         }
     }, [dropDown])
     useEffect(() => {
-        
+        console.log(Router)
     }, [])
     return (
         <div className="flex flex-col h-full relative overflow-hidden">

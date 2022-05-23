@@ -5,8 +5,11 @@ import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import { Modal } from "../common/modals";
 import PostContainer from "./PostContainer"
 import postSlice from "../../redux/slices/post";
+import { useEffect, useState } from "react";
 
 const Album = ({ post, userId }) => {
+    const [isLike, setIsLike] = useState(false)
+    const [likes, setLikes] = useState(post.likes)
     const dispatch = useDispatch()
     const pushRecording = (audio) => {
         Modal.close()
@@ -28,12 +31,17 @@ const Album = ({ post, userId }) => {
         }
         dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
-            html: <PostContainer pushRecording={pushRecording} post={post} userId={userId} />,
+            html: <PostContainer isLike={isLike} likes={likes} onClickUser={onClickUser} pushRecording={pushRecording} post={post} userId={userId} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.post,
         })
     }
+    const onClickUser = (id) => {
+        Modal.close()
+        Router.push(`/soundcloud/${id}`)
+    }
+
     return (
         <div className="w-full aspect-[5/4] cursor-pointer" onClick={openModal}>
             <div className={styles.album}>
