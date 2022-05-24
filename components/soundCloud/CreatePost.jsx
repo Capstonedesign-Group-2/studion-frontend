@@ -8,6 +8,7 @@ import RecodePlayer from "./RecodePlayer";
 import styles from "../../styles/soundCloud/soundCloud.module.scss";
 import Router from "next/router";
 import Loader from "../common/Loader";
+import Image from "next/image";
 
 const CreatePost = ({ audioFile }) => {
     const dispatch = useDispatch();
@@ -77,7 +78,7 @@ const CreatePost = ({ audioFile }) => {
         } else if (post.audio.name) {
             formData.append("audio", post.audio)
         }
-        if(post.audio.users) {
+        if (post.audio.users) {
             post.audio.users.map((user, index) => {
                 formData.append(`composers[${index}]`, user.id)
             })
@@ -86,7 +87,7 @@ const CreatePost = ({ audioFile }) => {
             .then(res => {
                 if (userInfo !== undefined) {
                     dispatch(getUserPostList({ id: userData.id }));
-                    if(Router.pathname === "/room/[id]" || Router.pathname === "/recording") {
+                    if (Router.pathname === "/room/[id]" || Router.pathname === "/recording") {
                         let link = document.createElement("a")
                         link.target = "_blank"
                         link.href = "/soundcloud"
@@ -194,36 +195,36 @@ const CreatePost = ({ audioFile }) => {
                     {(post.audio.name && toggle !== true) &&
                         <>
                             <div className="w-full md:max-w-xl lg:max-w-2xl relative">
-                                <RecodePlayer audio={post.audio} />     
+                                <RecodePlayer audio={post.audio} />
                             </div>
                             <div className="w-full flex flex-col justify-start items-start">
                                 {
                                     post.audio.users
-                                    ? <>
-                                    <h1>with</h1>
-                                    <div className="flex">
-                                        {post.audio.users.map((user) => {
-                                            return(
-                                                user.image 
-                                                    ? <img key={user.id} className="w-10 h-10 rounded-full" src={user.image} />
-                                                
-                                                    : <div key={user.id} className="w-10 h-10 rounded-full bg-studion-400 flex items-center justify-center mr-2 text-white ">
-                                                        {user.name.slice(0, 2).toUpperCase()}
-                                                    </div>  
-                                            )
-                                        })}
-                                        </div>
-                                    </>
-                                    :
-                                    <></>
+                                        ? <>
+                                            <h1>with</h1>
+                                            <div className="flex">
+                                                {post.audio.users.map((user) => {
+                                                    return (
+                                                        user.image
+                                                            ? <img key={user.id} className="w-10 h-10 rounded-full" src={user.image} />
+
+                                                            : <div key={user.id} className="w-10 h-10 rounded-full bg-studion-400 flex items-center justify-center mr-2 text-white ">
+                                                                {user.name.slice(0, 2).toUpperCase()}
+                                                            </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        </>
+                                        :
+                                        <></>
 
                                 }
                                 <div className="flex text-white">
-                                    
+
                                 </div>
                             </div>
                         </>
-                        
+
                     }
                     {/* <div className="flex h-full items-center justify-center w-full max-screen-w-lg" style={ (post.audios || post.images) ? {display: "flex"} : {display: "none"}}>
                         <Player audio={post.audios} image={post.images} />
@@ -238,7 +239,9 @@ const CreatePost = ({ audioFile }) => {
                         {
                             userData.image
                                 ?
-                                <img src={userData.image} />
+                                <div className="relative aspect-square h-10 rounded-full overflow-hidden">
+                                    <Image alt="user profile" layout="fill" src={userData.image} />
+                                </div>
                                 :
                                 <div className="rounded-full w-10 h-10 bg-studion-400 text-white font-lite text-lg flex items-center justify-center" >
                                     {userData.name.slice(0, 2).toUpperCase()}
@@ -254,7 +257,7 @@ const CreatePost = ({ audioFile }) => {
                         <textarea onChange={onContentChange} id="" rows="10" placeholder="内容を入力してください。" className="placeholder:italic placeholder:text-slate-400 resize-none border-2 p-2 border-black w-full decoration-none">
 
                         </textarea>
-                        
+
                         <div className="cursor-pointer flex justify-center hover:bg-studion-500 text-2xl bg-studion-400 rounded-xl text-white" onClick={onPosting}>
                             {isLoading
                                 ?

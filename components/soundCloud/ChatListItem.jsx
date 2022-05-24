@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getAnotherUserInfo } from "../../redux/actions/another";
 import Socket from "../../socket/index";
 
