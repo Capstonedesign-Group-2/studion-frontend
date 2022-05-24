@@ -48,7 +48,6 @@ const PasswordConfirm: React.FC<Props> = ({ setConfirmPassword }) => {
 
     try {
       const res = await http.post('/users/check', form)
-      console.log(res.data)
       if (res.data.status === 'success') {
         setConfirmPassword(true)
       } else {

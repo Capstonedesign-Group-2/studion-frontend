@@ -60,7 +60,9 @@ const Header = () => {
                 <button onClick={() => setMenu(!menu)}>
                   {/* 프로필 사진 여부 */}
                   {userData.image
-                    ? <Image className={styles.userImage} src={userData.image} alt="profile image" />
+                    ? <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                      <Image src={userData.image} layout="fill" alt="profile image" />
+                    </div>
                     : <div className={styles.userIntial}><p>{userData.name.slice(0, 2).toUpperCase()}</p></div>
                   }
                 </button>

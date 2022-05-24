@@ -95,9 +95,11 @@ const Profile = ({ userId }) => {
             <div className="w-full md:w-1/2">
                 <div className="bg-white shadow-md rounded-md p-5 max-w-screen-sm w-full">
                     <div className="flex flex-col items-center md:items-start md:flex-row">
-                        <div className="w-40 relative">
+                        <div className="w-40 aspect-square relative">
                             {userInfo?.image
-                                ? <Image className="w-full rounded-full" src='/' layout="fill" alt="profile image" />
+                                ? <div className="relative w-full aspect-square overflow-hidden rounded-full">
+                                    <Image src={userInfo.image} layout="fill" alt="profile image" />
+                                </div>
                                 : <div className='flex w-full aspect-square rounded-full bg-studion-400 justify-center items-center text-white text-7xl md:text-4xl xl:text-5xl'>
                                     <p>{userInfo?.name.slice(0, 2).toUpperCase()}</p>
                                 </div>

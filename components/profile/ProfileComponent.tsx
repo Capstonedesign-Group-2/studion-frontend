@@ -17,11 +17,12 @@ const ProfileComponent = () => {
     e.preventDefault()
     if (!imageFile) return
 
-    const formData = new FormData();
+    const formData = new FormData()
+    formData.append("_method", 'PATCH')
     formData.append('image', imageFile)
 
     try {
-      const res = await http.patch(`users/${userData.id}`, formData)
+      const res = await http.post(`users/${userData.id}`, formData)
       if (res.data.status === 'success') {
         dispatch(userSlice.actions.setUserData(res.data.user))
       }

@@ -12,6 +12,7 @@ import LikeModal from "./LikeModal"
 import Router from "next/router"
 import RecodePlayer from "./RecodePlayer"
 import { GrPrevious, GrNext } from "react-icons/gr"
+import Image from "next/image"
 
 const Post = ({ post }) => {
     const userData = useSelector(state => state.user.data)
@@ -41,7 +42,7 @@ const Post = ({ post }) => {
                         ...commentData,
                         name: userData.name
                     }
-                    
+
                 ])
             }).catch(err => {
                 console.log(err);
@@ -49,50 +50,50 @@ const Post = ({ post }) => {
     }
     const onKeyPress = (e) => {
         if (e.key == 'Enter') {
-            if(comment !== '') onClickSubmit()
+            if (comment !== '') onClickSubmit()
             else return;
         }
     }
     const onClickLikeButton = () => {
         // 좋아요 하는 것
-        if(isLoading) return;
+        if (isLoading) return;
         setLoading(true);
-        if(!isLike) {
-            http.post(`/likes/${post.id}`, { user_id : userData.id })
-            .then(res => {
-                setLikes((prev) => prev + 1)
-                setLike(true)
-                setLoading(false)   
-            })
-            .catch(err => {
-                console.error(err)
-            })
+        if (!isLike) {
+            http.post(`/likes/${post.id}`, { user_id: userData.id })
+                .then(res => {
+                    setLikes((prev) => prev + 1)
+                    setLike(true)
+                    setLoading(false)
+                })
+                .catch(err => {
+                    console.error(err)
+                })
         }
         // 좋아요 취소
         else {
-            http.delete(`/likes/${post.id}`, { data: {user_id : userData.id} })
-            .then(res => {
-                setLikes((prev) => prev - 1)
-                setLike(false)
-                setLoading(false)
-            })
-            .catch(err => {
-                console.log(err)
-            })
+            http.delete(`/likes/${post.id}`, { data: { user_id: userData.id } })
+                .then(res => {
+                    setLikes((prev) => prev - 1)
+                    setLike(false)
+                    setLoading(false)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
         }
     }
     const pushRecording = (post) => {
         Modal.close()
-        
+
         Router.push({
             pathname: `/recording`,
-            query: { post_id: post.post_id}
+            query: { post_id: post.post_id }
         })
     }
     const onClickUser = (id) => {
         Modal.close()
         Router.push(`/soundcloud/${id}`)
-    }   
+    }
     const openModal = () => {
         // dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
@@ -111,13 +112,13 @@ const Post = ({ post }) => {
         })
     }
     useEffect(() => {
-        http.post(`likes/exist/${post.id}`, {user_id: userData.id})
-        .then(res => {
-            setLike(res.data.status)
-        })
-        .catch(err => {
-            console.error(err)
-        })
+        http.post(`likes/exist/${post.id}`, { user_id: userData.id })
+            .then(res => {
+                setLike(res.data.status)
+            })
+            .catch(err => {
+                console.error(err)
+            })
     }, [isLike])
     useEffect(() => {
         window.addEventListener("click", checkIfClickedOutside)
@@ -138,17 +139,17 @@ const Post = ({ post }) => {
                 <Link href={`/soundcloud/${post.user.id}`}>
                     {
                         post.user.image
-                        ?
-                        <a className="w-10 h-10 rounded-full inline-block">
-                            <img src={post.user.image} alt="" />
-                        </a>
-                        :
-                        <a className="w-10 h-10 bg-studion-400 flex items-center justify-center rounded-full text-white text-center">
-                            { post.user.name.slice(0, 2).toUpperCase()}
-                        </a>
+                            ?
+                            <a className="relative overflow-hidden w-10 h-10 rounded-full inline-block">
+                                <Image src={post.user.image} layout="fill" alt="user profile" />
+                            </a>
+                            :
+                            <a className="w-10 h-10 bg-studion-400 flex items-center justify-center rounded-full text-white text-center">
+                                {post.user.name.slice(0, 2).toUpperCase()}
+                            </a>
                     }
                 </Link>
-                    
+
                 {/* 아이디 */}
                 <Link href={`/soundcloud/${post.user.id}`}>
                     <a className="flex items-center pl-2">
@@ -179,41 +180,41 @@ const Post = ({ post }) => {
             {
                 (post?.images[0] || post?.audios[0]) &&
                 <div className="w-full flex justify-center items-center p-5 relative" style={{ height: '700px' }}>
-                {/* 이미지 */}
-                {   post?.images[0] && !toggle &&
-                    <>
-                        <img src={post.images[0].link} alt="" className="h-full"/>
-                        {
-                            (post.images[0] && post.audios[0]) &&
-                            <div className="absolute top-50% right-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
-                                <GrNext size="24" className="text-studion-100" />
-                            </div>
-                        }
-                    </>
-                }
-                {/* 음악 */}
-                {
-                    ((post?.audios[0] && toggle) || (!post?.images[0] && post?.audios[0])) &&
-                    <>
-                        <RecodePlayer audio={post.audios[0]} />
-                        {
-                            (post.images[0] && post.audios[0]) &&
-                            <div className="absolute top-50% left-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
-                                <GrPrevious size="24" />
-                            </div>
-                        }
-                    </>
-                }
+                    {/* 이미지 */}
+                    {post?.images[0] && !toggle &&
+                        <>
+                            <img src={post.images[0].link} alt="" className="h-full" />
+                            {
+                                (post.images[0] && post.audios[0]) &&
+                                <div className="absolute top-50% right-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
+                                    <GrNext size="24" className="text-studion-100" />
+                                </div>
+                            }
+                        </>
+                    }
+                    {/* 음악 */}
+                    {
+                        ((post?.audios[0] && toggle) || (!post?.images[0] && post?.audios[0])) &&
+                        <>
+                            <RecodePlayer audio={post.audios[0]} />
+                            {
+                                (post.images[0] && post.audios[0]) &&
+                                <div className="absolute top-50% left-0 cursor-pointer" onClick={() => setToggle((prev) => !prev)}>
+                                    <GrPrevious size="24" />
+                                </div>
+                            }
+                        </>
+                    }
                 </div>
             }
-            
+
             {/* 아이콘 */}
             <div className="py-2 px-1">
                 <div onClick={() => onClickLikeButton()} className="mx-2 inline-block cursor-pointer">
                     {
                         isLike ?
-                        <AiFillHeart className='text-red-500 text-2xl'/> :
-                        <AiOutlineHeart className='text-2xl'/> 
+                            <AiFillHeart className='text-red-500 text-2xl' /> :
+                            <AiOutlineHeart className='text-2xl' />
                     }
                 </div>
                 <div onClick={openModal} className="inline-block cursor-pointer">
@@ -235,7 +236,7 @@ const Post = ({ post }) => {
             {/* 추가된 댓글 */}
             <div className="py-2 px-3 text-sm">
                 {
-                    comments?.map((data, index) => 
+                    comments?.map((data, index) =>
                         <div className="mt-2 flex" key={index + data.post_id}>
                             <div className="font-semibold mr-1">{`${data.name}`}</div>
                             <div className="font-base">{`${data.content}`}</div>
@@ -245,7 +246,7 @@ const Post = ({ post }) => {
             </div>
             {/* 댓글작성 */}
             <div className="px-3 py-2 flex">
-                <input onKeyPress={onKeyPress} value={comment} onChange={onCommentChange} type="text" className="flex-1 pl-1 outline-studion-400 caret-studion-400" placeholder="コメント..."/>
+                <input onKeyPress={onKeyPress} value={comment} onChange={onCommentChange} type="text" className="flex-1 pl-1 outline-studion-400 caret-studion-400" placeholder="コメント..." />
                 <button onClick={onClickSubmit} className="bg-studion-400 px-5 hover:bg-studion-500 rounded-lg ml-2 py-1 px-2 text-white">
                     転送
                 </button>

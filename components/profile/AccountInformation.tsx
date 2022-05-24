@@ -29,6 +29,7 @@ const AccountInformation = () => {
 
   const onUpdateAccountInfo = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setErrorMsg('')
 
     // 유효성 검사
     try {
@@ -40,12 +41,11 @@ const AccountInformation = () => {
       }
       return
     }
-
-    const formData = new FormData();
+    const formData = new FormData()
+    formData.append("_method", 'PATCH')
     formData.append('name', form.name)
-
     try {
-      const res = await http.patch(`users/${userData.id}`, formData)
+      const res = await http.post(`users/${userData.id}`, formData)
       if (res.data.status === 'success') {
         dispatch(userSlice.actions.setUserData(res.data.user))
       }

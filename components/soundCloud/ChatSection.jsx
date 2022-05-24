@@ -17,30 +17,30 @@ const ChatSection = () => {
             setUserList(res.data)
         })
         Socket.socket.emit("get_chats", userData.id)
-        return () => {}
+        return () => { }
     }, [])
     return (
-        <div className="border sticky ml-4 top-16 bg-white shadow-md rounded-md flex flex-col mb-4" style={{ height:'700px' }}>
-            <Profile userData={userData}/>
+        <div className="border sticky ml-4 top-16 bg-white shadow-md rounded-md flex flex-col mb-4" style={{ height: '700px' }}>
+            <Profile userData={userData} />
             <hr />
             <h1 className="text-xl p-2">トーク</h1>
             <div className="px-2 py-1 overflow-y-auto flex-1">
                 {
                     userList !== null
-                    ? userList.map((user) => <ChatListItem key={user.id} chatRoom={user} />)
-                    : 
-                    <div className="w-full h-full flex justify-center items-center">
-                        <Loader />
-                    </div>
+                        ? userList.map((user) => <ChatListItem key={user.id} chatRoom={user} />)
+                        :
+                        <div className="w-full h-full flex justify-center items-center">
+                            <Loader />
+                        </div>
                 }
             </div>
-        </div>        
+        </div>
     )
 }
 
 export default ChatSection;
 
-const Profile = ({userData}) => {
+const Profile = ({ userData }) => {
     const router = useRouter()
     const onClickFollowUser = (kind) => {
         Modal.fire({
@@ -53,7 +53,7 @@ const Profile = ({userData}) => {
         <div className="p-5 flex flex-col items-center md:items-start md:flex-row relative">
             <div className="w-40 relative cursor-pointer" onClick={() => router.push(`/soundcloud/${userData.id}`)}>
                 {userData?.image
-                    ? <Image className="w-full rounded-full" src='/' layout="fill" alt="profile image" />
+                    ? <div className="relative w-full aspect-square overflow-hidden rounded-full"><Image src={userData.image} layout="fill" alt="profile image" /></div>
                     : <div className='flex w-full aspect-square rounded-full bg-studion-400 justify-center items-center text-white text-7xl md:text-4xl xl:text-5xl'>
                         <p>{userData?.name.slice(0, 2).toUpperCase()}</p>
                     </div>

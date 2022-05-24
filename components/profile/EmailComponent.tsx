@@ -27,6 +27,7 @@ const EmailComponent = () => {
 
   const onSaveEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setErrorMsg('')
 
     // 유효성 검사
     try {
@@ -39,16 +40,19 @@ const EmailComponent = () => {
       return
     }
 
-    const formData = new FormData();
+    const formData = new FormData()
+    formData.append("_method", 'PATCH')
     formData.append('email', form.email)
 
     try {
-      const res = await http.patch(`users/${userData.id}`, formData)
+      const res = await http.post(`users/${userData.id}`, formData)
+      console.log(res)
       if (res.data.status === 'success') {
         dispatch(userSlice.actions.setUserData(res.data.user))
       }
     } catch (err) {
       console.error('Update Account info error', err)
+      setErrorMsg("중복된 이메일 입니다.")
     }
   }
 

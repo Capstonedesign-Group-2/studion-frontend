@@ -9,13 +9,14 @@ import Loader from '../common/Loader';
 import { getCommentList, getNextCommentList } from '../../redux/actions/post';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 import Router from 'next/router';
+import Image from 'next/image';
 
 const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsLike }) => {
     const [comment, setComment] = useState('');
     const userData = useSelector(state => state.user.data);
     const comments = useSelector(state => state.post.commentList);
     const nextUrl = useSelector(state => state.post.commentNextUrl);
-    
+
     const [like, setLike] = useState(isLike)
     const [likeCount, setLikeCount] = useState(likes)
     const [likeLoading, setLikeLoading] = useState(false)
@@ -31,43 +32,43 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
         setComment(e.target.value)
     }
     const onClickLike = () => {
-        if(likeLoading) return
-        if(!like) {
-            http.post(`/likes/${post.id}`, { user_id : userData.id })
-            .then(res => {
-                if(Router.pathname === '/soundcloud/[id]') {
-                    setLike(true)
-                    setLikeCount((prev) => prev + 1)
-                }
-                else {
-                    setLikes((prev) => prev + 1)
-                    setLikeCount((prev) => prev + 1)
-                    setLike(true)
-                    setIsLike(true)
-                    setLikeLoading(false)
-                }
-            })
-            .catch(err => {
-                console.error(err)
-            })
+        if (likeLoading) return
+        if (!like) {
+            http.post(`/likes/${post.id}`, { user_id: userData.id })
+                .then(res => {
+                    if (Router.pathname === '/soundcloud/[id]') {
+                        setLike(true)
+                        setLikeCount((prev) => prev + 1)
+                    }
+                    else {
+                        setLikes((prev) => prev + 1)
+                        setLikeCount((prev) => prev + 1)
+                        setLike(true)
+                        setIsLike(true)
+                        setLikeLoading(false)
+                    }
+                })
+                .catch(err => {
+                    console.error(err)
+                })
         } else {
-            http.delete(`/likes/${post.id}`, { data: {user_id : userData.id} })
-            .then(res => {
-                if(Router.pathname === '/soundcloud/[id]') {
-                    setLike(false)
-                    setLikeCount((prev) => prev - 1)
-                }
-                else {
-                    setLikes((prev) => prev - 1)
-                    setLikeCount((prev) => prev - 1)
-                    setLike(false)
-                    setIsLike(false)
-                    setLikeLoading(false)
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
+            http.delete(`/likes/${post.id}`, { data: { user_id: userData.id } })
+                .then(res => {
+                    if (Router.pathname === '/soundcloud/[id]') {
+                        setLike(false)
+                        setLikeCount((prev) => prev - 1)
+                    }
+                    else {
+                        setLikes((prev) => prev - 1)
+                        setLikeCount((prev) => prev - 1)
+                        setLike(false)
+                        setIsLike(false)
+                        setLikeLoading(false)
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                })
         }
         // onClickLikeButton()
     }
@@ -84,32 +85,32 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
             }).catch(err => {
                 console.log(err);
             })
-    }   
+    }
     const onKeyPress = (e) => {
         if (e.key == 'Enter') {
             onClickSubmit()
         }
     }
     const callComments = () => {
-        dispatch(getCommentList({id: post.id}))
+        dispatch(getCommentList({ id: post.id }))
     }
     useEffect(() => {
-        http.post(`likes/exist/${post.id}`, {user_id: userData.id})
-        .then(res => {
-            setLike(res.data.status)
-        })
-        .catch(err => {
-            console.error(err)
-        })
+        http.post(`likes/exist/${post.id}`, { user_id: userData.id })
+            .then(res => {
+                setLike(res.data.status)
+            })
+            .catch(err => {
+                console.error(err)
+            })
     }, [like])
     useEffect(() => {
         http.get(`likes/${post.id}`)
-        .then(res => {
-            setLikeCount(res.data.likes.total)
-        })
-        .catch(err => {
-            console.error(err)
-        })
+            .then(res => {
+                setLikeCount(res.data.likes.total)
+            })
+            .catch(err => {
+                console.error(err)
+            })
     }, [])
     // useEffect(() => {
     //     commentRef.current.scrollTop = commentRef.current.scrollHeight
@@ -117,15 +118,15 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
     const observer = (node) => {
         if (getNextCommentListLoading) return;
         if (observerRef.current) observerRef.current.disconnect();
-    
+
         observerRef.current = new IntersectionObserver(([entry]) => {
-          if (entry.isIntersecting && nextUrl !== null) {
-            dispatch(getNextCommentList({next_page_url : nextUrl}))
-          }
+            if (entry.isIntersecting && nextUrl !== null) {
+                dispatch(getNextCommentList({ next_page_url: nextUrl }))
+            }
         });
-    
+
         node && observerRef.current.observe(node);
-      };
+    };
     const checkIfClickedOutside = ({ target }) => {
         if (dropDown && ref.current && !ref.current.contains(target)) {
             setDropDown(false);
@@ -153,7 +154,7 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
                                 ?
                                 post.user.name.slice(0, 2).toUpperCase()
                                 :
-                                <img src={post.user.image} alt="" />
+                                <div className='relative w-10 aspect-square rounded-full overflow-hidden'><Image alt="user profile" src={post.user.image} layout="fill" /></div>
                         }
                     </div>
                 </div>
@@ -199,16 +200,16 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
                             </div> :
 
                             comments?.map(comment => (
-                                <Comment comment={comment} userData={userData} key={comment.id} onClickProfile={onClickProfile}/>
+                                <Comment comment={comment} userData={userData} key={comment.id} onClickProfile={onClickProfile} />
                             ))
                     }
                     {
-                        getNextCommentListLoading && 
+                        getNextCommentListLoading &&
                         <div className="w-full h-max flex justify-center mt-1">
                             <Loader />
                         </div>
                     }
-                    <div ref={observer} className="border-white h-2"/>
+                    <div ref={observer} className="border-white h-2" />
                 </div>
             </div>
             <div className='w-full'>
@@ -216,8 +217,8 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
                     <span onClick={onClickLike} className="cursor-pointer">
                         {
                             like ?
-                            <AiFillHeart className='text-red-500 text-2xl'/> :
-                            <AiOutlineHeart className='text-2xl inline'/> 
+                                <AiFillHeart className='text-red-500 text-2xl' /> :
+                                <AiOutlineHeart className='text-2xl inline' />
                         }
                     </span>
                 </div>

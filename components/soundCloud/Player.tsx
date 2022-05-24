@@ -1,10 +1,11 @@
 import RecodePlayer from "./RecodePlayer";
-import {useRouter} from "next/router"
+import { useRouter } from "next/router"
 import { useState, useRef, useEffect } from "react";
 import styles from "../../styles/soundCloud/soundCloud.module.scss"
 import wrapper from "../../redux/store";
 import { IUser } from "../../types";
 import { Modal } from "../common/modals";
+import Image from "next/image";
 
 
 type Composer = {
@@ -15,10 +16,10 @@ type Composer = {
 }
 type Audio = {
     id: number,
-        user_id: number,
-        post_id: number,
-        link: string,
-        composers: Composer[]
+    user_id: number,
+    post_id: number,
+    link: string,
+    composers: Composer[]
 }
 type Props = {
     audio?: Audio,
@@ -29,10 +30,10 @@ type Props = {
     onClickUser: (id: number) => void
 }
 
-const Player:React.FC<Props> = ({ audio, image, pushRecording, onClickUser }) => {
+const Player: React.FC<Props> = ({ audio, image, pushRecording, onClickUser }) => {
     const [toggle, setToggle] = useState(false)
     const toggleRef = useRef<any>();
-    
+
     const onToggle = () => {
         setToggle(!toggle)
     }
@@ -62,9 +63,9 @@ const Player:React.FC<Props> = ({ audio, image, pushRecording, onClickUser }) =>
                     (audio)
                     &&
                     <div onClick={() => pushRecording(audio)}>
-                        <a className="bg-studion-400 absolute left-0 top-3 cursor-pointer rounded-lg text-white hover:bg-studion-300 text-base w-24"> 
-                             録音リレー
-                         </a>
+                        <a className="bg-studion-400 absolute left-0 top-3 cursor-pointer rounded-lg text-white hover:bg-studion-300 text-base w-24">
+                            録音リレー
+                        </a>
                     </div>
                 }
                 {
@@ -121,17 +122,17 @@ type MemberProps = {
     onClickUser: (id: number) => void
 }
 
-const BandMember = ({ composerData, onClickUser } : MemberProps) => {
+const BandMember = ({ composerData, onClickUser }: MemberProps) => {
     return (
         <div>
             <div className="rounded-full bg-studion-400 mr-1 w-9 h-9 cursor-pointer flex justify-center items-center" onClick={() => onClickUser(composerData.id)}>
-            {
-                composerData.image 
-                ? <img className='' src={composerData.image} />
-                : <div className='text-white' >
-                    {composerData.name.slice(0, 2).toUpperCase()}
-                </div>
-            }
+                {
+                    composerData.image
+                        ? <div className="relative w-full aspect-square rounded-full overflow-hidden"><Image alt="user profile" src={composerData.image} layout="fill" /></div>
+                        : <div className='text-white' >
+                            {composerData.name.slice(0, 2).toUpperCase()}
+                        </div>
+                }
             </div>
         </div>
     )

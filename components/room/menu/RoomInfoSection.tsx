@@ -46,7 +46,7 @@ const RoomInfoSection = () => {
           <div className="flex gap-4 justify-center">
             {roomData?.users.length !== 0 && roomData.users.map(user => (
               user.image
-                ? <Image key={user.id} className='w-8 h-8 rounded-full' src={user.image} alt="profile image" />
+                ? <div className='relative overflow-hidden w-8 h-8 rounded-full'><Image key={user.id} layout="fill" src={user.image} alt="profile image" /></div>
                 : (
                   <div key={user.id} className='flex items-center justify-center rounded-full text-white text-sm bg-studion-400 w-8 h-8'>
                     {user.name.slice(0, 2).toUpperCase()}

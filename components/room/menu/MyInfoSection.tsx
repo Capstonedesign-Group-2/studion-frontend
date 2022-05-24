@@ -15,7 +15,7 @@ const MyInfoSection = ({ audios }: Props) => {
       <div className="flex flex-col items-center md:items-start md:flex-row">
         <div className="w-40 relative">
           {userData?.image
-            ? <Image className="w-full rounded-full" src='/' layout="fill" alt="profile image" />
+            ? <div className="relative overflow-hidden w-full aspect-square rounded-full"><Image src={userData.image} layout="fill" alt="profile image" /></div>
             : <div className='flex w-full aspect-square rounded-full bg-studion-400 justify-center items-center text-white text-7xl md:text-4xl xl:text-5xl'>
               <p>{userData?.name.slice(0, 2).toUpperCase()}</p>
             </div>
