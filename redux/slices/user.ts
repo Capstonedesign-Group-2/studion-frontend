@@ -26,6 +26,9 @@ const userSlice = createSlice({
   reducers: {
     setAccessToken(state, action) {
       state.accessToken = action.payload
+    },
+    setUserData(state, action) {
+      state.data = action.payload
     }
   },
   extraReducers: (builder) => {

@@ -4,6 +4,7 @@ import AppLayout from "../components/common/AppLayout"
 import AccountInformation from "../components/profile/AccountInformation"
 import DeleteAccount from "../components/profile/DeleteAccount"
 import EmailComponent from "../components/profile/EmailComponent"
+import PasswordConfirm from "../components/profile/PasswordConfirm"
 import ProfileComponent from "../components/profile/ProfileComponent"
 import { stayLoggedIn } from "../http/stay"
 import wrapper from "../redux/store"
@@ -14,9 +15,7 @@ const Profile = () => {
   if (!isConfirmPassword) {
     return (
       <AppLayout>
-        <div>
-
-        </div>
+        <PasswordConfirm setConfirmPassword={setConfirmPassword} />
       </AppLayout>
     )
   }
