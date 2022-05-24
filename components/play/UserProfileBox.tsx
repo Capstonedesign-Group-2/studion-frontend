@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { memo } from "react"
 import { useSelector } from "react-redux"
 
@@ -35,13 +36,13 @@ const UserProfileBox = () => {
               <div className="items-center grid grid-cols-2 mt-1">
                 <div>
                   <span className="text-xs text-gray-500 block">
-                    Following
+                    フォロー中
                   </span>
                   <h4>{userData.followings}</h4>
                 </div>
                 <div className="ml-8">
                   <span className="text-xs text-gray-500 block">
-                    Follower
+                    フォロー
                   </span>
                   <h4>{userData.followers}</h4>
                 </div>
@@ -49,9 +50,11 @@ const UserProfileBox = () => {
             </div>
           </div>
           <div className="mt-10 flex justify-center w-full md:w-1/2 ">
-            <a className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
-              Edit profile
-            </a>
+            <Link href="/profile">
+              <a className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+                Edit profile
+              </a>
+            </Link>
             <a className="ml-3 inline-flex w-full justify-center items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 active:bg-studion-500 transition ease-in-out duration-150">
               See profile
             </a>

@@ -40,7 +40,7 @@ const DeleteAccount = () => {
                 </label>
               </div>
               <span className="inline-flex md:justify-center justify-end rounded-md shadow-sm">
-                <button type="submit" className="shadow inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-blue-700 focus:ring  focus:ring-blue-400  active:bg-blue-700 transition duration-150 ease-in-out  pointer-events-none opacity-25">
+                <button type="submit" className="shadow inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-blue-700 focus:ring  focus:ring-blue-400  active:bg-blue-700 transition duration-150 ease-in-out pointer-events-none opacity-25">
                   Delete Account
                 </button>
               </span>

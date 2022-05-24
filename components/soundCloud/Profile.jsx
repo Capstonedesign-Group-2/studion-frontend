@@ -10,6 +10,7 @@ import Follow from "./Follow"
 import { getAnotherUserInfo, getFollowData } from "../../redux/actions/another"
 import Socket from "../../socket"
 import Router from "next/router"
+import Link from "next/link"
 
 const Profile = ({ userId }) => {
     const userData = useSelector(state => state.user.data)
@@ -17,7 +18,7 @@ const Profile = ({ userId }) => {
     const userInfo = (useSelector(state => state.another.userInfo) || userData)
     const following = useSelector(state => state.another.following);
     const [flwLoading, setFlwLoading] = useState(false);
-    
+
     const dispatch = useDispatch();
     // dropdown
     const onClickFollow = () => {
@@ -64,22 +65,22 @@ const Profile = ({ userId }) => {
             Router.push(`/chat/${res.id}`)
             return () => {
                 Socket.removeAllListeners()
-              }
+            }
         })
         Socket.socket.emit("create_chat", [
             // 나
             {
-              user_id: userData.id,
-              name: userData.name,
-              image: userData.image
+                user_id: userData.id,
+                name: userData.name,
+                image: userData.image
             },
             // 상대
             {
-              user_id: otherUser.id,
-              name: otherUser.name,
-              image: otherUser.image
+                user_id: otherUser.id,
+                name: otherUser.name,
+                image: otherUser.image
             }
-          ])
+        ])
     }
     const onCreatePost = () => {
         Modal.fire({
@@ -136,9 +137,11 @@ const Profile = ({ userId }) => {
                         {
                             (userInfo?.id === userData?.id) ?
                                 <>
-                                    <a className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
-                                        Edit profile
-                                    </a>
+                                    <Link href="/profile">
+                                        <a className="inline-flex w-full items-center justify-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:cursor-pointer hover:text-gray-500 focus:outline-none focus:border-studion-300 focus:ring focus:ring-studion-400 active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+                                            Edit profile
+                                        </a>
+                                    </Link>
                                     <a className="ml-3 inline-flex w-full justify-center items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 active:bg-studion-500 transition ease-in-out duration-150">
                                         See profile
                                     </a>

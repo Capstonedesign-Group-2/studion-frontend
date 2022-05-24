@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux"
 
 import styles from '../../styles/common/layout.module.scss'
 import { logOut } from "../../redux/actions/user"
+import Link from "next/link"
 
 interface Props {
   menu: boolean
@@ -32,7 +33,7 @@ const MenuBox = ({ menu, setMenu }: Props) => {
   return (
     <div ref={menuRef} className={styles.userOption}>
       <div className={styles.optionList}>
-        <a>プロフィール編集</a>
+        <Link href="/profile"><a>プロフィール編集</a></Link>
         <a onClick={onLogout}>ログアウト</a>
       </div>
     </div>
