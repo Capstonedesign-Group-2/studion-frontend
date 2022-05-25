@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const Comment = ({comment, onClickProfile, userData}) => {
@@ -10,7 +11,7 @@ const Comment = ({comment, onClickProfile, userData}) => {
             <div className="mt-2 font-semibolds">
                 {/* 사진 / 아이디*/}
                 <div className="flex ">
-                    <div onClick={() => onClickProfile(comment.user.id)} className='bg-studion-400 text-white text-lg rounded-full flex items-center justify-center text-sm w-10 h-10 mr-2 cursor-pointer' >                       
+                    <div onClick={() => onClickProfile(comment.user.id)} className='bg-studion-400 text-white text-lg rounded-full flex items-center justify-center text-sm w-10 h-10 mr-3 cursor-pointer' >                       
                         {
                             !comment.user.image
                             ? 
@@ -18,9 +19,9 @@ const Comment = ({comment, onClickProfile, userData}) => {
                                     comment.user.name.slice(0, 2).toUpperCase()
                                 // </div>
                             : 
-                                // <div className=''>
-                                    <img src={comment.user.image} alt="" />
-                                // </div>
+                                <div className='w-full h-full relative rounded-full overflow-hidden'>
+                                    <Image src={comment.user.image} alt="user image" layout='fill' />
+                                </div>
                         }
                     </div>
                     <div className="flex flex-col">

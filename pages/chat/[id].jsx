@@ -67,10 +67,10 @@ const Chat = () => {
   //   }
   // }, [cookie.load('accessToken')])
   useEffect(() => {
-    Socket.socket.on('exit_on', res => {
-      console.log(res)
-      Router.push(`/chat`)
-    })
+    // Socket.socket.on('exit_on', res => {
+    //   console.log(res)
+    //   Router.push(`/chat`)
+    // })
     Socket.socket.on('send_chat_msg_on', res => {
       console.log('send_chat_msg_on', res)
       setMessages((prev) => [

@@ -138,7 +138,7 @@ const Post = ({ post }) => {
                 {/* 프로필 이미지 */}
                 <Link href={`/soundcloud/${post.user.id}`}>
                     {
-                        post.user.image
+                        post.user?.image
                             ?
                             <a className="relative overflow-hidden w-10 h-10 rounded-full inline-block">
                                 <Image src={post.user.image} layout="fill" alt="user profile" />
@@ -157,7 +157,7 @@ const Post = ({ post }) => {
                     </a>
                 </Link>
                 {
-                    (userData.id === post.user.id) &&
+                    (userData?.id === post.user.id) &&
                     (
                         <div onClick={() => setDropDown(!dropDown)} className='absolute right-3 hover:scale-125 transition-all cursor-pointer'>
                             <svg aria-label="옵션 더 보기" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24">

@@ -9,6 +9,7 @@ const ChatDropdown = ({userData, otherUser}) => {
             name: userData.name,
             to: otherUser.id
         })
+        console.log('chat_exit')
         Router.push(`/soundcloud`)
     }
     return(

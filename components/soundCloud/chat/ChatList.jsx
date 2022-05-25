@@ -6,6 +6,7 @@ import Loader from "../../common/Loader"
 import Router from "next/router"
 import { useDispatch, useSelector } from "react-redux"
 import { getAnotherUserInfo } from "../../../redux/actions/another"
+import Image from "next/image"
 
 const ChatList = () => {
     const userData = useSelector(state => state.user.data)
@@ -64,7 +65,9 @@ const User = ({listInfo}) => {
             {/* 사진 */}
             <div className="w-14 h-14 rounded-full bg-studion-300 flex justify-center items-center text-2xl text-white font-normal">
                 {listInfo.to.image 
-                    ? <img src={listInfo.to.image} />
+                    ? <div className="w-full h-full relative overflow-hidden rounded-full">
+                        <Image src={listInfo.to.image} layout='fill' alt="user profile"/>
+                    </div>
                     : listInfo.to.name.slice(0, 2).toUpperCase()
                 }
             </div>
