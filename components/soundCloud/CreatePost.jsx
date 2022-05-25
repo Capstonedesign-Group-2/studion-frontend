@@ -236,18 +236,17 @@ const CreatePost = ({ audioFile }) => {
                 {/* 컨탠츠 */}
                 <div className="w-full mx-auto pt-5 max-w-3xl lg:max-w-lg pl-2 flex flex-col">
                     <div className="ml-3 flex mt-3">
+                        <div className="rounded-full w-10 h-10 bg-studion-400 text-white font-lite text-lg flex items-center justify-center" >
                         {
-                            userData.image
+                            userData?.image
                                 ?
-                                <div className="relative aspect-square h-10 rounded-full overflow-hidden">
-                                    <Image alt="user profile" layout="fill" src={userData.image} />
+                                <div className="w-full h-full rounded-full relative overflow-hidden">
+                                    <Image alt="user profile" src={userData.image} layout="fill" />
                                 </div>
                                 :
-                                <div className="rounded-full w-10 h-10 bg-studion-400 text-white font-lite text-lg flex items-center justify-center" >
-                                    {userData.name.slice(0, 2).toUpperCase()}
-                                </div>
-
+                                userData.name.slice(0, 2).toUpperCase()
                         }
+                        </div>
                         <span className="ml-2 font-semibold mt-1">{userData.name}</span>
                     </div>
                     <div className="mt-4 w-full px-3">

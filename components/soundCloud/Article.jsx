@@ -104,6 +104,7 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
             })
     }, [like])
     useEffect(() => {
+        callComments()
         http.get(`likes/${post.id}`)
             .then(res => {
                 setLikeCount(res.data.likes.total)
@@ -139,9 +140,7 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
             window.removeEventListener("click", checkIfClickedOutside)
         }
     }, [dropDown])
-    useEffect(() => {
-        console.log(Router)
-    }, [])
+
     return (
         <div className="flex flex-col h-full relative overflow-hidden">
             {/* 글쓴이 정보 */}
@@ -154,7 +153,9 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
                                 ?
                                 post.user.name.slice(0, 2).toUpperCase()
                                 :
-                                <div className='relative w-10 aspect-square rounded-full overflow-hidden'><Image alt="user profile" src={post.user.image} layout="fill" /></div>
+                                <div className='relative w-10 aspect-square rounded-full overflow-hidden'>
+                                    <Image alt="user profile" src={post.user.image} layout="fill" />
+                                </div>
                         }
                     </div>
                 </div>
