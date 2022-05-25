@@ -153,7 +153,9 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
                                 ?
                                 post.user.name.slice(0, 2).toUpperCase()
                                 :
-                                <div className='relative w-10 aspect-square rounded-full overflow-hidden'><Image alt="user profile" src={post.user.image} layout="fill" /></div>
+                                <div className='relative w-10 aspect-square rounded-full overflow-hidden'>
+                                    <Image alt="user profile" src={post.user.image} layout="fill" />
+                                </div>
                         }
                     </div>
                 </div>
