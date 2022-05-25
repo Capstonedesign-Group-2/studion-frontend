@@ -15,17 +15,17 @@ export class Wave {
     }
 
     setGain(value: number | boolean) {
-        if(typeof(value) === 'number')
+        if (typeof (value) === 'number')
             this.gainNode.gain.value = value
         else {
-            if(value) {
+            if (value) {
                 this.gainNode.gain.value = 1
             } else {
                 this.gainNode.gain.value = 0
             }
         }
     }
-    onPlay (time: number) {
+    onPlay(time: number) {
         this.audio.currentTime = time
         this.audio.play()
     }
@@ -36,5 +36,5 @@ export class Wave {
     setMute(value: boolean) {
         this.gainNode.gain.value = 0
     }
-    
+
 }

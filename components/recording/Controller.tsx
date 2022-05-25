@@ -18,8 +18,8 @@ type Props = {
   mixerRef: MutableRefObject<Mixer | undefined>
 }
 type GetTime = {
-  (ref: any, now: number) : any,
-  (ref: any, now: number, end: number) : any,
+  (ref: any, now: number): any,
+  (ref: any, now: number, end: number): any,
 }
 const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioFile }) => {
   // make wavesurfer 
@@ -41,35 +41,35 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
   const [isMute, setMute] = useState<boolean>(true)
 
   const handleVolumeChange = (event: Event, newValue: number | number[]) => {
-    if(typeof newValue === 'number') {
+    if (typeof newValue === 'number') {
       mixerRef.current?.setMasterGain(newValue / 120)
       waveRef.current?.setGain(newValue / 120)
       wavesurferRef.current.setVolume(newValue / 120)
     }
   }
   const handleKeyDown = (event: KeyboardEvent) => {
-    if(event.key === " ") {
+    if (event.key === " ") {
       onClickPlay()
     }
   }
 
-  const getTime: GetTime = (ref, now, end?:number) => {
+  const getTime: GetTime = (ref, now, end?: number) => {
     let total = 0
-    if(end) {
+    if (end) {
       total = Math.floor(end) - Math.floor(now)
     } else {
       total = Math.floor(now);
     }
-    let second = String(total).padStart(2,'0')
+    let second = String(total).padStart(2, '0')
     let minute = String(Math.floor(total / 60)).padStart(2, '0');
     if (total !== 0 && total % 60 >= 0) {
-      second = String(total - (parseInt(minute) * 60)).padStart(2,'0')
+      second = String(total - (parseInt(minute) * 60)).padStart(2, '0')
     }
     return ref.current.innerText = `${minute} : ${second}`
   }
   const onClickPlay = () => {
     setIsPlaying((prev) => !prev)
-    if(!isPlaying && audioFile) {
+    if (!isPlaying && audioFile) {
       wavesurferRef.current.play()
       waveRef.current?.onPlay(wavesurferRef.current.getCurrentTime())
     } else {
@@ -79,7 +79,7 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
     }
   }
   const onClickStop = () => {
-    if(isPlaying) setIsPlaying((prev) => !prev)
+    if (isPlaying) setIsPlaying((prev) => !prev)
     wavesurferRef.current?.stop()
     waveRef.current?.onStop(wavesurferRef.current?.getCurrentTime())
   }
@@ -93,13 +93,13 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
 
   useEffect(() => {
     let blobUrl = ''
-    if(mixerRef.current && audioFile) {
+    if (mixerRef.current && audioFile) {
       blobUrl = window.URL.createObjectURL(audioFile.blob)
       const audio = new Audio(blobUrl)
       waveRef.current = new Wave(mixerRef.current, audio)
     }
 
-    if(isLoading || !audioFile) return
+    if (isLoading || !audioFile) return
     const initWaveSurfer = async () => {
       const WaveSurfer = await require('wavesurfer.js')
 
@@ -144,12 +144,12 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
     }
     initWaveSurfer()
     audioMakerRef.current = new audioMaker()
-    
+
     return () => {
       if (!wavesurferRef.current) return
       wavesurferRef.current.destroy()
     }
-  }, [isLoading, audioFile])
+  }, [isLoading, audioFile, mixerRef])
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)
     return () => {
@@ -166,8 +166,8 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
       }
       {
         audioFile
-        ? <div className='shadow-lg border-[1px] border-gray-200 rounded-b'ref={waveformRef}></div>
-        : <DragDrop setAudioFile={setAudioFile} />
+          ? <div className='shadow-lg border-[1px] border-gray-200 rounded-b' ref={waveformRef}></div>
+          : <DragDrop setAudioFile={setAudioFile} />
       }
       <div className="flex justify-around items-center mt-6">
         <div className="flex justify-between items-center">
@@ -179,7 +179,7 @@ const Controller: React.FC<Props> = ({ audioFile, isLoading, mixerRef, setAudioF
             }
           </div>
           <div onClick={() => onClickStop()}>
-              <FaStop className="text-2xl text-studion-100 hover:cursor-pointer" />
+            <FaStop className="text-2xl text-studion-100 hover:cursor-pointer" />
           </div>
         </div>
         <div ref={startRef}>00 : 00</div>
