@@ -1,0 +1,17 @@
+{
+  "locales": ["ja", "ko"],
+  "defaultLocale": "ja",
+  "pages": {
+    "*": ["common"],
+    "/": ["main"],
+    "/chat": ["chat"],
+    "/room": ["room"],
+    "/soundcloud": ["soundcloud"],
+    "/join": ["join"],
+    "/login": ["login"],
+    "/play": ["play"],
+    "/profile": ["profile"],
+    "/recording": ["recording"],
+    "/relay": ["relay"]
+  }
+}
