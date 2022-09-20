@@ -7,8 +7,10 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 
 import Image from "next/image";
+import useTranslation from "next-translate/useTranslation";
 
 const InfoSection = () => {
+  const { t } = useTranslation("main")
   return (
     <section className="bottom-60 text-center text-white bg-studion-600 w-screen flex-1 px-4 sm:px-6 lg:px-8">
       <article
@@ -16,7 +18,7 @@ const InfoSection = () => {
         style={{ marginBottom: "56px" }}
       >
         <h2 className="text-3xl font-medium mb-2">Online Studio</h2>
-        <h5 className="text-xl">スタジオン</h5>
+        <h5 className="text-xl">{t("virtual_subTitle")}</h5>
       </article>
       <Swiper
         className="px-4 sm:px-8 lg:px-10 mb-14"
@@ -38,16 +40,16 @@ const InfoSection = () => {
               </div>
               <div className="absolute flex flex-col justify-center items-center bottom-0 h-2/5 w-11/12 rounded-lg shadow-lg bg-white">
                 <p className="text-center text-black text-xl font-bold">
-                  バーチャル楽器
+                  {t("swiperSlide_virtual_title")}
                 </p>
                 <p className="text-gray-600">
-                  ドラム、キーボード、ギター、ベース
+                  {t("swiperSlide_virtual_int")}
                 </p>
               </div>
             </div>
             <div className="flex flex-col">
               <h3 className="text-white text-4xl font-medium mb-4">
-                キーボードを使った合奏
+                {t("swiperSlide_virtual_use")}
               </h3>
               <div className="flex gap-4 mb-4">
                 <span className="flex justify-center items-center overflow-hidden rounded-full h-12 w-12 bg-white">
@@ -84,13 +86,13 @@ const InfoSection = () => {
                 </span>
               </div>
               <ul className="mb-4 flex flex-col">
-                <li>楽器なしにキーボードで簡単に演奏</li>
-                <li>今すぐできる</li>
-                <li>様々なバーチャル楽器を選べる</li>
+                <li>{t("swiperSlide_virtual_exp_1")}</li>
+                <li>{t("swiperSlide_virtual_exp_2")}</li>
+                <li>{t("swiperSlide_virtual_exp_3")}</li>
               </ul>
               <div className="flex justify-end">
                 <div className="text-white bg-studion-300 duration-150 p-2.5 shadow-md cursor-pointer hover:bg-studion-200 transition-colors py-1.5 pt-2 flex items-center rounded-md">
-                  <a className="px-2">詳細を見る →</a>
+                  <a className="px-2">{t("swiperSlide_virtual_btn")}</a>
                 </div>
               </div>
             </div>
@@ -107,21 +109,21 @@ const InfoSection = () => {
                 ></Image>
               </div>
               <div className="absolute flex flex-col justify-center items-center text-black bottom-0 h-2/5 w-11/12 rounded-lg shadow-lg bg-white">
-                <p className="text-xl font-bold">オーディオインターフェース</p>
-                <p className="text-gray-600">ボーカル、ギター、etc</p>
+                <p className="text-xl font-bold">{t("swiperSlide_audio_title")}</p>
+                <p className="text-gray-600">{t("swiperSlide_audio_int")}</p>
               </div>
             </div>
             <div className="flex flex-col">
               <h3 className="text-white text-4xl font-medium mb-4">
-                自分だけの楽器で合奏
+                {t("swiperSlide_audio_use")}
               </h3>
               <ul className="mb-4 flex flex-col">
-                <li>自分の楽器でさらに良いクオリティで演奏</li>
-                <li>専門的なバンド</li>
+                <li>{t("swiperSlide_audio_exp_1")}</li>
+                <li>{t("swiperSlide_audio_exp_2")}</li>
               </ul>
               <div className="flex justify-end">
                 <div className="text-white bg-studion-300 duration-150 p-2.5 shadow-md cursor-pointer hover:bg-studion-200 transition-colors py-1.5 pt-2 flex items-center rounded-md">
-                  <a className="px-2">詳細を見る →</a>
+                  <a className="px-2">{t("swiperSlide_audio_btn")}</a>
                 </div>
               </div>
             </div>

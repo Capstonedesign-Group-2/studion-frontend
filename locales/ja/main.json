@@ -1,4 +1,27 @@
 {
   "startBtn": "スタート　→",
-  "roomListBtn": "ルームリスト　→"
+  "roomListBtn": "ルームリスト　→",
+  "intro_1": "自分だけのバンドを作って合奏してみよう！",
+  "intro_2": "いつでもどこでも一緒に演奏して楽しみましょう。",
+  "virtual_subTitle": "スタジオン",
+  "swiperSlide_virtual_title": "バーチャル楽器",
+  "swiperSlide_virtual_int": "ドラム、キーボード、ギター、ベース",
+  "swiperSlide_virtual_use": "キーボードを使った合奏",
+  "swiperSlide_virtual_exp_1": "楽器なしにキーボードで簡単に演奏",
+  "swiperSlide_virtual_exp_2": "今すぐできる",
+  "swiperSlide_virtual_exp_3": "様々なバーチャル楽器を選べる",
+  "swiperSlide_virtual_btn": "詳細を見る →",
+  "swiperSlide_audio_title": "オーディオインターフェース",
+  "swiperSlide_audio_int": "ボーカル、ギター、etc",
+  "swiperSlide_audio_use": "自分だけの楽器で合奏",
+  "swiperSlide_audio_exp_1": "自分の楽器でさらに良いクオリティで演奏",
+  "swiperSlide_audio_exp_2": "専門的なバンド",
+  "swiperSlide_audio_btn": "詳細を見る →",
+  "soundCloud_subTitle": "トップ音源",
+  "soundCloud_week_1": "週間",
+  "soundCloud_week_2": "今週の",
+  "soundCloud_month_1": "月間",
+  "soundCloud_month_2": "今月の",
+  "soundCloud_message": "トップ音源がありません。",
+  "soundCloud_btn": "もっと見る　→"
 }

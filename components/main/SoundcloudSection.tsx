@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../redux/slices'
 import { IPost, IUser } from '../../types'
 import Album from '../soundCloud/Album'
+import useTranslation from 'next-translate/useTranslation'
 
 interface Props {
   rank: { week: IPost[], month: IPost[] }
@@ -12,7 +13,7 @@ interface Props {
 const SoundcloudSection: FC<Props> = ({ rank }) => {
   const [selectedDate, setSelectDate] = useState('month')
   const userData = useSelector<RootState, IUser>((state) => state.user.data)
-
+  const { t } = useTranslation("main")
   return (
     <div className="mt-28 mb-40 lg:mb-56">
       <div className="text-center mb-14 text-black">
@@ -20,7 +21,7 @@ const SoundcloudSection: FC<Props> = ({ rank }) => {
           Sound Cloud
         </h2>
         <h5 className="text-xl">
-          トップ音源
+          {t("soundCloud_subTitle")}
         </h5>
       </div>
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
@@ -29,13 +30,13 @@ const SoundcloudSection: FC<Props> = ({ rank }) => {
             style={selectedDate === 'week' ? { backgroundColor: '#009B9C', color: 'white' } : {}}
             onClick={() => setSelectDate('week')}
           >
-            週間
+            {t("soundCloud_week_1")}
           </span>
           <span className="text-studion-500 md:px-6 w-full px-1 justify-center flex py-1 md:text-base text-sm cursor-pointer rounded-full duration-100"
             style={selectedDate === 'month' ? { backgroundColor: '#009B9C', color: 'white' } : {}}
             onClick={() => setSelectDate('month')}
           >
-            月間
+            {t("soundCloud_month_1")}
           </span>
         </div>
       </div>
@@ -53,7 +54,7 @@ const SoundcloudSection: FC<Props> = ({ rank }) => {
                   <div></div>
                   <div className='py-10'>
                     <p>
-                      {selectedDate === 'week' ? '今週の' : '今月の'}トップ音源がありません。
+                      {selectedDate === 'week' ? t("soundCloud_week_2") : t("soundCloud_month_2")} {t("soundCloud_message")}
                     </p>
                   </div>
                   <div></div>
@@ -64,7 +65,7 @@ const SoundcloudSection: FC<Props> = ({ rank }) => {
       </div>
       <div className='mt-24'>
         <Link href='/soundcloud'>
-          <a className='text-studion-500 text-center block text-lg font-bold'>もっと見る　→</a>
+          <a className='text-studion-500 text-center block text-lg font-bold'>{t("soundCloud_btn")}</a>
         </Link>
       </div>
     </div>
