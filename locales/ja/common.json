@@ -5,5 +5,7 @@
   "header_login": "ログイン", 
   "header_signIn_btn": "会員登録",
   "footer_school": "永進専門大学 コンピュータ情報系列",
-  "footer_help": "使い方"
+  "footer_help": "使い方",
+  "menuBox_profile": "プロフィール編集",
+  "menuBox_logout": "ログアウト"
 }

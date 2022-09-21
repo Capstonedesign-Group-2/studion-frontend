@@ -9,9 +9,11 @@ import { logIn } from '../../redux/actions/user'
 import { loginValidation } from '../../validations'
 import { Modal, Toast } from '../common/modals'
 import { RootState } from '../../redux/slices'
+import useTranslation from 'next-translate/useTranslation'
 
 const LoginContainer = () => {
   const dispatch = useDispatch()
+  const { t } = useTranslation("login")
   const isLoggingIn = useSelector((state: RootState) => state.user.isLoggingIn)
   const accessToken = useSelector((state: RootState) => state.user.accessToken)
   const loginError = useSelector((state: RootState) => state.user.loginError)
@@ -77,7 +79,7 @@ const LoginContainer = () => {
 
   return (
     <div className={styles.container}>
-      <h2>ログイン</h2>
+      <h2>{t("login")}</h2>
       <article>
         <div className={styles.formDiv}>
           {errorMsg && // 에러 메세지
@@ -85,14 +87,14 @@ const LoginContainer = () => {
           }
           <form onSubmit={submitHandler}>
             {/* 이메일 */}
-            <label htmlFor="email" className='mt-4'>Eメールアドレス</label>
+            <label htmlFor="email" className='mt-4'>{t("email")}</label>
             <input id='email' name='email' type="email" value={email} onChange={onChange} />
 
             {/* 비밀번호 */}
-            <label htmlFor="password" className='mt-4'>パスワード</label>
+            <label htmlFor="password" className='mt-4'>{t("password")}</label>
             <input id='password' name='password' type="password" value={password} onChange={onChange} />
 
-            <button type='submit'>ログイン</button>
+            <button type='submit'>{t("login_btn")}</button>
           </form>
         </div>
 
@@ -104,8 +106,8 @@ const LoginContainer = () => {
         </div>
 
         <div className={styles.socialContainer}>
-          <button>트위터 로그인　→</button>
-          <button>구글 로그인　→</button>
+          <button>{t("twitter_login")}</button>
+          <button>{t("google_login")}</button>
         </div>
       </article>
     </div>

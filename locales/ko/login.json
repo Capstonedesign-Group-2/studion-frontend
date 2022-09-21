@@ -1,0 +1,19 @@
+{
+  "login": "로그인",
+  "email": "이메일",
+  "password": "비밀번호",
+  "login_btn": "로그인",
+  "twitter_login": "Twitter 로그인　→",
+  "google_login": "Google 로그인　→",
+  "profile_validation": "비밀번호를 확인해 주세요",
+  "profile_validation_input": "비밀번호 입력",
+  "profile_validation_email": "이메일",
+  "profile_validation_password": "비밀번호",
+  "profile_validation_btn": "본인확인",
+  "join_title": "회원가입",
+  "join_name": "이름",
+  "join_email": "이메일",
+  "join_password": "비밀번호",
+  "join_password_check": "비밀번호 확인",
+  "join_btn": "가입하기"
+}

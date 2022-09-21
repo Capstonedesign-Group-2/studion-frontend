@@ -5,5 +5,7 @@
   "header_login": "로그인", 
   "header_signIn_btn": "회원등록",
   "footer_school": "영진전문대학 컴퓨터정보계열",
-  "footer_help": "사용방법"
+  "footer_help": "사용방법",
+  "menuBox_profile": "프로필 편집",
+  "menuBox_logout": "로그아웃"
 }
