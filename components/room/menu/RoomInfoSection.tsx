@@ -1,3 +1,4 @@
+import useTranslation from "next-translate/useTranslation"
 import Image from "next/image"
 import { useCallback, useState } from "react"
 import { useSelector } from "react-redux"
@@ -10,10 +11,18 @@ import RoomEditForm from "./RoomEditFrom"
 const RoomInfoSection = () => {
   const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
   const [showInfo, setShowInfo] = useState<boolean>(false)
+  const { t } = useTranslation("room")
+  const langs = {
+    room_info_edit_name: t("room_info_edit_name"),
+    room_info_edit_password: t("room_info_edit_password"),
+    room_info_edit_max: t("room_info_edit_max"),
+    room_info_edit_roomInfo: t("room_info_edit_roomInfo"),
+    room_info_edit_btn: t("room_info_edit_btn"),
 
+  }
   const onEditBtn = useCallback(() => {
     Modal.fire({
-      html: <RoomEditForm />,
+      html: <RoomEditForm langs={langs}/>,
       showConfirmButton: false
     })
   }, [])

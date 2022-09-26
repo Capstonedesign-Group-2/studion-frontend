@@ -13,7 +13,7 @@ import styles from "../../../styles/play/play.module.scss"
 import { IRoom, IUser } from "../../../types"
 import Socket from "../../../socket"
 
-const RoomEditForm = () => {
+const RoomEditForm = ({langs}: {langs: any}) => {
   const userData = useSelector<RootState, IUser>(state => state.user.data)
   const roomData = useSelector<RootState, IRoom>(state => state.room.roomData)
   const [errorMsg, setErrorMsg] = useState('')
@@ -90,13 +90,13 @@ const RoomEditForm = () => {
       <form className={styles.createForm}
         onSubmit={onSubmit}
       >
-        <input type="text" name="title" placeholder="ルーム名" value={title} onChange={onChange} />
+        <input type="text" name="title" placeholder={langs.room_info_edit_name} value={title} onChange={onChange} />
         <div className="flex gap-2 items-center">
-          <input className="flex-1" disabled={!lock} type="password" name="password" placeholder="パスワード" value={password as string} onChange={onChange} />
+          <input className="flex-1" disabled={!lock} type="password" name="password" placeholder={langs.room_info_edit_password} value={password as string} onChange={onChange} />
           <button className="text-2xl" type="button" onClick={onLock}>{lock ? '🔒' : '🔓'}</button>
         </div>
         <Box>
-          <div className="text-gray-400">スタジオの最大人数</div>
+          <div className="text-gray-400">{langs.room_info_edit_max}</div>
           <div className="flex gap-4 items-center">
             <div className="px-6 py-1 rounded border-[1px] border-gray-300">
               {form.max}
@@ -121,11 +121,11 @@ const RoomEditForm = () => {
             </div>
           </div>
         </Box>
-        <textarea name="roomInfo" placeholder="ルーム情報" value={roomInfo as string} onChange={onChange} rows={5}></textarea>
+        <textarea name="roomInfo" placeholder={langs.room_info_edit_roomInfo} value={roomInfo as string} onChange={onChange} rows={5}></textarea>
         <div>
           <button className="mt-2 px-6 py-2 border border-transparent leading-5 rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 active:bg-studion-500 transition ease-in-out duration-150"
             type="submit"
-          >セーブ</button>
+          >{langs.room_info_edit_btn}</button>
         </div>
       </form>
     </div>

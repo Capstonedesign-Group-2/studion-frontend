@@ -4,6 +4,7 @@
   "pages": {
     "*": ["common"],
     "/": ["main"],
+    "/room/[id]": ["room"],
     "/chat": ["chat"],
     "/room": ["room"],
     "/soundcloud": ["soundcloud"],

@@ -1,0 +1,12 @@
+{
+  "room_info_edit_name": "ルーム名",
+  "room_info_edit_password": "パスワード",
+  "room_info_edit_max": "スタジオの最大人数",
+  "room_info_edit_roomInfo": "ルーム情報",
+  "room_info_edit_btn": "セーブ",
+
+  "side_chat": "メッセージを送ってみよう！",
+  "edit_title": "オーディオ編集",
+
+  "room_recode": "録音してください！"
+}

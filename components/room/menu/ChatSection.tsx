@@ -1,3 +1,4 @@
+import useTranslation from "next-translate/useTranslation"
 import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../redux/slices"
@@ -9,7 +10,7 @@ import ChatItem from "./ChatItem"
 const ChatSection = () => {
   const messageList = useSelector<RootState, IMessage[]>(state => state.room.messageList)
   const chatListRef = useRef<HTMLDivElement>(null)
-
+  const { t } = useTranslation("room")
   useEffect(() => {
     if (chatListRef.current) {
       chatListRef.current.scrollTo({ top: chatListRef.current.scrollHeight, behavior: 'smooth' })
@@ -27,7 +28,7 @@ const ChatSection = () => {
           ))
           : (
             <div className="h-full flex justify-center items-center">
-              <p className="text-gray-400 text-center">メッセージを送ってみよう！</p>
+              <p className="text-gray-400 text-center">{t("side_chat")}</p>
             </div>
           )
         }
