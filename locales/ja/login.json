@@ -4,16 +4,5 @@
   "password": "パスワード",
   "login_btn": "ログイン",
   "twitter_login": "Twitter ログイン　→",
-  "google_login": "Google ログイン　→",
-  "profile_validation": "暗証番号を確認してください。",
-  "profile_validation_input": "パスワード入力",
-  "profile_validation_email": "Eメールアドレス",
-  "profile_validation_password": "パスワード",
-  "profile_validation_btn": "本人確認",
-  "join_title": "アカウントを作成",
-  "join_name": "名前",
-  "join_email": "Eメールアドレス",
-  "join_password": "パスワード",
-  "join_password_check": "もう一度パスワードを入力してください",
-  "join_btn": "アカウントを作成"
+  "google_login": "Google ログイン　→"
 }

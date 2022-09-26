@@ -1,5 +1,6 @@
 import { Slider } from "@mui/material"
 import Box from '@mui/material/Box'
+import useTranslation from "next-translate/useTranslation"
 import Router from "next/router"
 import { useCallback, useEffect, useState } from "react"
 import { useSelector } from "react-redux"
@@ -20,7 +21,7 @@ interface Form {
   max: number | number[]
 }
 
-const CreateForm = ({ Modal }: { Modal: any }) => {
+const CreateForm = ({ Modal, langs }: { Modal: any, langs: any }) => {
   const userData = useSelector((state: RootState) => state.user.data)
   const [errorMsg, setErrorMsg] = useState<string>('')
   const [lock, setLock] = useState<boolean>(false)
@@ -31,6 +32,9 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
     max: 4,
   })
   const { title, password, roomInfo } = form
+  const { t } = useTranslation("play")
+
+
 
   const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -106,13 +110,13 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
       <form className={styles.createForm}
         onSubmit={onSubmit}
       >
-        <input type="text" name="title" placeholder="ルーム名" value={title} onChange={onChange} />
+        <input type="text" name="title" placeholder={langs.create_room_name} value={title} onChange={onChange} />
         <div className="flex gap-2 items-center">
-          <input className="flex-1" disabled={!lock} type="password" name="password" placeholder="パスワード" value={password as string} onChange={onChange} />
+          <input className="flex-1" disabled={!lock} type="password" name="password" placeholder={langs.create_room_password} value={password as string} onChange={onChange} />
           <button className="text-2xl" type="button" onClick={onLock}>{lock ? '🔒' : '🔓'}</button>
         </div>
         <Box>
-          <div className="text-gray-400">スタジオの最大人数</div>
+          <div className="text-gray-400">{langs.create_room_max}</div>
           <div className="flex gap-4 items-center">
             <div className="px-6 py-1 rounded border-[1px] border-gray-300">
               {form.max}
@@ -137,11 +141,11 @@ const CreateForm = ({ Modal }: { Modal: any }) => {
             </div>
           </div>
         </Box>
-        <textarea name="roomInfo" placeholder="ルーム情報" value={roomInfo as string} onChange={onChange} rows={5}></textarea>
+        <textarea name="roomInfo" placeholder={langs.create_room_info} value={roomInfo as string} onChange={onChange} rows={5}></textarea>
         <div>
           <button className="mt-2 px-6 py-2 border border-transparent leading-5 rounded-md text-white bg-studion-500 hover:cursor-pointer hover:bg-studion-400 active:bg-studion-500 transition ease-in-out duration-150"
             type="submit"
-          >作成</button>
+          >{langs.create_room_btn}</button>
         </div>
       </form>
     </div>

@@ -1,0 +1,29 @@
+{
+  "title": "방 리스트",
+
+  "profile_name": "Name",
+  "profile_following": "Follower",
+  "profile_follow": "Following",
+  "create_room_btn": "방 생성",
+
+  "roomList_msg": "개설된 방이 없습니다.",
+  
+  "roomInfo": "방 정보",
+  "roomInfo_msg": "방 정보가 없습니다.",
+
+  "create_room_title": "방 개설하기",
+  "create_room_name": "방 이름",
+  "create_room_password": "비밀번호",
+  "create_room_max": "최대 인원",
+
+  "roomBox_participant": "참가자 : ",
+  "roomBox_count": "명",
+
+  "modal_title": "로그인 해주세요!",
+  "modal_text": "로그인이 필요한 서비스 입니다.ログインが必要なサービスです。",
+  "modal_footer": "로그인 →",
+
+  "enterForm_errorMsg": "최대 인원입니다.",
+  "password": "비밀번호",
+  "enter": "입장"
+}

@@ -1,3 +1,4 @@
+import useTranslation from 'next-translate/useTranslation'
 import Image from 'next/image'
 import Router from 'next/router'
 import { useCallback, useState } from 'react'
@@ -10,17 +11,17 @@ import { enterRoomPassword } from '../../validations'
 import ErrorMessage from '../common/ErrorMssage'
 import { Modal } from '../common/modals'
 
-const EnterForm = ({ room }: { room: IRoom }) => {
+const EnterForm = ({ room, langs }: { room: IRoom, langs: any }) => {
   const [errorMsg, setErrorMsg] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-
+  const { t } = useTranslation("play");
   const onPassword = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value)
   }, [])
 
   const onEnterRoom = useCallback(async () => {
     if (room.users.length >= room.max) {
-      setErrorMsg('人数がいっぱいになりました。')
+      setErrorMsg(langs.enterForm_errorMsg)
       return
     }
 
@@ -54,7 +55,7 @@ const EnterForm = ({ room }: { room: IRoom }) => {
         <ErrorMessage errorMsg={errorMsg} />
       }
       <div className={styles.showRoom}>
-        <p>参加者：{room.users.length}名</p>
+        <p>{`${langs.roomBox_modal_participant}${room.users.length}${langs.roomBox_modal_count}`}</p>
         <div className="flex gap-4 justify-center">
           {room.users.length !== 0 && room.users.map(user => (
             user.image
@@ -67,18 +68,18 @@ const EnterForm = ({ room }: { room: IRoom }) => {
           ))}
         </div>
         <div className='flex flex-col items-start w-full'>
-          <label htmlFor="roomInfo" className="text-sm">ルーム情報</label>
+          <label htmlFor="roomInfo" className="text-sm">{langs.roomBox_modal_roomInfo}</label>
           <p id="roomInfo" className="text-left break-all w-full">
-            {room.content ? room.content : 'ルーム情報がありません。'}
+            {room.content ? room.content : langs.roomBox_modal_roomInfo_msg}
           </p>
         </div>
         {room.password && (
           <div className="flex flex-col items-start w-full">
-            <label htmlFor="password" className="text-sm">パスワード</label>
-            <input onChange={onPassword} className="w-full" id="password" type="password" placeholder="パスワード" />
+            <label htmlFor="password" className="text-sm">{langs.roomBox_modal_password}</label>
+            <input onChange={onPassword} className="w-full" id="password" type="password" placeholder={langs.roomBox_modal_password} />
           </div>
         )}
-        <button onClick={onEnterRoom}>入場</button>
+        <button onClick={onEnterRoom}>{langs.roomBox_modal_btn}</button>
       </div>
     </>
   )

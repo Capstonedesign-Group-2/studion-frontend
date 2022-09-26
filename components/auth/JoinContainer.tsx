@@ -13,7 +13,7 @@ import useTranslation from 'next-translate/useTranslation'
 
 const JoinContainer = () => {
   const dispatch = useDispatch()
-  const { t } = useTranslation("login")
+  const { t } = useTranslation("join")
   const isSigningUp = useSelector((state: RootState) => state.user.isSigningUP)
   const signupError = useSelector((state: RootState) => state.user.signupError)
   const accessToken = useSelector((state: RootState) => state.user.accessToken)

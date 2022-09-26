@@ -1,0 +1,29 @@
+{
+  "title": "ルームリスト",
+
+  "profile_name": "名前",
+  "profile_following": "ファロー中",
+  "profile_follow": "ファロー",
+  "create_room_btn": "新しいルーム",
+
+  "roomList_msg": "ルーム情報がありません。",
+  
+  "roomInfo": "ルーム情報",
+  "roomInfo_msg": "ルーム情報がありません。",
+
+  "create_room_title": "新しいルームを作る",
+  "create_room_name": "ルーム名",
+  "create_room_password": "パスワード",
+  "create_room_max": "スタジオの最大人数",
+
+  "roomBox_participant": "参加者：",
+  "roomBox_count": "名",
+
+  "modal_title": "ログインしてください！",
+  "modal_text": "ログインが必要なサービスです。",
+  "modal_footer": "ログイン →",
+
+  "enterForm_errorMsg": "人数がいっぱいになりました。",
+  "password": "パスワード",
+  "enter": "入場"
+}
