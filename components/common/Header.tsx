@@ -20,7 +20,11 @@ const Header = () => {
   const [menu, setMenu] = useState(false)
   const userData = useSelector((state: RootState) => state.user.data)
   const { t } = useTranslation("common")
-
+  const post_langs = {
+    post_file_select: t("post_file_select"),
+    post_content: t("post_content"),
+    post_btn: t("post_btn")
+  }
   return (
     <div className={styles.headerContainer}>
       <header className={styles.header}>
@@ -48,7 +52,7 @@ const Header = () => {
               <>
                 <IoCreateOutline className='w-7 h-7 mt-4 cursor-pointer' onClick={() => {
                   Modal.fire({
-                    html: <CreatePost />,
+                    html: <CreatePost langs={post_langs}/>,
                     showConfirmButton: false,
                     customClass: { popup: btnStyles.post },
                   })

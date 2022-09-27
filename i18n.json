@@ -8,6 +8,7 @@
     "/chat": ["chat"],
     "/room": ["room"],
     "/soundcloud": ["soundcloud"],
+    "/soundcloud/[id]": ["soundcloud"],
     "/join": ["join"],
     "/login": ["login"],
     "/play": ["play"],

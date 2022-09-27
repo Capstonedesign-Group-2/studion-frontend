@@ -13,6 +13,7 @@ import Router from "next/router"
 import RecodePlayer from "./RecodePlayer"
 import { GrPrevious, GrNext } from "react-icons/gr"
 import Image from "next/image"
+import useTranslation from "next-translate/useTranslation"
 
 const Post = ({ post }) => {
     const userData = useSelector(state => state.user.data)
@@ -24,6 +25,15 @@ const Post = ({ post }) => {
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([])
     const [toggle, setToggle] = useState(false)
+    const { t } = useTranslation("soundcloud")
+
+    const langs = {
+        post_comment: t("post_comment"),
+        post_comment_btn: t("post_comment_btn"),
+        detail_post_recode_btn: t("detail_post_recode_btn"),
+        dropBox_edit: t("dropBox_edit"),
+        dropBox_delete: t("dropBox_delete")
+    }
     const onCommentChange = (e) => {
         setComment(e.target.value)
     }
@@ -97,7 +107,7 @@ const Post = ({ post }) => {
     const openModal = () => {
         // dispatch(postSlice.actions.deleteNextUrl())
         Modal.fire({
-            html: <PostContainer setLikes={setLikes} onClickLikeButton={onClickLikeButton} likes={likes} setLike={setLike} isLike={isLike} pushRecording={pushRecording} onClickUser={onClickUser} post={post} userId={post.user.id} />,
+            html: <PostContainer langs={langs} setLikes={setLikes} onClickLikeButton={onClickLikeButton} likes={likes} setLike={setLike} isLike={isLike} pushRecording={pushRecording} onClickUser={onClickUser} post={post} userId={post.user.id} />,
             showConfirmButton: false,
             scrollbarPadding: false,
             customClass: styles.post,
@@ -172,7 +182,7 @@ const Post = ({ post }) => {
                     dropDown &&
                     (
                         <div ref={ref} className={styles.dropDown}>
-                            <Dropdown userId={undefined} post={post} />
+                            <Dropdown langs={langs} userId={undefined} post={post} />
                         </div>
                     )
                 }
@@ -230,7 +240,7 @@ const Post = ({ post }) => {
                 <div className="mt-2 flex">
                     <div className="font-semibold mr-1">{`${post.user.name}`}</div>
                     <div className="font-base w-20 truncate">{`${post.content}`}</div>
-                    <div className="text-gray-400 cursor-pointer" onClick={openModal}>もっと</div>
+                    <div className="text-gray-400 cursor-pointer" onClick={openModal}>{t("post_open_detail")}</div>
                 </div>
             </div>
             {/* 추가된 댓글 */}
@@ -246,9 +256,9 @@ const Post = ({ post }) => {
             </div>
             {/* 댓글작성 */}
             <div className="px-3 py-2 flex">
-                <input onKeyPress={onKeyPress} value={comment} onChange={onCommentChange} type="text" className="flex-1 pl-1 outline-studion-400 caret-studion-400" placeholder="コメント..." />
+                <input onKeyPress={onKeyPress} value={comment} onChange={onCommentChange} type="text" className="flex-1 pl-1 outline-studion-400 caret-studion-400" placeholder={t("post_comment")} />
                 <button onClick={onClickSubmit} className="bg-studion-400 px-5 hover:bg-studion-500 rounded-lg ml-2 py-1 px-2 text-white">
-                    転送
+                    {t("post_comment_btn")}
                 </button>
             </div>
         </div>

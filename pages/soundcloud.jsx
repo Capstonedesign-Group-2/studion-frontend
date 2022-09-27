@@ -5,8 +5,10 @@ import { getPostList } from "../redux/actions/post"
 import wrapper from '../redux/store'
 import ChatSection from "../components/soundCloud/ChatSection"
 import PostList from "../components/soundCloud/PostList"
+import useTranslation from "next-translate/useTranslation"
 
 const SoundCloud = ({ userInfo }) => {
+  const { t } = useTranslation("soundcloud")
   return (
     <div>
       <AppLayout>
@@ -15,7 +17,7 @@ const SoundCloud = ({ userInfo }) => {
                 <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
                     <div className="pt-36 pb-56">
                         <h2 className="text-2xl font-medium mb-8">
-                            サウンドくも
+                            {t("main_title")}
                         </h2>
                         <div className="flex">
                           <PostList />

@@ -7,5 +7,8 @@
   "footer_school": "영진전문대학 컴퓨터정보계열",
   "footer_help": "사용방법",
   "menuBox_profile": "프로필 편집",
-  "menuBox_logout": "로그아웃"
+  "menuBox_logout": "로그아웃",
+  "post_file_select": "파일을 선택해 주세요.",
+  "post_content": "내용을 적어 주세요.",
+  "post_btn": "작성"
 }
