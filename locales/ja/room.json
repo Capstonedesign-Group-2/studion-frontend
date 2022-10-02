@@ -8,5 +8,9 @@
   "side_chat": "メッセージを送ってみよう！",
   "edit_title": "オーディオ編集",
 
-  "room_recode": "録音してください！"
+  "room_recode": "録音してください！",
+
+  "post_file_select": "ファイルを選択してください。",
+  "post_content": "内容を入力してください。",
+  "post_btn": "作成"
 }

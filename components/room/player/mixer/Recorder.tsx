@@ -36,6 +36,12 @@ const Recorder = ({ mixerRef }: Props) => {
   const timerInterval = useRef<number>()
   const fileNumber = useRef<number>(0)
   const { t } = useTranslation("room")
+  const langs = {
+    post_file_select: t("post_file_select"),
+    post_content: t("post_content"),
+    post_btn: t("post_btn")
+  }
+
   const onRecording = async () => {
     if (!recorderRef.current || isRecording) return
     setIsRecording(true)
@@ -62,7 +68,7 @@ const Recorder = ({ mixerRef }: Props) => {
     Modal.fire({
       title: t("edit_title"),
       showConfirmButton: false,
-      html: <AudioEditor audioFile={audioFile} setAudioFiles={setAudioFiles}></AudioEditor>
+      html: <AudioEditor langs={langs} audioFile={audioFile} setAudioFiles={setAudioFiles}></AudioEditor>
     })
   }
 

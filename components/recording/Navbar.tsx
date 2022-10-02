@@ -1,3 +1,4 @@
+import useTranslation from "next-translate/useTranslation"
 import { Dispatch, SetStateAction } from "react"
 import { Modal } from "../common/modals"
 import AudioEditor from "../room/editor/AudioEditor"
@@ -9,12 +10,18 @@ type Props = {
 }
 
 const Navbar: React.FC<Props> = ({audioFiles, setAudioFiles}) => {
+    const { t } = useTranslation("recording")
+    const langs = {
+        post_file_select: t("post_file_select"),
+        post_content: t("post_content"),
+        post_btn: t("post_btn")
+    }
     const onEditAudio = (audioFile: AudioFile) => {
         console.log(audioFile)
         Modal.fire({
-          title: 'オーディオ編集',
+          title: t("edit_form_title"),
           showConfirmButton: false,
-          html: <AudioEditor audioFile={audioFile} setAudioFiles={setAudioFiles}></AudioEditor>
+          html: <AudioEditor langs={langs} audioFile={audioFile} setAudioFiles={setAudioFiles}></AudioEditor>
         })
     }
     return (
@@ -33,7 +40,7 @@ const Navbar: React.FC<Props> = ({audioFiles, setAudioFiles}) => {
                         <audio src={audioFile?.url} controls className="w-full mt-1 rounded" />
                     </div>
                 ))
-                : <div className="text-gray-300 text-center">録音してください！</div>}
+                : <div className="text-gray-300 text-center">{t("sound_list")}</div>}
             </div>
         </nav>
     )
