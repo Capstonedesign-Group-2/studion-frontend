@@ -1,0 +1,12 @@
+{
+  "chatContainer_title": "トーク",
+  "chatContainer_detail": "トークを始めましょう",
+  "chatContainer_btn": "送り",
+
+  "chat_input_msg": "メッセージ作成...",
+  "chat_input_btn": "転送",
+
+  "dropBox_exit_btn": "出る",
+
+  "chat_modal_title": "新しいトーク"
+}
