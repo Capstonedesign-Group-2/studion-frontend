@@ -3,6 +3,7 @@ import { boolean } from "yup"
 import { AiOutlineCloudUpload } from "react-icons/ai"
 import { IoCloudUploadOutline } from "react-icons/io5"
 import Loader from "../common/Loader"
+import useTranslation from "next-translate/useTranslation"
 interface Filetype {
     id: number
     object: File
@@ -14,7 +15,7 @@ type Props = {
 const DragDrop: React.FC<Props> = ({setAudioFile}) => {
     const [isDragging, setIsDragging] = useState<boolean>(false)
     const dragRef = useRef<HTMLLabelElement | null>(null)
-
+    const { t } = useTranslation("recording")
     const onChangeFile = useCallback((e: ChangeEvent<HTMLInputElement> | any): void => {
         let selectFile: File
         let blobURL: String
@@ -101,11 +102,10 @@ const DragDrop: React.FC<Props> = ({setAudioFile}) => {
                 <div className="border-dashed justify-center items-center border-2 border-gray-300 flex" style={isDragging ? { border: "dashed 2px rgb(52, 211, 153)", background: "rgba(52, 211, 153, 0.2)" } : { }}>
                     <div className="flex flex-col items-center opacity-100 py-4">
                         {/* <AiOutlineCloudUpload className="w-16 h-16" /> */}
-                        {/* <p>アップロードしたいファイルを、</p> */}
-                        <p>アップロードしたいファイルを、ここにドラッグ＆ドロップ</p>
+                        <p>{t("dragAndDrop")}</p>
                         <label htmlFor="fileUpload" className="bg-studion-500 text-white px-4 py-2 rounded-md mt-2 flex hover:bg-studion-600 cursor-pointer">
                             <IoCloudUploadOutline className="mr-2 w-6 h-6" />
-                            <p>またはファイルを選択</p>
+                            <p>{t("dragAndDrop_btn")}</p>
                         </label>
                     </div>
                 </div>

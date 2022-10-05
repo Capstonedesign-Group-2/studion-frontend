@@ -21,16 +21,16 @@ const JoinSection = () => {
         </h1>
         <div className="relative z-10">
           <p className="text-gray-800 text-xl text-center lg:mt-8 mt-12 mb-7 lg:mb-12">
-            自分だけのバンドを作って合奏してみよう！
+            {t("intro_1")}
             <br />
-            いつでもどこでも一緒に演奏して楽しみましょう。
+            {t("intro_2")}
           </p>
           {/* 시작 버튼 */}
           <div className="flex justify-center w-full">
             {userData ? (
               <Link href="/play">
                 <a className="inline-flex items-center justify-center px-5 py-3 border-transparent text-base hover:bg-studion-600 hover:text-white leading-6 rounded-md text-gray-800 bg-transparent border-2 border-studion-600 transition duration-150 ease-in-out md:text-lg md:px-6 mb-[14vw]">
-                  {t("roomList")}
+                  {t("roomListBtn")}
                 </a>
               </Link>
             ) : (

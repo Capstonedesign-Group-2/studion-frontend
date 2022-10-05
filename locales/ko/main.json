@@ -1,4 +1,28 @@
 {
   "startBtn": "시작하기　→",
-  "roomListBtn": "합주실 리스트　→"
+  "roomListBtn": "합주실 리스트　→",
+  "intro_1": "나만의 밴드를 만들어 합주를 해보세요!",
+  "intro_2": "언제 어디서든지 함께 연주하고 즐길 수 있습니다.",
+  "virtual_subTitle": "Studion",
+  "swiperSlide_virtual_title": "가상 악기",
+  "swiperSlide_virtual_int": "드럼 피아노 기타 베이스",
+  "swiperSlide_virtual_use": "키보드를 사용한 연주",
+  "swiperSlide_virtual_exp_1": "악기 없이 키보드로 간단한 연주가 가능합니다.",
+  "swiperSlide_virtual_exp_2": "곧바로 할 수 있습니다.",
+  "swiperSlide_virtual_exp_3": "다양한 가상 악기를 고를 수 있습니다.",
+  "swiperSlide_virtual_btn": "상세보기 →",
+  "swiperSlide_audio_title": "오디오 인터페이스",
+  "swiperSlide_audio_int": "보컬 기타 등..",
+  "swiperSlide_audio_use": "자신의 악기로 연주",
+  "swiperSlide_audio_exp_1": "자신의 악기로 더욱 좋은 퀄리티로 연주",
+  "swiperSlide_audio_exp_2": "전문적인 밴드",
+  "swiperSlide_audio_btn": "상세보기 →",
+  "soundCloud_subTitle": "인기차트",
+  "soundCloud_week_1": "주간",
+  "soundCloud_week_2": "이번주의",
+  "soundCloud_month_1": "월간",
+  "soundCloud_month_2": "이번달의",
+  "soundCloud_message": "인기차트가 없습니다.",
+  "soundCloud_btn": "더보기　→"
 }
+

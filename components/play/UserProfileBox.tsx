@@ -1,3 +1,4 @@
+import useTranslation from "next-translate/useTranslation"
 import Image from "next/image"
 import Link from "next/link"
 import { memo } from "react"
@@ -8,7 +9,7 @@ import CreateBtn from "./CreateBtn"
 
 const UserProfileBox = () => {
   const userData = useSelector((state: RootState) => state.user.data)
-
+  const { t } = useTranslation("play");
   if (!userData) return null
 
   return (
@@ -27,7 +28,7 @@ const UserProfileBox = () => {
             <div className="md:ml-10 w-full">
               <div className="mb-2 md:mb-4">
                 <span className="text-xs text-gray-500 -mb-1 block">
-                  Name
+                  {t("profile_name")}
                 </span>
                 <h3 className="font-medium text-3xl leading-8">
                   {userData.name}
@@ -36,13 +37,13 @@ const UserProfileBox = () => {
               <div className="items-center grid grid-cols-2 mt-1">
                 <div>
                   <span className="text-xs text-gray-500 block">
-                    フォロー中
+                    {t("profile_following")}
                   </span>
                   <h4>{userData.followings}</h4>
                 </div>
                 <div className="ml-8">
                   <span className="text-xs text-gray-500 block">
-                    フォロー
+                    {t("profile_follow")}
                   </span>
                   <h4>{userData.followers}</h4>
                 </div>

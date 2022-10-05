@@ -1,9 +1,11 @@
+import useTranslation from 'next-translate/useTranslation'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import styles from '../../styles/common/layout.module.scss'
 
 const Footer = () => {
+  const { t } = useTranslation("common");
   return (
     <div className={styles.footerContainer}>
       <footer className={styles.footer}>
@@ -12,7 +14,7 @@ const Footer = () => {
             {/* 정보 */}
             <article className={styles.studion}>
               <h4>STUDION</h4>
-              永進専門大学 コンピュータ情報系列<br />
+              {t("footer_school")}<br />
               Github: <a href="https://github.com/Capstonedesign-Group-2">https://github.com/Capstonedesign-Group-2</a>
             </article>
 
@@ -21,9 +23,9 @@ const Footer = () => {
               <article>
                 <h4>NAVIGATION</h4>
                 <ul>
-                  <li><Link href="/play"><a>スサシオン</a></Link></li>
-                  <li><Link href="/soundcloud"><a>サウンドくも</a></Link></li>
-                  <li><Link href="/recording"><a>レコーディング</a></Link></li>
+                  <li><Link href="/play"><a>{t("nav_1")}</a></Link></li>
+                  <li><Link href="/soundcloud"><a>{t("nav_2")}</a></Link></li>
+                  <li><Link href="/recording"><a>{t("nav_3")}</a></Link></li>
                 </ul>
               </article>
 
@@ -31,7 +33,7 @@ const Footer = () => {
               <article>
                 <h4>DIRECTIONS</h4>
                 <ul>
-                  <li><a>使い方</a></li>
+                  <li><a>{t("footer_help")}</a></li>
                 </ul>
               </article>
             </div>

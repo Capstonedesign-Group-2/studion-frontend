@@ -1,0 +1,16 @@
+{
+  "main_title": "サウンドくも",
+
+  "chat_section_title": "トーク",
+  "profile_follow": "ファロー",
+  "profile_following": "フォロー中",
+  "profile_follower": "ファロワー",
+  "profile_post_btn": "作成",
+  "post_open_detail": "もっと..",
+  "post_comment": "コメント...",
+  "post_comment_btn": "転送",
+
+  "detail_post_recode_btn": "録音リレー",
+  "dropBox_edit": "編集",
+  "dropBox_delete": "削除"
+}

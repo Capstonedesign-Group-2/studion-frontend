@@ -11,7 +11,7 @@ import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 import Router from 'next/router';
 import Image from 'next/image';
 
-const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsLike }) => {
+const Article = ({ langs, post, userId, onClickProfile, isLike, setLikes, likes, setIsLike }) => {
     const [comment, setComment] = useState('');
     const userData = useSelector(state => state.user.data);
     const comments = useSelector(state => state.post.commentList);
@@ -178,7 +178,7 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
                     dropDown &&
                     (
                         <div ref={ref} className={styles.dropDown}>
-                            <Dropdown userId={userId} post={post} />
+                            <Dropdown langs={langs} userId={userId} post={post} />
                         </div>
                     )
                 }
@@ -227,9 +227,9 @@ const Article = ({ post, userId, onClickProfile, isLike, setLikes, likes, setIsL
                     {`LIKE ${likeCount}`}
                 </span>
                 <div className='flex w-full'>
-                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder='コメント...' className='border-studion-400 border-2 rounded-md flex-1 h-full outline-none caret-studion-400 py-1' />
+                    <input onKeyPress={onKeyPress} type="text" onChange={onCommentChange} value={comment} placeholder={langs.post_comment} className='border-studion-400 border-2 rounded-md flex-1 h-full outline-none caret-studion-400 py-1' />
                     <div onClick={onClickSubmit} className='ml-2 cursor-pointer w-20 items-center flex justify-center text-white rounded-xl bg-studion-400 hover:bg-studion-500 duration-150 py-1'>
-                        転送
+                        {langs.post_comment_btn}
                     </div>
                 </div>
             </div>

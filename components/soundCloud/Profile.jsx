@@ -11,6 +11,7 @@ import { getAnotherUserInfo, getFollowData } from "../../redux/actions/another"
 import Socket from "../../socket"
 import Router from "next/router"
 import Link from "next/link"
+import useTranslation from "next-translate/useTranslation"
 
 const Profile = ({ userId }) => {
     const userData = useSelector(state => state.user.data)
@@ -18,6 +19,7 @@ const Profile = ({ userId }) => {
     const userInfo = (useSelector(state => state.another.userInfo) || userData)
     const following = useSelector(state => state.another.following);
     const [flwLoading, setFlwLoading] = useState(false);
+    const { t } = useTranslation("soundcloud")
 
     const dispatch = useDispatch();
     // dropdown
@@ -117,7 +119,7 @@ const Profile = ({ userId }) => {
                             <div className="items-center grid grid-cols-2 mt-1 pr-24">
                                 <div className="hover:cursor-pointer" onClick={() => onClickFollowUser('following')}>
                                     <span className="text-xs text-gray-500 block">
-                                        フォロー
+                                        {t("profile_follow")}
                                     </span>
                                     <h4>{userInfo?.followings}</h4>
                                 </div>
@@ -125,7 +127,7 @@ const Profile = ({ userId }) => {
                                 <div className="relative ml-8">
                                     <div className="hover:cursor-pointer" onClick={() => onClickFollowUser('follower')}>
                                         <span className="text-xs text-gray-500 block ">
-                                            フォロワー
+                                            {t("profile_follower")}
                                         </span>
                                         <h4>{userInfo?.followers}</h4>
                                     </div>
@@ -155,11 +157,11 @@ const Profile = ({ userId }) => {
                                             (following?.status !== true)
                                                 ?
                                                 <>
-                                                    フォロー
+                                                    {t("profile_follow")}
                                                 </>
                                                 :
                                                 <>
-                                                    フォロー中
+                                                    {t("profile_following")}
                                                 </>
                                         }
                                     </div>
@@ -173,7 +175,7 @@ const Profile = ({ userId }) => {
             </div>
             {/* create button */}
             <div className="w-full mt-4 md:w-1/2 xl:w-28">
-                <button className="w-full bg-studion-500 rounded-md px-8 py-2 text-white hover:bg-studion-400 text-sm" onClick={onCreatePost}>作成</button>
+                <button className="w-full bg-studion-500 rounded-md px-8 py-2 text-white hover:bg-studion-400 text-sm" onClick={onCreatePost}>{t("post_comment_btn")}</button>
             </div>
         </div>
     )

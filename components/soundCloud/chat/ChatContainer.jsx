@@ -10,16 +10,20 @@ import Loader from "../../common/Loader"
 import Router from "next/router"
 import { BiExit } from "react-icons/bi"
 import Image from "next/image"
+import useTranslation from "next-translate/useTranslation"
 const ChatContainer = ({ setMessage, message, selectUser, messages, chatRef, onClickSend, onKeyPress }) => {
     const userData = useSelector(state => state.user.data);
     const router = useRouter()
     const otherUser = useSelector(state => state.another.userInfo)
     const [dropDown, setDropDown] = useState(false);
     const ref = useRef();
-
+    const { t } = useTranslation("chat")
+    const langs = {
+      chat_modal_title: t("chat_modal_title")
+    }
     const openModal = () => {
         Modal.fire({
-            html: <CreateChat />,
+            html: <CreateChat langs={langs} />,
             showConfirmButton: false,
             customClass: styles.followList,
         })
@@ -90,9 +94,9 @@ const ChatContainer = ({ setMessage, message, selectUser, messages, chatRef, onC
                         {
                             !(router.query.id) &&
                             <div className="w-full h-full flex flex-col justify-center items-center">
-                                <div className="text-3xl font-semibold">トーク</div>
-                                <div className="mt-1 text-lg font-thin">トークを始めましょう</div>
-                                <div className="mt-2 w-20 cursor-pointer h-fit py-1 text-white flex justify-center items-center rounded-lg bg-studion-400 hover:bg-studion-500 duration-150" onClick={() => openModal()}>送り</div>
+                                <div className="text-3xl font-semibold">{t("chatContainer_title")}</div>
+                                <div className="mt-1 text-lg font-thin">{t("chatContainer_detail")}</div>
+                                <div className="mt-2 px-4 cursor-pointer h-fit py-1 text-white flex justify-center items-center rounded-lg bg-studion-400 hover:bg-studion-500 duration-150" onClick={() => openModal()}>{t("chatContainer_btn")}</div>
                             </div>
                         }
                         {messages &&
@@ -102,9 +106,9 @@ const ChatContainer = ({ setMessage, message, selectUser, messages, chatRef, onC
                 </>
 
                 <div className="flex w-full mt-2 pb-4">
-                    <input type="text" onKeyPress={onKeyPress} onChange={onChangeMessage} className="flex-1 text-sm bg-gray-100 outline-none px-4 shadow rounded-md" value={message} placeholder="메세지 작성.." />
+                    <input type="text" onKeyPress={onKeyPress} onChange={onChangeMessage} className="flex-1 text-sm bg-gray-100 outline-none px-4 shadow rounded-md" value={message} placeholder={t("chat_input_msg")} />
                     {/* 보내기 버튼 */}
-                    <div onClick={onClickSend} className="w-20 h-10 ml-2 flex items-center justify-center bg-studion-300 rounded-xl hover:bg-studion-400 shadow-xl ">전송</div>
+                    <div onClick={onClickSend} className="w-20 h-10 ml-2 flex cursor-pointer text-white items-center justify-center bg-studion-300 rounded-xl hover:bg-studion-400 shadow-xl duration-150">{t("chat_input_btn")}</div>
                 </div>
             </div>
         </div>

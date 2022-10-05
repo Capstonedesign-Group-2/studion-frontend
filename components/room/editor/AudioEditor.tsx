@@ -10,9 +10,10 @@ import CreatePost from "../../soundCloud/CreatePost";
 interface Props {
   audioFile: AudioFile
   setAudioFiles: React.Dispatch<React.SetStateAction<AudioFile[]>>
+  langs: Object
 }
 
-const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
+const AudioEditor = ({ langs, audioFile, setAudioFiles }: Props) => {
   const waveformRef = useRef<HTMLDivElement>(null)
   const wavesurferRef = useRef<any>()
   const regionRef = useRef<any>()
@@ -60,7 +61,7 @@ const AudioEditor = ({ audioFile, setAudioFiles }: Props) => {
       console.log(blob, audioFile.blob, trimedAudioFile)
       Modal.close()
       Modal.fire({
-        html: <CreatePost audioFile={trimedAudioFile} />,
+        html: <CreatePost langs={langs} audioFile={trimedAudioFile} />,
         showConfirmButton: false,
         customClass: { popup: styled.post },
       })

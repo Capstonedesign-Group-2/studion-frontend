@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux"
 import styles from '../../styles/common/layout.module.scss'
 import { logOut } from "../../redux/actions/user"
 import Link from "next/link"
+import useTranslation from "next-translate/useTranslation"
 
 interface Props {
   menu: boolean
@@ -13,7 +14,7 @@ interface Props {
 const MenuBox = ({ menu, setMenu }: Props) => {
   const dispatch = useDispatch()
   const menuRef = useRef<HTMLDivElement>(null)
-
+  const { t } = useTranslation("common")
   const onLogout = useCallback(() => {
     dispatch(logOut())
   }, [])
@@ -33,8 +34,8 @@ const MenuBox = ({ menu, setMenu }: Props) => {
   return (
     <div ref={menuRef} className={styles.userOption}>
       <div className={styles.optionList}>
-        <Link href="/profile"><a>プロフィール編集</a></Link>
-        <a onClick={onLogout}>ログアウト</a>
+        <Link href="/profile"><a>{t("menuBox_profile")}</a></Link>
+        <a onClick={onLogout}>{t("menuBox_logout")}</a>
       </div>
     </div>
   )

@@ -1,0 +1,10 @@
+{
+  "join_title": "회원가입",
+  "join_name": "이름",
+  "join_email": "이메일",
+  "join_password": "비밀번호",
+  "join_password_check": "비밀번호 확인",
+  "join_btn": "가입하기",
+  "twitter_login": "Twitter 로그인　→",
+  "google_login": "Google 로그인　→"
+}

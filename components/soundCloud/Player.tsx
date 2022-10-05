@@ -12,7 +12,7 @@ type Composer = {
     id: number,
     user_id: number,
     audio_id: number,
-    user: IUser
+    user: IUser,
 }
 type Audio = {
     id: number,
@@ -21,7 +21,11 @@ type Audio = {
     link: string,
     composers: Composer[]
 }
+type Langs = {
+    detail_post_recode_btn: string
+}
 type Props = {
+    langs: Langs,
     audio?: Audio,
     image?: {
         link: string
@@ -30,7 +34,7 @@ type Props = {
     onClickUser: (id: number) => void
 }
 
-const Player: React.FC<Props> = ({ audio, image, pushRecording, onClickUser }) => {
+const Player: React.FC<Props> = ({ langs, audio, image, pushRecording, onClickUser }) => {
     const [toggle, setToggle] = useState(false)
     const toggleRef = useRef<any>();
 
@@ -64,7 +68,7 @@ const Player: React.FC<Props> = ({ audio, image, pushRecording, onClickUser }) =
                     &&
                     <div onClick={() => pushRecording(audio)}>
                         <a className="bg-studion-400 absolute left-0 top-3 cursor-pointer rounded-lg text-white hover:bg-studion-300 text-base w-24">
-                            録音リレー
+                            {langs.detail_post_recode_btn}
                         </a>
                     </div>
                 }

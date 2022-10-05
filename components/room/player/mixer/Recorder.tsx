@@ -8,6 +8,7 @@ import { Modal } from "../../../common/modals"
 import AudioEditor from "../../editor/AudioEditor"
 import Socket from "../../../../socket"
 import { IUser } from "../../../../types"
+import useTranslation from "next-translate/useTranslation"
 
 export type AudioFile = {
   label: string,
@@ -34,6 +35,12 @@ const Recorder = ({ mixerRef }: Props) => {
   const clockRef = useRef<number>(0)
   const timerInterval = useRef<number>()
   const fileNumber = useRef<number>(0)
+  const { t } = useTranslation("room")
+  const langs = {
+    post_file_select: t("post_file_select"),
+    post_content: t("post_content"),
+    post_btn: t("post_btn")
+  }
 
   const onRecording = async () => {
     if (!recorderRef.current || isRecording) return
@@ -59,9 +66,9 @@ const Recorder = ({ mixerRef }: Props) => {
 
   const onEditAudio = (audioFile: AudioFile) => {
     Modal.fire({
-      title: 'オーディオ編集',
+      title: t("edit_title"),
       showConfirmButton: false,
-      html: <AudioEditor audioFile={audioFile} setAudioFiles={setAudioFiles}></AudioEditor>
+      html: <AudioEditor langs={langs} audioFile={audioFile} setAudioFiles={setAudioFiles}></AudioEditor>
     })
   }
 
@@ -166,7 +173,7 @@ const Recorder = ({ mixerRef }: Props) => {
               <audio src={audioFile?.url} controls className="w-full mt-1 rounded" />
             </div>
           ))
-          : <div className="text-gray-300 text-center">録音してください！</div>}
+          : <div className="text-gray-300 text-center">{t("room_recode")}</div>}
       </div>
     </div>
   )

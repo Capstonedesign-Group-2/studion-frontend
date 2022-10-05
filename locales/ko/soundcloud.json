@@ -1,0 +1,16 @@
+{
+  "main_title": "SoundCloud",
+  
+  "chat_section_title": "채팅",
+  "profile_follow": "Follow",
+  "profile_following": "Following",
+  "profile_follower": "Follower",
+  "profile_post_btn": "작성",
+  "post_open_detail": "자세히..",
+  "post_comment": "댓글 작성...",
+  "post_comment_btn": "전송",
+
+  "detail_post_recode_btn": "녹음 릴레이",
+  "dropBox_edit": "편집",
+  "dropBox_delete": "삭제"
+}

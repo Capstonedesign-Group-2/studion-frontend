@@ -1,0 +1,14 @@
+{
+  "nav_1": "スタジオン",
+  "nav_2": "サウンドくも",
+  "nav_3": "レコーディング",
+  "header_login": "ログイン", 
+  "header_signIn_btn": "会員登録",
+  "footer_school": "永進専門大学 コンピュータ情報系列",
+  "footer_help": "使い方",
+  "menuBox_profile": "プロフィール編集",
+  "menuBox_logout": "ログアウト",
+  "post_file_select": "ファイルを選択してください。",
+  "post_content": "内容を入力してください。",
+  "post_btn": "作成"
+}

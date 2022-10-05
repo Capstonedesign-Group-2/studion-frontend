@@ -1,0 +1,16 @@
+{
+  "room_info_edit_name": "방 이름",
+  "room_info_edit_password": "비밀번호",
+  "room_info_edit_max": "최대 인원",
+  "room_info_edit_roomInfo": "방 정보",
+  "room_info_edit_btn": "세이브",
+
+  "side_chat": "채팅을 해 보세요!",
+  "edit_title": "오디오 편집",
+
+  "room_recode": "녹음 해 보세요!",
+  
+  "post_file_select": "파일을 선택해 주세요.",
+  "post_content": "내용을 적어 주세요.",
+  "post_btn": "작성"
+}

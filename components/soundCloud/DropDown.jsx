@@ -4,8 +4,9 @@ import http from '../../http/index';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserPostList, getPostList } from '../../redux/actions/post';
 import EditCard from './EditCard';
-const Dropdown = ({post, userId}) => {
+const Dropdown = ({langs, post, userId}) => {
     const userData = useSelector(state => state.user.data)
+    const {dropBox_edit, dropBox_delete} = langs
     const dispatch = useDispatch();
     const onEditModal = () => {
         Modal.fire({
@@ -65,8 +66,8 @@ const Dropdown = ({post, userId}) => {
     }
     return (
         <div className={styles.dropDown}>
-            <button onClick={onEditModal}>수정</button>            
-            <button onClick={onDeleteModal}>삭제</button>
+            <button onClick={onEditModal}>{dropBox_edit}</button>            
+            <button onClick={onDeleteModal}>{dropBox_delete}</button>
         </div>
     )
 }

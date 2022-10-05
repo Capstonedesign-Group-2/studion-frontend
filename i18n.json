@@ -4,9 +4,12 @@
   "pages": {
     "*": ["common"],
     "/": ["main"],
-    "/chat": ["chat"],
+    "/room/[id]": ["room"],
     "/room": ["room"],
+    "/chat": ["chat"],
+    "/chat/[id]": ["chat"],
     "/soundcloud": ["soundcloud"],
+    "/soundcloud/[id]": ["soundcloud"],
     "/join": ["join"],
     "/login": ["login"],
     "/play": ["play"],

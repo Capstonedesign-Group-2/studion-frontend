@@ -13,12 +13,18 @@ import { RootState } from '../../redux/slices'
 import MenuBox from './MenuBox'
 import { Modal } from './modals'
 import CreatePost from '../soundCloud/CreatePost'
+import useTranslation from 'next-translate/useTranslation'
 
 const Header = () => {
   const router = useRouter()
   const [menu, setMenu] = useState(false)
   const userData = useSelector((state: RootState) => state.user.data)
-
+  const { t } = useTranslation("common")
+  const post_langs = {
+    post_file_select: t("post_file_select"),
+    post_content: t("post_content"),
+    post_btn: t("post_btn")
+  }
   return (
     <div className={styles.headerContainer}>
       <header className={styles.header}>
@@ -33,9 +39,9 @@ const Header = () => {
 
           {!(router.pathname === '/login' || router.pathname === '/join') &&
             <div className={styles.link}>
-              <Link href="/play"><a>スタジオン</a></Link>
-              <Link href="/soundcloud"><a>サウンドくも</a></Link>
-              <Link href="/recording"><a>レコーディング</a></Link>
+              <Link href="/play"><a>{t("nav_1")}</a></Link>
+              <Link href="/soundcloud"><a>{t("nav_2")}</a></Link>
+              <Link href="/recording"><a>{t("nav_3")}</a></Link>
             </div>
           }
 
@@ -46,7 +52,7 @@ const Header = () => {
               <>
                 <IoCreateOutline className='w-7 h-7 mt-4 cursor-pointer' onClick={() => {
                   Modal.fire({
-                    html: <CreatePost />,
+                    html: <CreatePost langs={post_langs}/>,
                     showConfirmButton: false,
                     customClass: { popup: btnStyles.post },
                   })
@@ -69,8 +75,8 @@ const Header = () => {
                 {menu && <MenuBox menu={menu} setMenu={setMenu} />}
               </div>
               : <div className={styles.unAuthBtn}>
-                <Link href="/login"><a><button className={styles.loginBtn}>ログイン</button></a></Link>
-                <Link href="/join"><a><button className={styles.joinBtn}>会員登録</button></a></Link>
+                <Link href="/login"><a><button className={styles.loginBtn}>{t("header_login")}</button></a></Link>
+                <Link href="/join"><a><button className={styles.joinBtn}>{t("header_signIn_btn")}</button></a></Link>
               </div>
             }
           </div>

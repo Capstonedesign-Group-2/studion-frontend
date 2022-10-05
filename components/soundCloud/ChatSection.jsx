@@ -8,10 +8,12 @@ import { useEffect, useState } from "react";
 import Loader from "../common/Loader";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import useTranslation from "next-translate/useTranslation";
 
 const ChatSection = () => {
     const userData = useSelector(state => state.user.data)
     const [userList, setUserList] = useState(null)
+    const { t } = useTranslation("soundcloud")
     useEffect(() => {
         Socket.socket.on("get_chats_on", res => {
             setUserList(res.data)
@@ -23,7 +25,7 @@ const ChatSection = () => {
         <div className="border sticky ml-4 top-16 bg-white shadow-md rounded-md flex flex-col mb-4" style={{ height: '700px' }}>
             <Profile userData={userData} />
             <hr />
-            <h1 className="text-xl p-2">トーク</h1>
+            <h1 className="text-xl p-2">{t("chat_section_title")}</h1>
             <div className="px-2 py-1 overflow-y-auto flex-1">
                 {
                     userList !== null
@@ -42,6 +44,7 @@ export default ChatSection;
 
 const Profile = ({ userData }) => {
     const router = useRouter()
+    const { t } = useTranslation("soundcloud")
     const onClickFollowUser = (kind) => {
         Modal.fire({
             html: <Follow userId={userData.id} kind={kind} />,
@@ -71,7 +74,7 @@ const Profile = ({ userData }) => {
                 <div className="items-center grid grid-cols-2 mt-1">
                     <div className="hover:cursor-pointer" onClick={() => onClickFollowUser('following')}>
                         <span className="text-xs text-gray-500 block">
-                            フォロー
+                            {t("profile_follow")}
                         </span>
                         <h4>{userData?.followings}</h4>
                     </div>
@@ -79,7 +82,7 @@ const Profile = ({ userData }) => {
                     <div className="relative ml-8">
                         <div className="hover:cursor-pointer" onClick={() => onClickFollowUser('follower')}>
                             <span className="text-xs text-gray-500 block ">
-                                フォロワー
+                                {t("profile_follower")}
                             </span>
                             <h4>{userData?.followers}</h4>
                         </div>

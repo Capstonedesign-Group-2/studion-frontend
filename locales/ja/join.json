@@ -1,0 +1,10 @@
+{
+  "join_title": "アカウントを作成",
+  "join_name": "名前",
+  "join_email": "Eメールアドレス",
+  "join_password": "パスワード",
+  "join_password_check": "もう一度パスワードを入力してください",
+  "join_btn": "アカウントを作成",
+  "twitter_login": "Twitter ログイン　→",
+  "google_login": "Google ログイン　→"
+}

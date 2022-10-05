@@ -7,7 +7,7 @@ import Loader from "../../common/Loader";
 import Router from "next/router";
 import { getAnotherUserInfo } from "../../../redux/actions/another";
 import Socket from "../../../socket/index";
-const CreateChat = () => {
+const CreateChat = ({langs}) => {
     const observerRef = useRef()
     const userData = useSelector(state => state.user.data)
     
@@ -62,11 +62,11 @@ const CreateChat = () => {
                     </svg>
                 </div>
                 <div className="flex-1 justify-self-center">
-                    新しいトーク
+                    {langs.chat_modal_title}
                 </div>
-                <div className="text-studion-300 hover:text-studion-400 absolute top-2 right-2">
+                {/* <div className="text-studion-300 hover:text-studion-400 absolute top-2 right-2">
                     送り
-                </div>
+                </div> */}
             </div>
             <div className="w-full flex-1 overflow-y-auto">
                 {
@@ -125,7 +125,9 @@ const User = ({data}) => {
             {
                 data?.image
                 ?
-                <div className=""></div>
+                <div className="">
+                    <img className="w-10 h-10 rounded-full mr-2" src={data.image} alt="" />
+                </div>
                 :
                 <div className="w-12 h-12 uppercase bg-studion-400 rounded-full text-white flex items-center justify-center font-base text-xl">
                     {data.name.slice(0, 2)}
