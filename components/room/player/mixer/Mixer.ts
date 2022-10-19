@@ -126,7 +126,6 @@ export class Channel {
   setDelay(value: number) {
     // 0 ~ 1
     if (!this.delayNode) return;
-    console.log(value, this.delayNode);
     this.delayNode.wetLevel = value;
   }
 }
