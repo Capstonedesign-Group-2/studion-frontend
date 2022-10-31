@@ -62,8 +62,6 @@ export class Channel {
   drum: Drum;
   piano: Piano;
 
-  tuna: any;
-
   constructor(
     name: string,
     SocketId: string,
@@ -75,12 +73,12 @@ export class Channel {
     this.socketId = SocketId;
     this.stream = stream;
 
-    this.tuna = new Tuna(this.mixer.audioContext);
+    let tuna = new Tuna(this.mixer.audioContext);
 
     this.gainNode = this.mixer.audioContext.createGain();
     this.muteNode = this.mixer.audioContext.createGain();
     this.pannerNode = new StereoPannerNode(this.mixer.audioContext, { pan: 0 });
-    this.delayNode = new this.tuna.Delay({
+    this.delayNode = new tuna.Delay({
       delayTime: 100,
       wetLevel: 0.5,
     });

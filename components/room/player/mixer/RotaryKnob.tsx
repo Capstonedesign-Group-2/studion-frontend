@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import Vocal from "../../../recording/inst/vocal/Vocal";
 import { Channel } from "./Mixer";
 
 interface Props {
   label: string;
-  channel: Channel;
+  channel: Channel | Vocal;
 }
 
 const RotaryKnob = ({ label, channel }: Props) => {
