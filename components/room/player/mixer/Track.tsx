@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import { useState, useCallback } from "react";
 import { Channel } from "./Mixer";
-import Panner from "./RotaryKnob";
+import RotaryKnob from "./RotaryKnob";
 
 import { VolumeSlider } from "./VolumeSlider";
 
@@ -59,11 +59,11 @@ const Track = ({ user, channel }: Props) => {
         <p className="text-white">{user?.name}</p>
       </div>
 
-      {/* Panner 노브 */}
-      <Panner label="PAN" channel={channel} />
+      {/* PAN 노브 */}
+      <RotaryKnob label="PAN" channel={channel} />
 
       {/* Delay 노브 */}
-      <Panner label="Delay" channel={channel} />
+      <RotaryKnob label="Delay" channel={channel} />
 
       {/* Solo 버튼 */}
       <div className="flex flex-col" onClick={onSolo}>
